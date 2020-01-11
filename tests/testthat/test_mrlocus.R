@@ -20,26 +20,26 @@ test_that("mrlocus works on simple sim data", {
   beta <- sapply(1:ncond, function(j) rep(c(0,6 + j,0),c(x,1,x)))
   beta_hat_a <- beta
   beta_hat_b <- beta
-
-  se2 <- 0.05
+  se_a <- se_b <- matrix(0.2, nsnp, ncond)
   gamma <- 0.5 
   sigma <- 0.1
   theta <- 1 - 1/nsnp
   for (j in 1:ncond) {
     beta_hat_a[,j] <- mvrnorm(1,
                               mu=Sigma_a[,,j] %*% beta[,j],
-                              se2 * Sigma_a[,,j])
+                              diag(se_a[,j]) * Sigma_a[,,j] * diag(se_a[,j]))
     beta_hat_b[,j] <- mvrnorm(1,
                               mu=Sigma_b[,,j] %*% (gamma * beta[,j] + rnorm(nsnp,0,sigma)),
-                              se2 * Sigma_b[,,j])
+                              diag(se_b[,j]) * Sigma_b[,,j] * diag(se_b[,j]))
   }
   data <- list(nsnp=nsnp,
                ncond=ncond,
                beta_hat_a=beta_hat_a,
                beta_hat_b=beta_hat_b,
+               se_a=se_a,
+               se_b=se_b,
                Sigma_a=Sigma_a,
-               Sigma_b=Sigma_b,
-               se2=se2)
+               Sigma_b=Sigma_b)
 
   options(mc.cores=4)
   fit1 <- fitBetaEcaviar(data)
