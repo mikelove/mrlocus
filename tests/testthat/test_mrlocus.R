@@ -25,12 +25,14 @@ test_that("mrlocus works on simple sim data", {
   sigma <- 0.1
   theta <- 1 - 1/nsnp
   for (j in 1:ncond) {
+    beta_a_j <- beta[,j]
     beta_hat_a[,j] <- mvrnorm(1,
-                              mu=Sigma_a[,,j] %*% beta[,j],
-                              diag(se_a[,j]) * Sigma_a[,,j] * diag(se_a[,j]))
+                              mu=Sigma_a[,,j] %*% beta_a_j,
+                              diag(se_a[,j]) %*% Sigma_a[,,j] %*% diag(se_a[,j]))
+    beta_b_j <- gamma * beta_a_j + ifelse(beta_a_j==0,0,rnorm(nsnp,0,sigma))
     beta_hat_b[,j] <- mvrnorm(1,
-                              mu=Sigma_b[,,j] %*% (gamma * beta[,j] + rnorm(nsnp,0,sigma)),
-                              diag(se_b[,j]) * Sigma_b[,,j] * diag(se_b[,j]))
+                              mu=Sigma_b[,,j] %*% beta_b_j,
+                              diag(se_b[,j]) %*% Sigma_b[,,j] %*% diag(se_b[,j]))
   }
   data <- list(nsnp=nsnp,
                ncond=ncond,
