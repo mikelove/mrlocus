@@ -26,6 +26,8 @@ fitBetaEcaviar <- function(data) {
 #' \item{ncond - number of conditional signal clusters}
 #' \item{beta_hat_a - matrix nsnp x ncond, first step point estimates of beta for A}
 #' \item{beta_hat_b - " " for B}
+#' \item{sd_a - matrix nsnp x ncond, first step posterior SD for beta for A}
+#' \item{sd_b - " " for B}
 #' }
 #' 
 #' @export
@@ -41,7 +43,9 @@ checkData <- function(data, fit) {
                   "se_a","se_b",
                   "Sigma_a","Sigma_b")
   } else if (fit == 2) {
-    exp.args <- c("nsnp","ncond", "beta_a", "beta_b")
+    exp.args <- c("nsnp","ncond",
+                  "beta_hat_a", "beta_hat_b",
+                  "sd_a", "sd_b")
   }
   if (!all(exp.args %in% names(data))) {
     stop(
@@ -57,7 +61,9 @@ checkData <- function(data, fit) {
     stopifnot(dim(data$Sigma_a) == c(data$nsnp,data$nsnp,data$ncond))
     stopifnot(dim(data$Sigma_b) == c(data$nsnp,data$nsnp,data$ncond))
   } else if (fit == 2) {
-    stopifnot(dim(data$beta_a) == c(data$nsnp,data$ncond))
-    stopifnot(dim(data$beta_b) == c(data$nsnp,data$ncond))
+    stopifnot(dim(data$beta_hat_a) == c(data$nsnp,data$ncond))
+    stopifnot(dim(data$beta_hat_b) == c(data$nsnp,data$ncond))
+    stopifnot(dim(data$sd_a) == c(data$nsnp,data$ncond))
+    stopifnot(dim(data$sd_b) == c(data$nsnp,data$ncond))
   }
 }

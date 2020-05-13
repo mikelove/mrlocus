@@ -1,11 +1,8 @@
 Package: mrlocus
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.2
-Authors@R: 
-    person(given = "Michael",
-           family = "Love",
-           role = c("aut", "cre"),
-           email = "michaelisaiahlove@gmail.com")
+Version: 0.0.3
+Authors@R:
+    person("Michael", "Love", email="michaelisaiahlove@gmail.com", role=c("aut","cre"))
 Description: What the package does (one paragraph).
 License: GPL (>=2)
 Encoding: UTF-8
@@ -25,4 +22,4 @@ LinkingTo:
     rstan (>= 2.18.1),
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
