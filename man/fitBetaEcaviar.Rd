@@ -9,8 +9,9 @@ fitBetaEcaviar(data)
 \arguments{
 \item{data}{a list with the following named elements:
 \itemize{
-\item{nsnp - number of SNPs}
+\item{nsnp - maximum number of SNPs}
 \item{ncond - number of conditional signal clusters}
+\item{n - number of SNPs per conditonal signal cluster}
 \item{beta_hat_a - matrix nsnp x ncond, estimated coefficients for A}
 \item{beta_hat_b - " " for B}
 \item{se_a - matrix nsnp x ncond, standard errors for beta_hat_a}

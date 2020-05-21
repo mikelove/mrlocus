@@ -9,8 +9,9 @@ fitBetaMixture(data)
 \arguments{
 \item{data}{a list with the following named elements:
 \itemize{
-\item{nsnp - number of SNPs}
+\item{nsnp - maximum number of SNPs}
 \item{ncond - number of conditional signal clusters}
+\item{n - number of SNPs per conditonal signal cluster}
 \item{beta_hat_a - matrix nsnp x ncond, first step point estimates of beta for A}
 \item{beta_hat_b - " " for B}
 \item{sd_a - matrix nsnp x ncond, first step posterior SD for beta for A}

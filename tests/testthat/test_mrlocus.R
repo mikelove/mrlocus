@@ -6,16 +6,21 @@ test_that("mrlocus works on simple sim data", {
   library(MASS)
   
   set.seed(1)
-  nsnp <- 29
-  ncond <- 4
+  nsnp <- 15
+  ncond <- 3
+  n <- c(5,10,15)
   Sigma_a <- Sigma_b <- array(NA, dim=c(nsnp,nsnp,ncond))
   for (j in 1:ncond) {
     Sigma_a[,,j] <- diag(nsnp) # A will be eQTL
     Sigma_b[,,j] <- diag(nsnp) # B will be GWAS
-    idx <- ceiling(nsnp/2) + -5:5
+    idx <- ceiling(nsnp/2) + -2:2
     Sigma_a[idx,idx,j] <- ifelse(Sigma_a[idx,idx,j] == 0, .5, 1)
     Sigma_b[idx,idx,j] <- ifelse(Sigma_b[idx,idx,j] == 0, .5, 1)
   }
+  Sigma_a[6:15,6:15,1] <- 0
+  Sigma_a[11:15,11:15,2] <- 0
+  Sigma_b[6:15,6:15,1] <- 0
+  Sigma_b[11:15,11:15,2] <- 0
   x <- (nsnp - 1)/2
   beta <- sapply(1:ncond, function(j) rep(c(0,6 + j,0),c(x,1,x)))
   beta_hat_a <- beta
@@ -35,8 +40,17 @@ test_that("mrlocus works on simple sim data", {
                               mu=Sigma_b[,,j] %*% beta_b_j,
                               diag(se_b[,j]) %*% Sigma_b[,,j] %*% diag(se_b[,j]))
   }
+  beta_hat_a[6:15,1] <- 0
+  beta_hat_a[11:15,2] <- 0
+  beta_hat_b[6:15,1] <- 0
+  beta_hat_b[11:15,2] <- 0
+  se_a[6:15,1] <- 0
+  se_a[11:15,2] <- 0
+  se_b[6:15,1] <- 0
+  se_b[11:15,2] <- 0
   data <- list(nsnp=nsnp,
                ncond=ncond,
+               n=n,
                beta_hat_a=beta_hat_a,
                beta_hat_b=beta_hat_b,
                se_a=se_a,
@@ -48,8 +62,13 @@ test_that("mrlocus works on simple sim data", {
   fit1 <- fitBetaEcaviar(data)
 
   print(fit1, pars=c("beta_a[1,1]","beta_b[1,1]"), digits=3)
+  
   rstan::stan_plot(fit1, pars=paste0("beta_a[",1:nsnp,",1]"))
   rstan::stan_plot(fit1, pars=paste0("beta_b[",1:nsnp,",1]"))
+  rstan::stan_plot(fit1, pars=paste0("beta_a[",1:nsnp,",2]"))
+  rstan::stan_plot(fit1, pars=paste0("beta_b[",1:nsnp,",2]"))
+  rstan::stan_plot(fit1, pars=paste0("beta_a[",1:nsnp,",3]"))
+  rstan::stan_plot(fit1, pars=paste0("beta_b[",1:nsnp,",3]"))
 
   library(matrixStats)
   coefs1 <- rstan::extract(fit1)
