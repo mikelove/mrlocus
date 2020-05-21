@@ -15,10 +15,16 @@ parameters {
 }
 model {
   for (j in 1:ncond) {
-    segment(beta_hat_a[,j],1,n[j]) ~ multi_normal(block(to_matrix(Sigma_a[,,j]),1,1,n[j],n[j]) * head(beta_a[,j],n[j]),
-    				   quad_form_diag(block(to_matrix(Sigma_a[,,j]),1,1,n[j],n[j]), head(se_a[,j],n[j])));
-    segment(beta_hat_b[,j],1,n[j]) ~ multi_normal(block(to_matrix(Sigma_b[,,j]),1,1,n[j],n[j]) * head(beta_b[,j],n[j]),
-                                   quad_form_diag(block(to_matrix(Sigma_b[,,j]),1,1,n[j],n[j]), head(se_b[,j],n[j])));
+    segment(beta_hat_a[,j],1,n[j]) ~
+      multi_normal(block(to_matrix(Sigma_a[,,j]),1,1,n[j],n[j]) *
+        head(beta_a[,j],n[j]),
+    	quad_form_diag(block(to_matrix(Sigma_a[,,j]),1,1,n[j],n[j]),
+	head(se_a[,j],n[j])));
+    segment(beta_hat_b[,j],1,n[j]) ~
+      multi_normal(block(to_matrix(Sigma_b[,,j]),1,1,n[j],n[j]) *
+        head(beta_b[,j],n[j]),
+        quad_form_diag(block(to_matrix(Sigma_b[,,j]),1,1,n[j],n[j]),
+        head(se_b[,j],n[j])));
     for (i in 1:n[j]) {
       beta_a[i,j] ~ normal(0, 10);
       beta_b[i,j] ~ normal(0, 10);

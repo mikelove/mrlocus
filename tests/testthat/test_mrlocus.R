@@ -6,23 +6,24 @@ test_that("mrlocus works on simple sim data", {
   library(MASS)
   
   set.seed(1)
-  nsnp <- 15
+  nsnp <- 20
   ncond <- 3
-  n <- c(5,10,15)
+  n <- c(10,15,20)
   Sigma_a <- Sigma_b <- array(NA, dim=c(nsnp,nsnp,ncond))
   for (j in 1:ncond) {
     Sigma_a[,,j] <- diag(nsnp) # A will be eQTL
     Sigma_b[,,j] <- diag(nsnp) # B will be GWAS
-    idx <- ceiling(nsnp/2) + -2:2
+    idx <- 8 + -2:2
     Sigma_a[idx,idx,j] <- ifelse(Sigma_a[idx,idx,j] == 0, .5, 1)
     Sigma_b[idx,idx,j] <- ifelse(Sigma_b[idx,idx,j] == 0, .5, 1)
   }
-  Sigma_a[6:15,6:15,1] <- 0
-  Sigma_a[11:15,11:15,2] <- 0
-  Sigma_b[6:15,6:15,1] <- 0
-  Sigma_b[11:15,11:15,2] <- 0
-  x <- (nsnp - 1)/2
-  beta <- sapply(1:ncond, function(j) rep(c(0,6 + j,0),c(x,1,x)))
+  Sigma_a[11:20,11:20,1] <- 0
+  Sigma_a[16:20,16:20,2] <- 0
+  Sigma_b[11:20,11:20,1] <- 0
+  Sigma_b[16:20,16:20,2] <- 0
+  x <- 7
+  y <- 12
+  beta <- sapply(1:ncond, function(j) rep(c(0,6 + j,0),c(x,1,y)))
   beta_hat_a <- beta
   beta_hat_b <- beta
   se_a <- se_b <- matrix(0.2, nsnp, ncond)
@@ -40,14 +41,14 @@ test_that("mrlocus works on simple sim data", {
                               mu=Sigma_b[,,j] %*% beta_b_j,
                               diag(se_b[,j]) %*% Sigma_b[,,j] %*% diag(se_b[,j]))
   }
-  beta_hat_a[6:15,1] <- 0
-  beta_hat_a[11:15,2] <- 0
-  beta_hat_b[6:15,1] <- 0
-  beta_hat_b[11:15,2] <- 0
-  se_a[6:15,1] <- 0
-  se_a[11:15,2] <- 0
-  se_b[6:15,1] <- 0
-  se_b[11:15,2] <- 0
+  beta_hat_a[11:20,1] <- 0
+  beta_hat_a[16:20,2] <- 0
+  beta_hat_b[11:20,1] <- 0
+  beta_hat_b[16:20,2] <- 0
+  se_a[11:20,1] <- 0
+  se_a[16:20,2] <- 0
+  se_b[11:20,1] <- 0
+  se_b[16:20,2] <- 0
   data <- list(nsnp=nsnp,
                ncond=ncond,
                n=n,
@@ -79,6 +80,7 @@ test_that("mrlocus works on simple sim data", {
   
   data <- list(nsnp=nsnp,
                ncond=ncond,
+               n=n,
                beta_hat_a=beta_clean_a,
                beta_hat_b=beta_clean_b,
                sd_a=beta_sd_a,
@@ -90,6 +92,7 @@ test_that("mrlocus works on simple sim data", {
   # naive
   a <- beta_clean_a[x+1,]
   b <- beta_clean_b[x+1,]
+  plot(a,b)
   fit <- lm(b ~ 0 + a)
 
   print(fit2, pars=c("theta","mu","gamma","sigma_1b"), digits=3)
@@ -110,5 +113,11 @@ test_that("mrlocus works on simple sim data", {
   abline(mean(coefs2$sigma_1b), mean(coefs2$gamma), col="blue")
   abline(-mean(coefs2$sigma_1b), mean(coefs2$gamma), col="blue")
 
+  rstan::stan_plot(fit2, pars=paste0("beta_a[",1:nsnp,",1]"))
+  rstan::stan_plot(fit2, pars=paste0("beta_b[",1:nsnp,",1]"))
+  rstan::stan_plot(fit2, pars=paste0("beta_a[",1:nsnp,",2]"))
+  rstan::stan_plot(fit2, pars=paste0("beta_b[",1:nsnp,",2]"))
+  rstan::stan_plot(fit2, pars=paste0("beta_a[",1:nsnp,",3]"))
+  rstan::stan_plot(fit2, pars=paste0("beta_b[",1:nsnp,",3]"))
   
 })
