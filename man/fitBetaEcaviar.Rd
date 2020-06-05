@@ -9,14 +9,12 @@ fitBetaEcaviar(data)
 \arguments{
 \item{data}{a list with the following named elements:
 \itemize{
-\item{nsnp - maximum number of SNPs}
-\item{ncond - number of conditional signal clusters}
-\item{n - number of SNPs per conditonal signal cluster}
-\item{beta_hat_a - matrix nsnp x ncond, estimated coefficients for A}
+\item{nsnp - number of SNPs}
+\item{beta_hat_a - vector of length nsnp, estimated coefficients for A}
 \item{beta_hat_b - " " for B}
-\item{se_a - matrix nsnp x ncond, standard errors for beta_hat_a}
+\item{se_a - vector of length nsnp, standard errors for beta_hat_a}
 \item{se_b - " " for beta_hat_b}
-\item{Sigma_a - array of correlation matrices of SNPs for A, dimension should be nsnp x nsnp x ncond}
+\item{Sigma_a - correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
 \item{Sigma_b - " " for B (this could be different for different LD structures)}
 }}
 }
