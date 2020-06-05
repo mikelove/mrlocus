@@ -1,70 +1,62 @@
 #' Fit the beta eCAVIAR model
 #'
-#' @param data a list with the following named elements:
-#' \itemize{
-#' \item{nsnp - number of SNPs}
-#' \item{beta_hat_a - vector of length nsnp, estimated coefficients for A}
-#' \item{beta_hat_b - " " for B}
-#' \item{se_a - vector of length nsnp, standard errors for beta_hat_a}
-#' \item{se_b - " " for beta_hat_b}
-#' \item{Sigma_a - correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
-#' \item{Sigma_b - " " for B (this could be different for different LD structures)}
-#' }
+#' @param nsnp number of SNPs
+#' @param beta_hat_a vector of length nsnp, estimated coefficients for A
+#' @param beta_hat_b " " for B
+#' @param se_a vector of length nsnp, standard errors for beta_hat_a
+#' @param se_b " " for beta_hat_b
+#' @param Sigma_a correlation matrix of SNPs for A, dimension should be nsnp x nsnp
+#' @param Sigma_b " " for B (this could be different for different LD structures)
 #' 
 #' @export
-fitBetaEcaviar <- function(data) {
-  checkData(data, 1)
+fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
+                           se_a, se_b, Sigma_a, Sigma_b) {
+  stopifnot(length(beta_hat_a) == nsnp)
+  stopifnot(length(beta_hat_b) == nsnp)
+  stopifnot(length(se_a) == nsnp)
+  stopifnot(length(se_b) == nsnp)
+  stopifnot(dim(Sigma_a) == c(nsnp,nsnp))
+  stopifnot(dim(Sigma_b) == c(nsnp,nsnp))
+  data <- list(nsnp=nsnp, beta_hat_a=beta_hat_a,
+               beta_hat_b=beta_hat_b,
+               se_a=se_a, se_b=se_b,
+               Sigma_a=Sigma_a, Sigma_b=Sigma_b)
   rstan::sampling(stanmodels$beta_marg_ecaviar, data)
 }
 
 #' Fit the beta mixture model
 #'
-#' @param data a list with the following named elements:
-#' \itemize{
-#' \item{nsnp - vector, number of SNPs per cluster}
-#' \item{beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A}
-#' \item{beta_hat_b - " " for B}
-#' \item{sd_a - vector of length sum(nsnp), first step posterior SD for beta for A}
-#' \item{sd_b - " " for B}
-#' }
+#' @param nsnp vector, number of SNPs per cluster
+#' @param beta_hat_a vector of length sum(nsnp), first step point estimates of beta for A
+#' @param beta_hat_b " " for B
+#' @param sd_a vector of length sum(nsnp), first step posterior SD for beta for A
+#' @param sd_b " " for B
+#' @param sigma_0a SD of the null component for A
+#' @param sigma_0b " " for B
+#' @param sigma_1a SD of the non-null component for beta for A (SD for B is fitted parameter)
+#' @param mu_loc center of prior distribution for mu
+#' @param mu_sd SD of prior distribution for mu
+#' @param sigma1b_sd SD of prior distribution for sigma_1b
 #' 
 #' @export
-fitBetaMixture <- function(data) {
-  checkData(data, 2)
-  data$tot <- sum(data$nsnp)
-  data$nsnp <- NULL
+fitBetaMixture <- function(nsnp,
+                           beta_hat_a, beta_hat_b, sd_a, sd_b,
+                           sigma_0a=0.5, sigma_0b=0.5, sigma_1a=2,
+                           mu_loc=8, mu_sd=2, sigma1b_sd=3) {
+  tot <- sum(nsnp)
+  stopifnot(length(beta_hat_a) == tot)
+  stopifnot(length(beta_hat_b) == tot)
+  stopifnot(length(sd_a) == tot)
+  stopifnot(length(sd_b) == tot) 
+  data <- list(tot=tot,
+               beta_hat_a=beta_hat_a,
+               beta_hat_b=beta_hat_b,
+               sd_a=sd_a, sd_b=sd_b,
+               sigma_0a=sigma_0a,
+               sigma_0b=sigma_0b,
+               sigma_1a=sigma_1a,
+               mu_loc=mu_loc, mu_sd=mu_sd,
+               sigma1b_sd=sigma1b_sd)
   rstan::sampling(stanmodels$beta_mixture, data)
 }
 
-checkData <- function(data, fit) {
-  if (fit == 1) {
-    exp.args <- c("nsnp",
-                  "beta_hat_a","beta_hat_b",
-                  "se_a","se_b",
-                  "Sigma_a","Sigma_b")
-  } else if (fit == 2) {
-    exp.args <- c("nsnp",
-                  "beta_hat_a", "beta_hat_b",
-                  "sd_a", "sd_b")
-  }
-  if (!all(exp.args %in% names(data))) {
-    stop(
-      paste("missing argument(s) in 'data':",
-            paste(exp.args[!exp.args %in% names(data)], collapse=" "))
-    )
-  }
-  if (fit == 1) {
-    stopifnot(length(data$beta_hat_a) == data$nsnp)
-    stopifnot(length(data$beta_hat_b) == data$nsnp)
-    stopifnot(length(data$se_a) == data$nsnp)
-    stopifnot(length(data$se_b) == data$nsnp)
-    stopifnot(dim(data$Sigma_a) == c(data$nsnp,data$nsnp))
-    stopifnot(dim(data$Sigma_b) == c(data$nsnp,data$nsnp))
-  } else if (fit == 2) {
-    tot <- sum(data$nsnp)
-    stopifnot(length(data$beta_hat_a) == tot)
-    stopifnot(length(data$beta_hat_b) == tot)
-    stopifnot(length(data$sd_a) == tot)
-    stopifnot(length(data$sd_b) == tot) 
-  }
-}

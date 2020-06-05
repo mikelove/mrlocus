@@ -4,17 +4,42 @@
 \alias{fitBetaMixture}
 \title{Fit the beta mixture model}
 \usage{
-fitBetaMixture(data)
+fitBetaMixture(
+  nsnp,
+  beta_hat_a,
+  beta_hat_b,
+  sd_a,
+  sd_b,
+  sigma_0a = 0.5,
+  sigma_0b = 0.5,
+  sigma_1a = 2,
+  mu_loc = 8,
+  mu_sd = 2,
+  sigma1b_sd = 3
+)
 }
 \arguments{
-\item{data}{a list with the following named elements:
-\itemize{
-\item{nsnp - vector, number of SNPs per cluster}
-\item{beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A}
-\item{beta_hat_b - " " for B}
-\item{sd_a - vector of length sum(nsnp), first step posterior SD for beta for A}
-\item{sd_b - " " for B}
-}}
+\item{nsnp}{vector, number of SNPs per cluster}
+
+\item{beta_hat_a}{vector of length sum(nsnp), first step point estimates of beta for A}
+
+\item{beta_hat_b}{" " for B}
+
+\item{sd_a}{vector of length sum(nsnp), first step posterior SD for beta for A}
+
+\item{sd_b}{" " for B}
+
+\item{sigma_0a}{SD of the null component for A}
+
+\item{sigma_0b}{" " for B}
+
+\item{sigma_1a}{SD of the non-null component for beta for A (SD for B is fitted parameter)}
+
+\item{mu_loc}{center of prior distribution for mu}
+
+\item{mu_sd}{SD of prior distribution for mu}
+
+\item{sigma1b_sd}{SD of prior distribution for sigma_1b}
 }
 \description{
 Fit the beta mixture model

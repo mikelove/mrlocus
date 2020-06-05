@@ -5,7 +5,7 @@ test_that("mrlocus works on simple sim data", {
 
   library(MASS)
   
-  set.seed(1)
+  set.seed(5)
   ncond <- 3
   nsnp <- c(10,15,20)
   Sigma_a <- Sigma_b <- list()
@@ -23,7 +23,7 @@ test_that("mrlocus works on simple sim data", {
   se_a <- se_b <- lapply(1:ncond, function(j) rep(0.2, nsnp[j]))
   gamma <- 0.5 
   sigma <- 0.1
-  theta <- 1 - 1/mean(nsnp)
+  theta <- 1 - ncond/sum(nsnp)
   mu <- mean(sapply(beta, `[`, x+1))
   for (j in 1:ncond) {
     beta_a_j <- beta[[j]]
@@ -39,15 +39,14 @@ test_that("mrlocus works on simple sim data", {
   fit1 <- list()
   options(mc.cores=2)
   for (j in 1:ncond) {
-    print("---",j,"---")
-    data <- list(nsnp=nsnp[j],
-                 beta_hat_a=beta_hat_a[[j]],
-                 beta_hat_b=beta_hat_b[[j]],
-                 se_a=se_a[[j]],
-                 se_b=se_b[[j]],
-                 Sigma_a=Sigma_a[[j]],
-                 Sigma_b=Sigma_b[[j]])
-    fit1[[j]] <- fitBetaEcaviar(data)
+    print(paste("\n\n-----",j,"-----\n\n"))
+    fit1[[j]] <- fitBetaEcaviar(nsnp=nsnp[j],
+                                beta_hat_a=beta_hat_a[[j]],
+                                beta_hat_b=beta_hat_b[[j]],
+                                se_a=se_a[[j]],
+                                se_b=se_b[[j]],
+                                Sigma_a=Sigma_a[[j]],
+                                Sigma_b=Sigma_b[[j]])
   }
 
   j <- 1
@@ -62,15 +61,15 @@ test_that("mrlocus works on simple sim data", {
   beta_sd_a <- do.call(c, lapply(coefs1, function(x) colSds(x$beta_a)))
   beta_sd_b <- do.call(c, lapply(coefs1, function(x) colSds(x$beta_b)))
 
-  data <- list(nsnp=nsnp,
-               beta_hat_a=beta_clean_a,
-               beta_hat_b=beta_clean_b,
-               sd_a=beta_sd_a,
-               sd_b=beta_sd_b)
-
   options(mc.cores=2)
-  fit2 <- fitBetaMixture(data)
-
+  fit2 <- fitBetaMixture(nsnp=nsnp,
+                         beta_hat_a=beta_clean_a,
+                         beta_hat_b=beta_clean_b,
+                         sd_a=beta_sd_a,
+                         sd_b=beta_sd_b, 
+                         sigma_0a=.1,
+                         sigma_0b=.1)
+  
   # naive
   a <- beta_clean_a[beta_clean_a > 4]
   b <- beta_clean_b[beta_clean_b > 2]

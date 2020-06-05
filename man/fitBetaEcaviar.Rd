@@ -4,19 +4,22 @@
 \alias{fitBetaEcaviar}
 \title{Fit the beta eCAVIAR model}
 \usage{
-fitBetaEcaviar(data)
+fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b)
 }
 \arguments{
-\item{data}{a list with the following named elements:
-\itemize{
-\item{nsnp - number of SNPs}
-\item{beta_hat_a - vector of length nsnp, estimated coefficients for A}
-\item{beta_hat_b - " " for B}
-\item{se_a - vector of length nsnp, standard errors for beta_hat_a}
-\item{se_b - " " for beta_hat_b}
-\item{Sigma_a - correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
-\item{Sigma_b - " " for B (this could be different for different LD structures)}
-}}
+\item{nsnp}{number of SNPs}
+
+\item{beta_hat_a}{vector of length nsnp, estimated coefficients for A}
+
+\item{beta_hat_b}{" " for B}
+
+\item{se_a}{vector of length nsnp, standard errors for beta_hat_a}
+
+\item{se_b}{" " for beta_hat_b}
+
+\item{Sigma_a}{correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
+
+\item{Sigma_b}{" " for B (this could be different for different LD structures)}
 }
 \description{
 Fit the beta eCAVIAR model
