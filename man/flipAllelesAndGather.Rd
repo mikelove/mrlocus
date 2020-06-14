@@ -4,12 +4,42 @@
 \alias{flipAllelesAndGather}
 \title{Flip alleles and gather results into lists}
 \usage{
-flipAllelesAndGather(sum_stat, ld_mat)
+flipAllelesAndGather(
+  sum_stat,
+  ld_mat,
+  a,
+  b,
+  ref,
+  eff,
+  beta,
+  se,
+  major_plink,
+  ab_last,
+  sep
+)
 }
 \arguments{
 \item{sum_stat}{list of summary statistic tables}
 
 \item{ld_mat}{list of LD matrices}
+
+\item{a}{name of A in columns of sum_stat ("eQTL")}
+
+\item{b}{name of B ("GWAS")}
+
+\item{ref}{name of reference allele}
+
+\item{eff}{name of effect allele}
+
+\item{beta}{name of estimated coefficient}
+
+\item{se}{name of standard error}
+
+\item{major_plink}{name of major plink allele}
+
+\item{ab_last}{A/B descriptor is last in column names}
+
+\item{sep}{character separator in column names}
 }
 \value{
 list with estimated coefficients, standard

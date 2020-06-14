@@ -45,40 +45,66 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #'
 #' @param sum_stat list of summary statistic tables
 #' @param ld_mat list of LD matrices
+#' @param a name of A in columns of sum_stat ("eQTL")
+#' @param b name of B ("GWAS")
+#' @param ref name of reference allele
+#' @param eff name of effect allele
+#' @param beta name of estimated coefficient
+#' @param se name of standard error
+#' @param major_plink name of major plink allele
+#' @param ab_last A/B descriptor is last in column names
+#' @param sep character separator in column names
 #'
 #' @return list with estimated coefficients, standard
 #' errors, LD matrix, and allele table
 #' 
 #' @export
-flipAllelesAndGather <- function(sum_stat, ld_mat) {
+flipAllelesAndGather <- function(sum_stat, ld_mat,
+                                 a, b, ref, eff,
+                                 beta, se, major_plink,
+                                 ab_last, sep) {
+
+  # the following allow for arbitrary incoming column names.
+  # the point of this is to reduce mistakes that might occur
+  # if users manually had to modify their column names.
+  ref_a_nm <- if (ab_last) paste(ref, a, sep=sep) else paste(a, ref, sep=sep)
+  ref_b_nm <- if (ab_last) paste(ref, b, sep=sep) else paste(b, ref, sep=sep)
+  eff_a_nm <- if (ab_last) paste(eff, a, sep=sep) else paste(a, eff, sep=sep)
+  eff_b_nm <- if (ab_last) paste(eff, b, sep=sep) else paste(b, eff, sep=sep)
+  beta_a_nm <- if (ab_last) paste(beta, a, sep=sep) else paste(a, beta, sep=sep)
+  beta_b_nm <- if (ab_last) paste(beta, b, sep=sep) else paste(b, beta, sep=sep)
+  se_b_nm <- if (ab_last) paste(se, b, sep=sep) else paste(b, se, sep=sep)
+  se_a_nm <- if (ab_last) paste(se, a, sep=sep) else paste(a, se, sep=sep)
+  
   beta_hat_a <- list()
   beta_hat_b <- list()
   se_a <- list()
   se_b <- list()
   Sigma <- list()
   alleles <- list()
+  
   for (j in seq_along(sum_stat)) {
     # the index SNP in the signal cluster for A (eQTL) based on Z stat
-    idx <- which.max(abs(sum_stat[[j]]$beta_eQTL/sum_stat[[j]]$se_eQTL))
+    idx <- which.max(abs(sum_stat[[j]][beta_a_nm]/sum_stat[[j]][beta_se_nm]))
     # check: reference B (GWAS) allele must be either reference or effect allele in A (eQTL)
-    stopifnot(sum_stat[[j]]$Ref_GWAS == sum_stat[[j]]$Ref_eQTL |
-              sum_stat[[j]]$Ref_GWAS == sum_stat[[j]]$Effect_eQTL)
+    stopifnot(sum_stat[[j]][ref_b_nm] == sum_stat[[j]][ref_a_nm] |
+              sum_stat[[j]][ref_b_nm] == sum_stat[[j]][eff_a_nm])
     # flip B (GWAS) so that same ref allele is described for B (GWAS) as for A (eQTL)
-    flip <- which(sum_stat[[j]]$Ref_GWAS != sum_stat[[j]]$Ref_eQTL)
-    sum_stat[[j]]$beta_GWAS_flipped <- sum_stat[[j]]$beta_GWAS
-    sum_stat[[j]]$beta_GWAS_flipped[flip] <- -1 * sum_stat[[j]]$beta_GWAS[flip]
+    flip <- which(sum_stat[[j]][ref_b_nm] != sum_stat[[j]][ref_a_nm])
+    sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][beta_b_nm]
+    sum_stat[[j]]$beta_b_flipped[flip] <- -1 * sum_stat[[j]][beta_b_nm][flip]
     # flip alleles other than the index so they have positive correlation (LD) with index
     # and based on what the major allele is according to plink
     ld.sign <- sign(ld_mat[[j]][,idx])
-    plink.agree <- ifelse(sum_stat[[j]]$Major_plink == sum_stat[[j]]$Ref_eQTL, 1, -1)
-    beta_a <- plink.agree * ld.sign * sum_stat[[j]]$beta_eQTL
-    beta_b <- plink.agree * ld.sign * sum_stat[[j]]$beta_GWAS_flipped
+    plink.agree <- ifelse(sum_stat[[j]][major_plink] == sum_stat[[j]][ref_a_nm], 1, -1)
+    beta_a <- plink.agree * ld.sign * sum_stat[[j]][beta_a_nm]
+    beta_b <- plink.agree * ld.sign * sum_stat[[j]]$beta_b_flipped
     # only flip LD matrix based on positive correlation with index (bc it comes from plink)
     ld.flipped <- t(t(ld_mat[[j]]) * ld.sign) * ld.sign
     Sigma[[j]] <- ld.flipped
     # record the alleles after all the flipping
-    alleles[[j]] <- data.frame(ref=sum_stat[[j]]$Ref_eQTL,
-                               eff=sum_stat[[j]]$Effect_eQTL)
+    alleles[[j]] <- data.frame(ref=sum_stat[[j]][ref_a_nm],
+                               eff=sum_stat[[j]][eff_a_nm])
     idx2 <- ld.sign * plink.agree == -1
     tmp.ref <- alleles[[j]]$ref[idx2]
     tmp.eff <- alleles[[j]]$eff[idx2]
@@ -95,8 +121,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat) {
     }
     beta_hat_a[[j]] <- beta_a
     beta_hat_b[[j]] <- beta_b
-    se_a[[j]] <- sum_stat[[j]]$se_eQTL
-    se_b[[j]] <- sum_stat[[j]]$se_GWAS
+    se_a[[j]] <- sum_stat[[j]][se_a_nm]
+    se_b[[j]] <- sum_stat[[j]][se_b_nm]
   }
   return(list(beta_hat_a=beta_hat_a,
               beta_hat_b=beta_hat_b,
