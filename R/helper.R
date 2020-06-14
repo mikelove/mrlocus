@@ -52,8 +52,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #' @param beta name of estimated coefficient
 #' @param se name of standard error
 #' @param major_plink name of major plink allele
-#' @param ab_last A/B descriptor is last in column names
 #' @param sep character separator in column names
+#' @param ab_last A/B descriptor is last in column names
+#' (e.g. "beta_eqtl", "se_eqtl"))
 #'
 #' @return list with estimated coefficients, standard
 #' errors, LD matrix, and allele table
@@ -62,7 +63,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 flipAllelesAndGather <- function(sum_stat, ld_mat,
                                  a, b, ref, eff,
                                  beta, se, major_plink,
-                                 ab_last, sep) {
+                                 sep, ab_last=TRUE) {
 
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur

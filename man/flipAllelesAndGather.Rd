@@ -14,8 +14,8 @@ flipAllelesAndGather(
   beta,
   se,
   major_plink,
-  ab_last,
-  sep
+  sep,
+  ab_last = TRUE
 )
 }
 \arguments{
@@ -37,9 +37,10 @@ flipAllelesAndGather(
 
 \item{major_plink}{name of major plink allele}
 
-\item{ab_last}{A/B descriptor is last in column names}
-
 \item{sep}{character separator in column names}
+
+\item{ab_last}{A/B descriptor is last in column names
+(e.g. "beta_eqtl", "se_eqtl"))}
 }
 \value{
 list with estimated coefficients, standard
