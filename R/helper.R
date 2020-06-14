@@ -86,26 +86,26 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   
   for (j in seq_along(sum_stat)) {
     # the index SNP in the signal cluster for A (eQTL) based on Z stat
-    idx <- which.max(abs(sum_stat[[j]][beta_a_nm]/sum_stat[[j]][se_a_nm]))
+    idx <- which.max(abs(sum_stat[[j]][[beta_a_nm]]/sum_stat[[j]][[se_a_nm]]))
     # check: reference B (GWAS) allele must be either reference or effect allele in A (eQTL)
-    stopifnot(sum_stat[[j]][ref_b_nm] == sum_stat[[j]][ref_a_nm] |
-              sum_stat[[j]][ref_b_nm] == sum_stat[[j]][eff_a_nm])
+    stopifnot(sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[ref_a_nm]] |
+              sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[eff_a_nm]])
     # flip B (GWAS) so that same ref allele is described for B (GWAS) as for A (eQTL)
-    flip <- which(sum_stat[[j]][ref_b_nm] != sum_stat[[j]][ref_a_nm])
-    sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][beta_b_nm]
-    sum_stat[[j]]$beta_b_flipped[flip] <- -1 * sum_stat[[j]][beta_b_nm][flip]
+    flip <- which(sum_stat[[j]][[ref_b_nm]] != sum_stat[[j]][[ref_a_nm]])
+    sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][[beta_b_nm]]
+    sum_stat[[j]]$beta_b_flipped[flip] <- -1 * sum_stat[[j]][[beta_b_nm]][flip]
     # flip alleles other than the index so they have positive correlation (LD) with index
     # and based on what the major allele is according to plink
     ld.sign <- sign(ld_mat[[j]][,idx])
-    plink.agree <- ifelse(sum_stat[[j]][major_plink] == sum_stat[[j]][ref_a_nm], 1, -1)
-    beta_a <- plink.agree * ld.sign * sum_stat[[j]][beta_a_nm]
+    plink.agree <- ifelse(sum_stat[[j]][[major_plink]] == sum_stat[[j]][[ref_a_nm]], 1, -1)
+    beta_a <- plink.agree * ld.sign * sum_stat[[j]][[beta_a_nm]]
     beta_b <- plink.agree * ld.sign * sum_stat[[j]]$beta_b_flipped
     # only flip LD matrix based on positive correlation with index (bc it comes from plink)
     ld.flipped <- t(t(ld_mat[[j]]) * ld.sign) * ld.sign
     Sigma[[j]] <- ld.flipped
     # record the alleles after all the flipping
-    alleles[[j]] <- data.frame(ref=sum_stat[[j]][ref_a_nm],
-                               eff=sum_stat[[j]][eff_a_nm])
+    alleles[[j]] <- data.frame(ref=sum_stat[[j]][[ref_a_nm]],
+                               eff=sum_stat[[j]][[eff_a_nm]])
     idx2 <- ld.sign * plink.agree == -1
     tmp.ref <- alleles[[j]]$ref[idx2]
     tmp.eff <- alleles[[j]]$eff[idx2]
@@ -122,8 +122,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     }
     beta_hat_a[[j]] <- beta_a
     beta_hat_b[[j]] <- beta_b
-    se_a[[j]] <- sum_stat[[j]][se_a_nm]
-    se_b[[j]] <- sum_stat[[j]][se_b_nm]
+    se_a[[j]] <- sum_stat[[j]][[se_a_nm]]
+    se_b[[j]] <- sum_stat[[j]][[se_b_nm]]
   }
   return(list(beta_hat_a=beta_hat_a,
               beta_hat_b=beta_hat_b,
