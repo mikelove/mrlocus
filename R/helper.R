@@ -86,7 +86,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   
   for (j in seq_along(sum_stat)) {
     # the index SNP in the signal cluster for A (eQTL) based on Z stat
-    idx <- which.max(abs(sum_stat[[j]][beta_a_nm]/sum_stat[[j]][beta_se_nm]))
+    idx <- which.max(abs(sum_stat[[j]][beta_a_nm]/sum_stat[[j]][se_a_nm]))
     # check: reference B (GWAS) allele must be either reference or effect allele in A (eQTL)
     stopifnot(sum_stat[[j]][ref_b_nm] == sum_stat[[j]][ref_a_nm] |
               sum_stat[[j]][ref_b_nm] == sum_stat[[j]][eff_a_nm])
