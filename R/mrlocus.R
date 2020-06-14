@@ -1,4 +1,4 @@
-#' Fit the beta eCAVIAR model
+#' Fit the beta eCAVIAR model for a signal cluster
 #'
 #' @param nsnp number of SNPs
 #' @param beta_hat_a vector of length nsnp, estimated coefficients for A
@@ -26,23 +26,24 @@ fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
 
 #' Fit the beta mixture model
 #'
-#' @param nsnp vector, number of SNPs per cluster
+#' @param nsnp vector, number of SNPs per signal cluster
 #' @param beta_hat_a vector of length sum(nsnp), first step point estimates of beta for A
 #' @param beta_hat_b " " for B
 #' @param sd_a vector of length sum(nsnp), first step posterior SD for beta for A
 #' @param sd_b " " for B
-#' @param sigma_0a SD of the null component for A
+#' @param sigma_0a prior SD of the null component for A
 #' @param sigma_0b " " for B
-#' @param sigma_1a SD of the non-null component for beta for A (SD for B is fitted parameter)
-#' @param mu_loc center of prior distribution for mu
-#' @param mu_sd SD of prior distribution for mu
-#' @param sigma1b_sd SD of prior distribution for sigma_1b
+#' @param sigma_1a prior SD of the non-null component for beta for A (SD for B is fitted parameter)
+#' @param alpha_sd prior SD for alpha
+#' @param mu_loc center of prior for mu
+#' @param mu_sd prior SD for mu
+#' @param sigma1b_sd prior SD for sigma_1b
 #' 
 #' @export
 fitBetaMixture <- function(nsnp,
                            beta_hat_a, beta_hat_b, sd_a, sd_b,
                            sigma_0a=0.5, sigma_0b=0.5, sigma_1a=2,
-                           mu_loc=8, mu_sd=2, sigma1b_sd=3) {
+                           alpha_sd=1, mu_loc=8, mu_sd=2, sigma1b_sd=3) {
   tot <- sum(nsnp)
   stopifnot(length(beta_hat_a) == tot)
   stopifnot(length(beta_hat_b) == tot)
@@ -59,4 +60,3 @@ fitBetaMixture <- function(nsnp,
                sigma1b_sd=sigma1b_sd)
   rstan::sampling(stanmodels$beta_mixture, data)
 }
-

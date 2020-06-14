@@ -13,13 +13,14 @@ fitBetaMixture(
   sigma_0a = 0.5,
   sigma_0b = 0.5,
   sigma_1a = 2,
+  alpha_sd = 1,
   mu_loc = 8,
   mu_sd = 2,
   sigma1b_sd = 3
 )
 }
 \arguments{
-\item{nsnp}{vector, number of SNPs per cluster}
+\item{nsnp}{vector, number of SNPs per signal cluster}
 
 \item{beta_hat_a}{vector of length sum(nsnp), first step point estimates of beta for A}
 
@@ -29,17 +30,19 @@ fitBetaMixture(
 
 \item{sd_b}{" " for B}
 
-\item{sigma_0a}{SD of the null component for A}
+\item{sigma_0a}{prior SD of the null component for A}
 
 \item{sigma_0b}{" " for B}
 
-\item{sigma_1a}{SD of the non-null component for beta for A (SD for B is fitted parameter)}
+\item{sigma_1a}{prior SD of the non-null component for beta for A (SD for B is fitted parameter)}
 
-\item{mu_loc}{center of prior distribution for mu}
+\item{alpha_sd}{prior SD for alpha}
 
-\item{mu_sd}{SD of prior distribution for mu}
+\item{mu_loc}{center of prior for mu}
 
-\item{sigma1b_sd}{SD of prior distribution for sigma_1b}
+\item{mu_sd}{prior SD for mu}
+
+\item{sigma1b_sd}{prior SD for sigma_1b}
 }
 \description{
 Fit the beta mixture model

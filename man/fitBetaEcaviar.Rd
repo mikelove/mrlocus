@@ -2,7 +2,7 @@
 % Please edit documentation in R/mrlocus.R
 \name{fitBetaEcaviar}
 \alias{fitBetaEcaviar}
-\title{Fit the beta eCAVIAR model}
+\title{Fit the beta eCAVIAR model for a signal cluster}
 \usage{
 fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b)
 }
@@ -22,5 +22,5 @@ fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b)
 \item{Sigma_b}{" " for B (this could be different for different LD structures)}
 }
 \description{
-Fit the beta eCAVIAR model
+Fit the beta eCAVIAR model for a signal cluster
 }
