@@ -3,6 +3,7 @@
 export(collapseHighCorSNPs)
 export(fitBetaEcaviar)
 export(fitBetaMixture)
+export(flipAllelesAndGather)
 import(Rcpp)
 import(methods)
 importFrom(rstan,sampling)
