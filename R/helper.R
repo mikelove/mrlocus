@@ -57,7 +57,8 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #' @param beta name of estimated coefficient
 #' @param se name of standard error
 #' @param major_plink name of major plink allele
-#' @param sep character separator in column names
+#' @param snp_id name of SNP id
+#' @param sep character separator in column names that involve A/B
 #' @param ab_last A/B descriptor is last in column names
 #' (e.g. "beta_eqtl", "se_eqtl"))
 #' @param plot logical, draw a scatterplot of the flipped betas
@@ -68,9 +69,13 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #' @export
 flipAllelesAndGather <- function(sum_stat, ld_mat,
                                  a, b, ref, eff,
-                                 beta, se, major_plink,
+                                 beta, se, major_plink, snp_id,
                                  sep, ab_last=TRUE, plot=TRUE) {
 
+  if (any(duplicated(do.call(rbind, sum_stat)[[snp_id]]))) {
+    warning("duplicate SNPs across signal clusters")
+  }
+  
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
   # if users manually had to modify their column names.

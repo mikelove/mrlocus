@@ -14,6 +14,7 @@ flipAllelesAndGather(
   beta,
   se,
   major_plink,
+  snp_id,
   sep,
   ab_last = TRUE,
   plot = TRUE
@@ -38,7 +39,9 @@ flipAllelesAndGather(
 
 \item{major_plink}{name of major plink allele}
 
-\item{sep}{character separator in column names}
+\item{snp_id}{name of SNP id}
+
+\item{sep}{character separator in column names that involve A/B}
 
 \item{ab_last}{A/B descriptor is last in column names
 (e.g. "beta_eqtl", "se_eqtl"))}
