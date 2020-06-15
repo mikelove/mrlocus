@@ -15,7 +15,8 @@ flipAllelesAndGather(
   se,
   major_plink,
   sep,
-  ab_last = TRUE
+  ab_last = TRUE,
+  plot = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ flipAllelesAndGather(
 
 \item{ab_last}{A/B descriptor is last in column names
 (e.g. "beta_eqtl", "se_eqtl"))}
+
+\item{plot}{logical, draw a scatterplot of the flipped betas}
 }
 \value{
 list with estimated coefficients, standard

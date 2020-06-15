@@ -6,13 +6,15 @@
 #' correlation for collapsing, e.g. will collapse
 #' if SNPs are more correlated (or anti-correlated)
 #' than this amount
-#' @param plot to draw a before after grid of plots
+#' @param plot logical, draw a before/after grid of plots
 #'
 #' @return list with modified ld_mat and sum_stat lists
 #' 
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
-  stopitnot(length(sum_stat) == length(ld_mat))
+  stopifnot(length(sum_stat) == length(ld_mat))
+  nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
+  message(paste0("pre:  ",paste(nsnps,collapse=",")))
   gs <- list()
   for (j in seq_along(sum_stat)) {
     gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
@@ -38,6 +40,8 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
   if (plot) {
     gridExtra::grid.arrange(ncol=2, grobs=gs)
   }
+  nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
+  message(paste0("post: ",paste(nsnps,collapse=",")))
   list(sum_stat=sum_stat, ld_mat=ld_mat)
 }
 
@@ -55,6 +59,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #' @param sep character separator in column names
 #' @param ab_last A/B descriptor is last in column names
 #' (e.g. "beta_eqtl", "se_eqtl"))
+#' @param plot logical, draw a scatterplot of the flipped betas
 #'
 #' @return list with estimated coefficients, standard
 #' errors, LD matrix, and allele table
@@ -63,7 +68,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 flipAllelesAndGather <- function(sum_stat, ld_mat,
                                  a, b, ref, eff,
                                  beta, se, major_plink,
-                                 sep, ab_last=TRUE) {
+                                 sep, ab_last=TRUE, plot=TRUE) {
 
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
@@ -124,6 +129,15 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     beta_hat_b[[j]] <- beta_b
     se_a[[j]] <- sum_stat[[j]][[se_a_nm]]
     se_b[[j]] <- sum_stat[[j]][[se_b_nm]]
+  }
+  nsnp <- sapply(sum_stat, nrow)
+  if (plot) {
+    plot(unlist(beta_hat_a), unlist(beta_hat_b),
+         xlab=paste("beta", a),
+         ylab=paste("beta", b), 
+         col=rep(seq_along(nsnp),nsnp),
+         pch=rep(seq_along(nsnp),nsnp))
+    abline(h=0, col=rgb(0,0,0,.3))
   }
   return(list(beta_hat_a=beta_hat_a,
               beta_hat_b=beta_hat_b,

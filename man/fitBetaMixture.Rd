@@ -16,7 +16,8 @@ fitBetaMixture(
   alpha_sd = 1,
   mu_loc = 8,
   mu_sd = 2,
-  sigma1b_sd = 3
+  sigma1b_sd = 3,
+  ...
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ fitBetaMixture(
 \item{mu_sd}{prior SD for mu}
 
 \item{sigma1b_sd}{prior SD for sigma_1b}
+
+\item{...}{further arguments passed to rstan::sampling}
 }
 \description{
 Fit the beta mixture model

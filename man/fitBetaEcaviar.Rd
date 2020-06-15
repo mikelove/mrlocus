@@ -4,7 +4,7 @@
 \alias{fitBetaEcaviar}
 \title{Fit the beta eCAVIAR model for a signal cluster}
 \usage{
-fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b)
+fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b, ...)
 }
 \arguments{
 \item{nsnp}{number of SNPs}
@@ -20,6 +20,8 @@ fitBetaEcaviar(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b)
 \item{Sigma_a}{correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
 
 \item{Sigma_b}{" " for B (this could be different for different LD structures)}
+
+\item{...}{further arguments passed to rstan::sampling}
 }
 \description{
 Fit the beta eCAVIAR model for a signal cluster

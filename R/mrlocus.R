@@ -7,10 +7,11 @@
 #' @param se_b " " for beta_hat_b
 #' @param Sigma_a correlation matrix of SNPs for A, dimension should be nsnp x nsnp
 #' @param Sigma_b " " for B (this could be different for different LD structures)
+#' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
 fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
-                           se_a, se_b, Sigma_a, Sigma_b) {
+                           se_a, se_b, Sigma_a, Sigma_b, ...) {
   stopifnot(length(beta_hat_a) == nsnp)
   stopifnot(length(beta_hat_b) == nsnp)
   stopifnot(length(se_a) == nsnp)
@@ -21,7 +22,7 @@ fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
                beta_hat_b=beta_hat_b,
                se_a=se_a, se_b=se_b,
                Sigma_a=Sigma_a, Sigma_b=Sigma_b)
-  rstan::sampling(stanmodels$beta_marg_ecaviar, data)
+  rstan::sampling(stanmodels$beta_marg_ecaviar, data, ...)
 }
 
 #' Fit the beta mixture model
@@ -38,12 +39,14 @@ fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
 #' @param mu_loc center of prior for mu
 #' @param mu_sd prior SD for mu
 #' @param sigma1b_sd prior SD for sigma_1b
+#' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
 fitBetaMixture <- function(nsnp,
                            beta_hat_a, beta_hat_b, sd_a, sd_b,
                            sigma_0a=0.5, sigma_0b=0.5, sigma_1a=2,
-                           alpha_sd=1, mu_loc=8, mu_sd=2, sigma1b_sd=3) {
+                           alpha_sd=1, mu_loc=8, mu_sd=2,
+                           sigma1b_sd=3, ...) {
   tot <- sum(nsnp)
   stopifnot(length(beta_hat_a) == tot)
   stopifnot(length(beta_hat_b) == tot)

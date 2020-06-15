@@ -11,7 +11,7 @@ collapseHighCorSNPs(sum_stat, ld_mat, thresh = 0.95, plot = TRUE)
 
 \item{ld_mat}{list of LD matrices}
 
-\item{plot}{to draw a before after grid of plots}
+\item{plot}{logical, draw a before/after grid of plots}
 
 \item{threshold}{threshold on absolute value of
 correlation for collapsing, e.g. will collapse
