@@ -151,7 +151,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #'
 #' @export
 plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
-  nsnp <- sapply(x$beta_hat_a, length)
+  nsnp <- lengths(x$beta_hat_a)
   plot(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
        xlab=paste("beta", a),
        ylab=paste("beta", b), 
