@@ -1,7 +1,7 @@
 ---
 title: "mrlocus"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
-author: "Michael I. Love"
+author: "Anqi Zhu, Nana Matoba, Jason Stein, Michael Love"
 output: rmarkdown::html_document
 bibliography: library.bib
 vignette: |

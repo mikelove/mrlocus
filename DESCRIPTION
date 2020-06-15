@@ -1,9 +1,15 @@
 Package: mrlocus
-Title: What the Package Does (One Line, Title Case)
+Title: Mendelian randomization per locus
 Version: 0.0.9
-Authors@R:
+Authors@R: c(
+    person("Anzi", "Zhu", role = "aut"),
+    person("Nana", "Matoba", role = "aut"),
+    person("Jason", "Stein", role = "aut"),
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role=c("aut","cre"))
-Description: What the package does (one paragraph).
+    )
+Maintainer: Michael Love <michaelisaiahlove@gmail.com>
+Description: Mendelian randomization per locus, leveraging eQTL
+    and GWAS summary statistics.
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
