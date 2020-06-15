@@ -1,0 +1,27 @@
+---
+title: "mrlocus"
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+author: "Michael I. Love"
+output: rmarkdown::html_document
+bibliography: library.bib
+vignette: |
+  %\VignetteIndexEntry{mrlocus}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# mrlocus
+
+This is a vignette. This is a citation [@stan].
+
+```{r}
+rnorm(20)
+```
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+
+# References
