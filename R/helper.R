@@ -17,6 +17,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
   message(paste0("pre:  ",paste(nsnps,collapse=",")))
   gs <- list()
   for (j in seq_along(sum_stat)) {
+    if (nrow(sum_stat[[j]]) == 1) next
     gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
                                       cluster_rows=FALSE, cluster_cols=FALSE,
                                       show_rownames=FALSE, show_colnames=FALSE,
@@ -130,18 +131,34 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     se_a[[j]] <- sum_stat[[j]][[se_a_nm]]
     se_b[[j]] <- sum_stat[[j]][[se_b_nm]]
   }
-  nsnp <- sapply(sum_stat, nrow)
-  if (plot) {
-    plot(unlist(beta_hat_a), unlist(beta_hat_b),
-         xlab=paste("beta", a),
-         ylab=paste("beta", b), 
-         col=rep(seq_along(nsnp),nsnp),
-         pch=rep(seq_along(nsnp),nsnp))
-    abline(h=0, col=rgb(0,0,0,.3))
-  }
-  return(list(beta_hat_a=beta_hat_a,
+  out <- list(beta_hat_a=beta_hat_a,
               beta_hat_b=beta_hat_b,
               se_a=se_a, se_b=se_b,
               Sigma=Sigma,
-              alleles=alleles))
+              alleles=alleles)
+  if (plot) {
+    plotInitEstimates(out, a=a, b=b)
+  }
+  return(out)
+}
+
+#' Plot initial estimates over signal clusters
+#'
+#' @param x list of signal clusters data with beta_hat_a
+#' and beta_hat_b lists
+#' @param a name of A experiment
+#' @param b name of B experiment
+#'
+#' @export
+plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
+  nsnp <- sapply(x$beta_hat_a, length)
+  plot(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
+       xlab=paste("beta", a),
+       ylab=paste("beta", b), 
+       col=rep(seq_along(nsnp),nsnp),
+       pch=rep(seq_along(nsnp),nsnp))
+  text(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
+       do.call(c, sapply(nsnp, seq_len)), pos=4, cex=.5,
+       col=rep(seq_along(nsnp),nsnp))
+  abline(h=0, col=rgb(0,0,0,.3))
 }
