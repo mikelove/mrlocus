@@ -13,7 +13,7 @@ flipAllelesAndGather(
   eff,
   beta,
   se,
-  major_plink,
+  a2_plink,
   snp_id,
   sep,
   ab_last = TRUE,
@@ -37,7 +37,12 @@ flipAllelesAndGather(
 
 \item{se}{name of standard error}
 
-\item{major_plink}{name of major plink allele}
+\item{a2_plink}{name of the column representing the a2 allele
+(reference allele) according to plink. the default for plink v1.9
+and earlier was to reset a2 to the major allele, unless
+an optional flag was used. in plink v2.0 and onward, one
+should check to see which allele is used as reference for
+calculating the LD matrix}
 
 \item{snp_id}{name of SNP id}
 
