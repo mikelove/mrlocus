@@ -6,16 +6,26 @@
 #' correlation for collapsing, e.g. will collapse
 #' if SNPs are more correlated (or anti-correlated)
 #' than this amount
+#' @param score name of a column of sum_stat data.frames
+#' with a score, such that collapsing will choose the
+#' highest score SNP per collapsed cluster. Otherwise,
+#' if set to NULL, the first SNP will be used
 #' @param plot logical, draw a before/after grid of plots
 #'
 #' @return list with modified ld_mat and sum_stat lists
 #' 
 #' @export
-collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
+collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=TRUE) {
   stopifnot(length(sum_stat) == length(ld_mat))
+  stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
+  stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))
   nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
   message(paste0("pre:  ",paste(nsnps,collapse=",")))
   gs <- list()
+  if (!is.null(score)) {
+    stopifnot(is(score, "character"))
+    stopifnot(score %in% colnames(sum_stat[[1]]))
+  }
   for (j in seq_along(sum_stat)) {
     if (nrow(sum_stat[[j]]) == 1) next
     gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
@@ -27,9 +37,19 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
     #plot(hc); abline(h=1-thresh,col="red")
     hclusters <- cutree(hc, h=1-thresh)
     nhclust <- max(hclusters)
-    # greedy reduction: just take the first SNP
-    # for each hierarchical cluster
-    idx <- match(seq_len(nhclust), hclusters) 
+    # greedy reduction:
+    # just take the first SNP for each hierarchical cluster,
+    # unless score is specified, then use the SNP with largest score
+    if (!is.null(score)) {
+      z <- sum_stat[[j]][[score]]
+      tmp <- hclusters
+      for (i in seq_len(nhclust)) {
+        max.score <- max(z[hclusters == i])
+        tmp[hclusters == i][z[hclusters == i] < max.score] <- NA
+      }
+      hclusters <- tmp
+    }
+    idx <- match(seq_len(nhclust), hclusters)
     ld_mat[[j]] <- ld_mat[[j]][idx,idx]
     sum_stat[[j]] <- sum_stat[[j]][idx,]
     gs[[2*j]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
@@ -83,7 +103,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   if (any(duplicated(do.call(rbind, sum_stat)[[snp_id]]))) {
     warning("duplicate SNPs across signal clusters")
   }
-  
+  stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
+  stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))  
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
   # if users manually had to modify their column names.
@@ -185,7 +206,7 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
        col=rep(seq_along(nsnp),nsnp),
        pch=rep(seq_along(nsnp),nsnp))
   text(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
-       do.call(c, sapply(nsnp, seq_len)), pos=4, cex=.5,
+       do.call(c, lapply(nsnp, seq_len)), pos=4, cex=.5,
        col=rep(seq_along(nsnp),nsnp))
   abline(h=0, col=rgb(0,0,0,.3))
 }

@@ -17,6 +17,7 @@ flipAllelesAndGather(
   snp_id,
   sep,
   ab_last = TRUE,
+  alleles_same = FALSE,
   plot = TRUE
 )
 }
@@ -48,8 +49,10 @@ calculating the LD matrix}
 
 \item{sep}{character separator in column names that involve A/B}
 
-\item{ab_last}{A/B descriptor is last in column names
+\item{ab_last}{logical, A/B descriptor is last in column names
 (e.g. "beta_eqtl", "se_eqtl"))}
+
+\item{alleles_same}{logical, A/B/LD matrix alleles are identical}
 
 \item{plot}{logical, draw a scatterplot of the flipped betas}
 }

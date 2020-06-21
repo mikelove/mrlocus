@@ -4,12 +4,17 @@
 \alias{collapseHighCorSNPs}
 \title{Collapse high correlation SNPs}
 \usage{
-collapseHighCorSNPs(sum_stat, ld_mat, thresh = 0.95, plot = TRUE)
+collapseHighCorSNPs(sum_stat, ld_mat, thresh = 0.95, score = NULL, plot = TRUE)
 }
 \arguments{
 \item{sum_stat}{list of summary statistic tables}
 
 \item{ld_mat}{list of LD matrices}
+
+\item{score}{name of a column of sum_stat data.frames
+with a score, such that collapsing will choose the
+highest score SNP per collapsed cluster. Otherwise,
+if set to NULL, the first SNP will be used}
 
 \item{plot}{logical, draw a before/after grid of plots}
 
