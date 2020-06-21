@@ -64,8 +64,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 #' calculating the LD matrix
 #' @param snp_id name of SNP id
 #' @param sep character separator in column names that involve A/B
-#' @param ab_last A/B descriptor is last in column names
+#' @param ab_last logical, A/B descriptor is last in column names
 #' (e.g. "beta_eqtl", "se_eqtl"))
+#' @param alleles_same logical, A/B/LD matrix alleles are identical
 #' @param plot logical, draw a scatterplot of the flipped betas
 #'
 #' @return list with estimated coefficients, standard
@@ -75,7 +76,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, plot=TRUE) {
 flipAllelesAndGather <- function(sum_stat, ld_mat,
                                  a, b, ref, eff,
                                  beta, se, a2_plink, snp_id,
-                                 sep, ab_last=TRUE, plot=TRUE) {
+                                 sep, ab_last=TRUE,
+                                 alleles_same=FALSE,
+                                 plot=TRUE) {
 
   if (any(duplicated(do.call(rbind, sum_stat)[[snp_id]]))) {
     warning("duplicate SNPs across signal clusters")
@@ -84,10 +87,15 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
   # if users manually had to modify their column names.
-  ref_a_nm <- if (ab_last) paste(ref, a, sep=sep) else paste(a, ref, sep=sep)
-  ref_b_nm <- if (ab_last) paste(ref, b, sep=sep) else paste(b, ref, sep=sep)
-  eff_a_nm <- if (ab_last) paste(eff, a, sep=sep) else paste(a, eff, sep=sep)
-  eff_b_nm <- if (ab_last) paste(eff, b, sep=sep) else paste(b, eff, sep=sep)
+  if (!alleles_same) {
+    ref_a_nm <- if (ab_last) paste(ref, a, sep=sep) else paste(a, ref, sep=sep)
+    ref_b_nm <- if (ab_last) paste(ref, b, sep=sep) else paste(b, ref, sep=sep)
+    eff_a_nm <- if (ab_last) paste(eff, a, sep=sep) else paste(a, eff, sep=sep)
+    eff_b_nm <- if (ab_last) paste(eff, b, sep=sep) else paste(b, eff, sep=sep)
+  } else {
+    ref_a_nm <- ref
+    eff_a_nm <- eff
+  }
   beta_a_nm <- if (ab_last) paste(beta, a, sep=sep) else paste(a, beta, sep=sep)
   beta_b_nm <- if (ab_last) paste(beta, b, sep=sep) else paste(b, beta, sep=sep)
   se_b_nm <- if (ab_last) paste(se, b, sep=sep) else paste(b, se, sep=sep)
@@ -103,17 +111,26 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   for (j in seq_along(sum_stat)) {
     # the index SNP in the signal cluster for A (eQTL) based on Z stat
     idx <- which.max(abs(sum_stat[[j]][[beta_a_nm]]/sum_stat[[j]][[se_a_nm]]))
-    # check: reference B (GWAS) allele must be either reference or effect allele in A (eQTL)
-    stopifnot(sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[ref_a_nm]] |
-              sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[eff_a_nm]])
-    # flip B (GWAS) so that same ref allele is described for B (GWAS) as for A (eQTL)
-    flip <- which(sum_stat[[j]][[ref_b_nm]] != sum_stat[[j]][[ref_a_nm]])
-    sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][[beta_b_nm]]
-    sum_stat[[j]]$beta_b_flipped[flip] <- -1 * sum_stat[[j]][[beta_b_nm]][flip]
+    if (!alleles_same) {
+      # check: reference B (GWAS) allele must be either reference or effect allele in A (eQTL)
+      stopifnot(sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[ref_a_nm]] |
+                sum_stat[[j]][[ref_b_nm]] == sum_stat[[j]][[eff_a_nm]])
+      # flip B (GWAS) so that same ref allele is described for B (GWAS) as for A (eQTL)
+      flip <- which(sum_stat[[j]][[ref_b_nm]] != sum_stat[[j]][[ref_a_nm]])
+      sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][[beta_b_nm]]
+      sum_stat[[j]]$beta_b_flipped[flip] <- -1 * sum_stat[[j]][[beta_b_nm]][flip]
+    } else {
+      # no flipping, bc alleles the same
+      sum_stat[[j]]$beta_b_flipped <- sum_stat[[j]][[beta_b_nm]]
+    }
     # flip alleles other than the index so they have positive correlation (LD) with index
     # and based on what the major allele is according to plink
     ld.sign <- sign(ld_mat[[j]][,idx])
-    plink.agree <- ifelse(sum_stat[[j]][[a2_plink]] == sum_stat[[j]][[ref_a_nm]], 1, -1)
+    if (!alleles_same) {
+      plink.agree <- ifelse(sum_stat[[j]][[a2_plink]] == sum_stat[[j]][[ref_a_nm]], 1, -1)
+    } else {
+      plink.agree <- rep(1, nrow(sum_stat[[j]]))
+    }
     beta_a <- plink.agree * ld.sign * sum_stat[[j]][[beta_a_nm]]
     beta_b <- plink.agree * ld.sign * sum_stat[[j]]$beta_b_flipped
     # only flip LD matrix based on positive correlation with index (bc it comes from plink)
