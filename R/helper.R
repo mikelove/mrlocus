@@ -28,11 +28,13 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
   }
   for (j in seq_along(sum_stat)) {
     if (nrow(sum_stat[[j]]) == 1) next
-    gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
-                                      cluster_rows=FALSE, cluster_cols=FALSE,
-                                      show_rownames=FALSE, show_colnames=FALSE,
-                                      border_color=NA, 
-                                      silent=TRUE)$gtable
+    if (plot) {
+      gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
+                                        cluster_rows=FALSE, cluster_cols=FALSE,
+                                        show_rownames=FALSE, show_colnames=FALSE,
+                                        border_color=NA, 
+                                        silent=TRUE)$gtable
+    }
     hc <- hclust(as.dist(1-abs(ld_mat[[j]])))
     #plot(hc); abline(h=1-thresh,col="red")
     hclusters <- cutree(hc, h=1-thresh)
@@ -52,11 +54,13 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
     idx <- match(seq_len(nhclust), hclusters)
     ld_mat[[j]] <- ld_mat[[j]][idx,idx]
     sum_stat[[j]] <- sum_stat[[j]][idx,]
-    gs[[2*j]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
-                                    cluster_rows=FALSE, cluster_cols=FALSE,
-                                    show_rownames=FALSE, show_colnames=FALSE,
-                                    border_color=NA, 
-                                    silent=TRUE)$gtable
+    if (plot) {
+      gs[[2*j]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
+                                      cluster_rows=FALSE, cluster_cols=FALSE,
+                                      show_rownames=FALSE, show_colnames=FALSE,
+                                      border_color=NA, 
+                                      silent=TRUE)$gtable
+    }
   }
   if (plot) {
     gridExtra::grid.arrange(ncol=2, grobs=gs)
