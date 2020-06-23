@@ -1,6 +1,6 @@
 Package: mrlocus
 Title: Mendelian randomization per locus
-Version: 0.0.9
+Version: 0.0.10
 Authors@R: c(
     person("Anzi", "Zhu", role = "aut"),
     person("Nana", "Matoba", role = "aut"),

@@ -3,6 +3,7 @@
 export(collapseHighCorSNPs)
 export(fitBetaEcaviar)
 export(fitBetaMixture)
+export(fitBetaNonzero)
 export(flipAllelesAndGather)
 export(plotInitEstimates)
 import(Rcpp)

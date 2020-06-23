@@ -59,7 +59,34 @@ fitBetaMixture <- function(nsnp,
                sigma_0a=sigma_0a,
                sigma_0b=sigma_0b,
                sigma_1a=sigma_1a,
+               alpha_sd=alpha_sd,
                mu_loc=mu_loc, mu_sd=mu_sd,
                sigma1b_sd=sigma1b_sd)
-  rstan::sampling(stanmodels$beta_mixture, data)
+  rstan::sampling(stanmodels$beta_mixture, data, ...)
+}
+
+#' Fit the beta nonzero model
+#'
+#' @param beta_hat_a vector of length sum(nsnp), first step point estimates of beta for A
+#' @param beta_hat_b " " for B
+#' @param sd_a vector of length sum(nsnp), first step posterior SD for beta for A
+#' @param sd_b " " for B
+#' @param alpha_sd prior SD for alpha
+#' @param sigma_sd prior SD for sigma
+#' @param ... further arguments passed to rstan::sampling
+#' 
+#' @export
+fitBetaNonzero <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
+                           alpha_sd=1, sigma_sd=1, ...) {
+  n <- length(beta_hat_a)
+  stopifnot(length(beta_hat_b) == n)
+  stopifnot(length(sd_a) == n)
+  stopifnot(length(sd_b) == n) 
+  data <- list(n=n,
+               beta_hat_a=beta_hat_a,
+               beta_hat_b=beta_hat_b,
+               sd_a=sd_a, sd_b=sd_b,
+               alpha_sd=alpha_sd,
+               sigma_sd=sigma_sd)
+  rstan::sampling(stanmodels$beta_nonzero, data, ...)
 }
