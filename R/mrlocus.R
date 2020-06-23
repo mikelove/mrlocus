@@ -1,6 +1,5 @@
-#' Fit the beta eCAVIAR model for a signal cluster
+#' Fit the beta colocalization per signal cluster
 #'
-#' @param nsnp number of SNPs
 #' @param beta_hat_a vector of length nsnp, estimated coefficients for A
 #' @param beta_hat_b " " for B
 #' @param se_a vector of length nsnp, standard errors for beta_hat_a
@@ -10,24 +9,27 @@
 #' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
-fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
-                           se_a, se_b, Sigma_a, Sigma_b, ...) {
-  stopifnot(length(beta_hat_a) == nsnp)
-  stopifnot(length(beta_hat_b) == nsnp)
-  stopifnot(length(se_a) == nsnp)
-  stopifnot(length(se_b) == nsnp)
-  stopifnot(dim(Sigma_a) == c(nsnp,nsnp))
-  stopifnot(dim(Sigma_b) == c(nsnp,nsnp))
-  data <- list(nsnp=nsnp, beta_hat_a=beta_hat_a,
+fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
+                         se_a, se_b, Sigma_a, Sigma_b, ...) {
+  n <- length(beta_hat_a)
+  stopifnot(length(beta_hat_b) == n)
+  stopifnot(length(se_a) == n)
+  stopifnot(length(se_b) == n)
+  stopifnot(dim(Sigma_a) == c(n,n))
+  stopifnot(dim(Sigma_b) == c(n,n))
+  # scale 'b' to match the scale of 'a'
+  scale_b <- max(abs(beta_hat_a))/max(abs(beta_hat_b))
+  scaled_beta_hat_b <- scale_b * beta_hat_b
+  data <- list(n=n, beta_hat_a=beta_hat_a,
                beta_hat_b=beta_hat_b,
                se_a=se_a, se_b=se_b,
                Sigma_a=Sigma_a, Sigma_b=Sigma_b)
-  rstan::sampling(stanmodels$beta_marg_ecaviar, data, ...)
+  out <- rstan::sampling(stanmodels$beta_coloc, data, ...)
+  list(stan=out, scale_b=scale_b)
 }
 
-#' Fit the beta mixture model
+#' Fit the mixture model for null and large effects
 #'
-#' @param nsnp vector, number of SNPs per signal cluster
 #' @param beta_hat_a vector of length sum(nsnp), first step point estimates of beta for A
 #' @param beta_hat_b " " for B
 #' @param sd_a vector of length sum(nsnp), first step posterior SD for beta for A
@@ -42,17 +44,16 @@ fitBetaEcaviar <- function(nsnp, beta_hat_a, beta_hat_b,
 #' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
-fitBetaMixture <- function(nsnp,
-                           beta_hat_a, beta_hat_b, sd_a, sd_b,
-                           sigma_0a=0.5, sigma_0b=0.5, sigma_1a=2,
-                           alpha_sd=1, mu_loc=8, mu_sd=2,
-                           sigma1b_sd=3, ...) {
-  tot <- sum(nsnp)
-  stopifnot(length(beta_hat_a) == tot)
-  stopifnot(length(beta_hat_b) == tot)
-  stopifnot(length(sd_a) == tot)
-  stopifnot(length(sd_b) == tot) 
-  data <- list(tot=tot,
+fitMixture <- function(beta_hat_a, beta_hat_b,
+                       sd_a, sd_b,
+                       sigma_0a, sigma_0b, sigma_1a,
+                       alpha_sd, mu_loc, mu_sd,
+                       sigma1b_sd, ...) {
+  n <- length(beta_hat_a)
+  stopifnot(length(beta_hat_b) == n)
+  stopifnot(length(sd_a) == n)
+  stopifnot(length(sd_b) == n) 
+  data <- list(n=n,
                beta_hat_a=beta_hat_a,
                beta_hat_b=beta_hat_b,
                sd_a=sd_a, sd_b=sd_b,
@@ -62,10 +63,10 @@ fitBetaMixture <- function(nsnp,
                alpha_sd=alpha_sd,
                mu_loc=mu_loc, mu_sd=mu_sd,
                sigma1b_sd=sigma1b_sd)
-  rstan::sampling(stanmodels$beta_mixture, data, ...)
+  rstan::sampling(stanmodels$mixture, data, ...)
 }
 
-#' Fit the beta nonzero model
+#' Fit the beta slope model: effect of A on B
 #'
 #' @param beta_hat_a vector of length sum(nsnp), first step point estimates of beta for A
 #' @param beta_hat_b " " for B
@@ -76,8 +77,8 @@ fitBetaMixture <- function(nsnp,
 #' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
-fitBetaNonzero <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
-                           alpha_sd=1, sigma_sd=1, ...) {
+fitSlope <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
+                     alpha_sd=1, sigma_sd=1, ...) {
   n <- length(beta_hat_a)
   stopifnot(length(beta_hat_b) == n)
   stopifnot(length(sd_a) == n)
@@ -88,5 +89,5 @@ fitBetaNonzero <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
                sd_a=sd_a, sd_b=sd_b,
                alpha_sd=alpha_sd,
                sigma_sd=sigma_sd)
-  rstan::sampling(stanmodels$beta_nonzero, data, ...)
+  rstan::sampling(stanmodels$slope, data, ...)
 }

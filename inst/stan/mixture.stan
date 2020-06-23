@@ -1,9 +1,9 @@
 data {
-  int tot; // sum of nsnp across clusters
-  vector[tot] beta_hat_a;
-  vector[tot] beta_hat_b;
-  vector[tot] sd_a;
-  vector[tot] sd_b;
+  int n; // sum of nsnp across clusters
+  vector[n] beta_hat_a;
+  vector[n] beta_hat_b;
+  vector[n] sd_a;
+  vector[n] sd_b;
   real sigma_0a;
   real sigma_0b;
   real sigma_1a;
@@ -17,13 +17,13 @@ parameters {
   real mu;
   real alpha;
   real<lower=0> sigma_1b;
-  vector[tot] beta_a;
-  vector[tot] beta_b;
+  vector[n] beta_a;
+  vector[n] beta_b;
 }
 model {
   beta_hat_a ~ normal(beta_a, sd_a);
   beta_hat_b ~ normal(beta_b, sd_b);
-  for (i in 1:tot) {
+  for (i in 1:n) {
     target += log_mix(theta,
     	              normal_lpdf(beta_a[i] | 0, sigma_0a),
 		      normal_lpdf(beta_a[i] | mu, sigma_1a));

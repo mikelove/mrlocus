@@ -7,14 +7,14 @@
 using namespace Rcpp;
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4beta_marg_ecaviar_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4beta_mixture_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4beta_nonzero_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4beta_coloc_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4mixture_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4slope_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4beta_marg_ecaviar_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4beta_marg_ecaviar_mod, 0},
-    {"_rcpp_module_boot_stan_fit4beta_mixture_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4beta_mixture_mod, 0},
-    {"_rcpp_module_boot_stan_fit4beta_nonzero_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4beta_nonzero_mod, 0},
+    {"_rcpp_module_boot_stan_fit4beta_coloc_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4beta_coloc_mod, 0},
+    {"_rcpp_module_boot_stan_fit4mixture_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4mixture_mod, 0},
+    {"_rcpp_module_boot_stan_fit4slope_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4slope_mod, 0},
     {NULL, NULL, 0}
 };
 
