@@ -61,5 +61,5 @@ fitBetaMixture <- function(nsnp,
                sigma_1a=sigma_1a,
                mu_loc=mu_loc, mu_sd=mu_sd,
                sigma1b_sd=sigma1b_sd)
-  rstan::sampling(stanmodels$beta_mixture, data)
+  rstan::sampling(stanmodels$beta_mixture, data, ...)
 }
