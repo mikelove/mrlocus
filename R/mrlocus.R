@@ -20,9 +20,10 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
   # scale 'b' to match the scale of 'a'
   scale_b <- max(abs(beta_hat_a))/max(abs(beta_hat_b))
   scaled_beta_hat_b <- scale_b * beta_hat_b
+  scaled_se_b <- scale_b * se_b
   data <- list(n=n, beta_hat_a=beta_hat_a,
                beta_hat_b=scaled_beta_hat_b,
-               se_a=se_a, se_b=se_b,
+               se_a=se_a, se_b=scaled_se_b,
                Sigma_a=Sigma_a, Sigma_b=Sigma_b)
   out <- rstan::sampling(stanmodels$beta_coloc, data, ...)
   list(stan=out, scale_b=scale_b)
