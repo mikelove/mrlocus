@@ -17,6 +17,9 @@ extractForSlope(beta_hat_a, beta_hat_b, sd_a, sd_b, niter = 3, plot = TRUE)
 
 \item{niter}{number of iterations of EM to run
 for Mclust}
+
+\item{plot}{logical, draw a before after of which
+variants will be included for slope estimation}
 }
 \value{
 list of vectors of the first four arguments,

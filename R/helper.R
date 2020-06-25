@@ -224,6 +224,8 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' @param sd_b " " for B
 #' @param niter number of iterations of EM to run
 #' for Mclust
+#' @param plot logical, draw a before after of which
+#' variants will be included for slope estimation
 #'
 #' @return list of vectors of the first four arguments,
 #' collapsed now across signal clusters, representing
