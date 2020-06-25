@@ -223,7 +223,9 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' @param sd_a list of posterior SD for A
 #' @param sd_b " " for B
 #' @param niter number of iterations of EM to run
-#' for Mclust
+#' for Mclust, if set to 0, only the maximum
+#' variant (in terms of A effect size) per
+#' signal cluster is output
 #' @param plot logical, draw a before after of which
 #' variants will be included for slope estimation
 #' @param a name of A experiment
@@ -243,14 +245,23 @@ extractForSlope <- function(beta_hat_a,
                             plot=TRUE,
                             a="eQTL", b="GWAS") {
   nsnp <- lengths(beta_hat_a)
-  beta_max_a <- sapply(beta_hat_a, max)
-  dat <- pmax(unlist(beta_hat_a),0)
-  kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
-  z <- kfit$cluster
-  for (i in 1:niter) {
-    ms <- mstep(modelName="V", data=dat, z=unmap(z))
-    es <- estep(modelName="V", data=dat, parameters=ms$parameters)
-    z <- ifelse(es$z[,2] > .5, 2, 1)
+  stopifnot(all(lengths(beta_hat_b) == nsnp))
+  stopifnot(all(lengths(sd_a) == nsnp))
+  stopifnot(all(lengths(sd_b) == nsnp))
+  if (niter == 0) {
+    z <- ifelse(
+      unlist(lapply(beta_hat_a,
+                    function(x) x == max(x))), 2, 1)
+  } else {
+    beta_max_a <- sapply(beta_hat_a, max)
+    dat <- pmax(unlist(beta_hat_a),0)
+    kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
+    z <- kfit$cluster
+    for (i in 1:niter) {
+      ms <- mstep(modelName="V", data=dat, z=unmap(z))
+      es <- estep(modelName="V", data=dat, parameters=ms$parameters)
+      z <- ifelse(es$z[,2] > .5, 2, 1)
+    }
   }
   if (plot) {
     par(mfrow=c(1,2))

@@ -25,7 +25,9 @@ extractForSlope(
 \item{sd_b}{" " for B}
 
 \item{niter}{number of iterations of EM to run
-for Mclust}
+for Mclust, if set to 0, only the maximum
+variant (in terms of A effect size) per
+signal cluster is output}
 
 \item{plot}{logical, draw a before after of which
 variants will be included for slope estimation}
