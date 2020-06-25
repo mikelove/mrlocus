@@ -215,3 +215,50 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
        col=rep(seq_along(nsnp),nsnp))
   abline(h=0, col=rgb(0,0,0,.3))
 }
+
+#' Extract SNPs from colocalization for slope fitting
+#'
+#' @param beta_hat_a list of coefficients for A
+#' @param beta_hat_b " " for B
+#' @param sd_a list of posterior SD for A
+#' @param sd_b " " for B
+#' @param niter number of iterations of EM to run
+#' for Mclust
+#'
+#' @return list of vectors of the first four arguments,
+#' collapsed now across signal clusters, representing
+#' variants with positive effect on A. So the null variants
+#' have been removed (and any variants per cluster that
+#' indicated a negative effect on A)
+#'
+#' @export
+extractForSlope <- function(beta_hat_a,
+                            beta_hat_b,
+                            sd_a, sd_b,
+                            niter=3,
+                            plot=TRUE) {
+  nsnp <- lengths(beta_hat_a)
+  beta_max_a <- sapply(beta_hat_a, max)
+  dat <- pmax(unlist(beta_hat_a),0)
+  kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
+  z <- kfit$cluster
+  for (i in 1:niter) {
+    ms <- mstep(modelName="V", data=dat, z=unmap(z))
+    es <- estep(modelName="V", data=dat, parameters=ms$parameters)
+    z <- ifelse(es$z[,2] > .5, 2, 1)
+  }
+  if (plot) {
+    par(mfrow=c(1,2))
+    plot(unlist(beta_hat_a), unlist(beta_hat_b),
+         col=rep(seq_along(nsnp),nsnp),
+         pch=rep(seq_along(nsnp),nsnp))
+    plot(unlist(beta_hat_a), unlist(beta_hat_b), col=z,
+         pch=rep(seq_along(nsnp),nsnp))
+  }
+  stopifnot(any(z == 2))
+  idx <- z == 2
+  list(beta_hat_a=unlist(beta_hat_a)[idx],
+       beta_hat_b=unlist(beta_hat_b)[idx],
+       sd_a=unlist(sd_a)[idx],
+       sd_b=unlist(sd_b)[idx])
+}
