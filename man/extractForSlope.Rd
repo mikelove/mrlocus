@@ -4,7 +4,16 @@
 \alias{extractForSlope}
 \title{Extract SNPs from colocalization for slope fitting}
 \usage{
-extractForSlope(beta_hat_a, beta_hat_b, sd_a, sd_b, niter = 3, plot = TRUE)
+extractForSlope(
+  beta_hat_a,
+  beta_hat_b,
+  sd_a,
+  sd_b,
+  niter = 3,
+  plot = TRUE,
+  a = "eQTL",
+  b = "GWAS"
+)
 }
 \arguments{
 \item{beta_hat_a}{list of coefficients for A}
@@ -20,6 +29,10 @@ for Mclust}
 
 \item{plot}{logical, draw a before after of which
 variants will be included for slope estimation}
+
+\item{a}{name of A experiment}
+
+\item{b}{name of B experiment}
 }
 \value{
 list of vectors of the first four arguments,

@@ -226,6 +226,8 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' for Mclust
 #' @param plot logical, draw a before after of which
 #' variants will be included for slope estimation
+#' @param a name of A experiment
+#' @param b name of B experiment
 #'
 #' @return list of vectors of the first four arguments,
 #' collapsed now across signal clusters, representing
@@ -238,7 +240,8 @@ extractForSlope <- function(beta_hat_a,
                             beta_hat_b,
                             sd_a, sd_b,
                             niter=3,
-                            plot=TRUE) {
+                            plot=TRUE,
+                            a="eQTL", b="GWAS") {
   nsnp <- lengths(beta_hat_a)
   beta_max_a <- sapply(beta_hat_a, max)
   dat <- pmax(unlist(beta_hat_a),0)
@@ -253,9 +256,11 @@ extractForSlope <- function(beta_hat_a,
     par(mfrow=c(1,2))
     plot(unlist(beta_hat_a), unlist(beta_hat_b),
          col=rep(seq_along(nsnp),nsnp),
-         pch=rep(seq_along(nsnp),nsnp))
+         pch=rep(seq_along(nsnp),nsnp),
+         xlab=paste("beta",a), ylab=paste("beta",b))
     plot(unlist(beta_hat_a), unlist(beta_hat_b), col=z,
-         pch=rep(seq_along(nsnp),nsnp))
+         pch=rep(seq_along(nsnp),nsnp),
+         xlab=paste("beta",a), ylab=paste("beta",b))
   }
   stopifnot(any(z == 2))
   idx <- z == 2
