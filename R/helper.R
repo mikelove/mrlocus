@@ -225,7 +225,7 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' @param niter number of iterations of EM to run
 #' for Mclust, if set to 0, only the maximum
 #' variant (in terms of A effect size) per
-#' signal cluster is output
+#' signal cluster is output.
 #' @param plot logical, draw a before after of which
 #' variants will be included for slope estimation
 #' @param a name of A experiment
@@ -241,7 +241,7 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 extractForSlope <- function(beta_hat_a,
                             beta_hat_b,
                             sd_a, sd_b,
-                            niter=3,
+                            niter=0,
                             plot=TRUE,
                             a="eQTL", b="GWAS") {
   nsnp <- lengths(beta_hat_a)

@@ -9,7 +9,7 @@ extractForSlope(
   beta_hat_b,
   sd_a,
   sd_b,
-  niter = 3,
+  niter = 0,
   plot = TRUE,
   a = "eQTL",
   b = "GWAS"
@@ -27,7 +27,7 @@ extractForSlope(
 \item{niter}{number of iterations of EM to run
 for Mclust, if set to 0, only the maximum
 variant (in terms of A effect size) per
-signal cluster is output}
+signal cluster is output.}
 
 \item{plot}{logical, draw a before after of which
 variants will be included for slope estimation}
