@@ -17,6 +17,7 @@
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=TRUE) {
   stopifnot(length(sum_stat) == length(ld_mat))
+  stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
   stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))
   nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
@@ -52,7 +53,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
       hclusters <- tmp
     }
     idx <- match(seq_len(nhclust), hclusters)
-    ld_mat[[j]] <- ld_mat[[j]][idx,idx]
+    ld_mat[[j]] <- ld_mat[[j]][idx,idx,drop=FALSE]
     sum_stat[[j]] <- sum_stat[[j]][idx,]
     if (plot) {
       gs[[2*j]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
@@ -107,6 +108,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   if (any(duplicated(do.call(rbind, sum_stat)[[snp_id]]))) {
     warning("duplicate SNPs across signal clusters")
   }
+  stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
   stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))  
   # the following allow for arbitrary incoming column names.

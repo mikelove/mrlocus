@@ -17,8 +17,10 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
   stopifnot(length(se_b) == n)
   stopifnot(dim(Sigma_a) == c(n,n))
   stopifnot(dim(Sigma_b) == c(n,n))
+  # pick out largest z score
+  idx <- which.max(beta_hat_a/se_a)
   # scale 'b' to match the scale of 'a'
-  scale_b <- max(abs(beta_hat_a))/max(abs(beta_hat_b))
+  scale_b <- abs(beta_hat_a)[idx]/abs(beta_hat_b)[idx]
   scaled_beta_hat_b <- scale_b * beta_hat_b
   scaled_se_b <- scale_b * se_b
   data <- list(n=n, beta_hat_a=beta_hat_a,
