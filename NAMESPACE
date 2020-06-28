@@ -3,7 +3,6 @@
 export(collapseHighCorSNPs)
 export(extractForSlope)
 export(fitBetaColoc)
-export(fitMixture)
 export(fitSlope)
 export(flipAllelesAndGather)
 export(plotInitEstimates)

@@ -4,7 +4,16 @@
 \alias{fitSlope}
 \title{Fit the beta slope model: effect of A on B}
 \usage{
-fitSlope(beta_hat_a, beta_hat_b, sd_a, sd_b, alpha_sd = 1, sigma_sd = 1, ...)
+fitSlope(
+  beta_hat_a,
+  beta_hat_b,
+  sd_a,
+  sd_b,
+  alpha_sd = 1,
+  sigma_sd = 1,
+  gamma_sd = 0.001,
+  ...
+)
 }
 \arguments{
 \item{beta_hat_a}{vector of length sum(nsnp), first step point estimates of beta for A}
@@ -18,6 +27,8 @@ fitSlope(beta_hat_a, beta_hat_b, sd_a, sd_b, alpha_sd = 1, sigma_sd = 1, ...)
 \item{alpha_sd}{prior SD for alpha}
 
 \item{sigma_sd}{prior SD for sigma}
+
+\item{gamma_sd}{prior SD for gamma}
 
 \item{...}{further arguments passed to rstan::sampling}
 }
