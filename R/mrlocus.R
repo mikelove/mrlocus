@@ -41,6 +41,7 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
 #' @param beta_hat_b " " for B
 #' @param sd_a vector of length sum(nsnp), first step posterior SD for beta for A
 #' @param sd_b " " for B
+#' @param alpha_mu prior mean for alpha
 #' @param alpha_sd prior SD for alpha
 #' @param sigma_sd prior SD for sigma
 #' @param gamma_sd prior SD for gamma
@@ -54,11 +55,15 @@ fitSlope <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
   stopifnot(length(beta_hat_b) == n)
   stopifnot(length(sd_a) == n)
   stopifnot(length(sd_b) == n)
+  stopifnot(alpha_sd > 0)
+  stopifnot(sigma_sd > 0)
+  stopifnot(gamma_sd > 0)
   if (n > 1) {
     data <- list(n=n,
                  beta_hat_a=beta_hat_a,
                  beta_hat_b=beta_hat_b,
                  sd_a=sd_a, sd_b=sd_b,
+                 alpha_mu=alpha_mu,
                  alpha_sd=alpha_sd,
                  sigma_sd=sigma_sd,
                  gamma_sd=gamma_sd)

@@ -31,6 +31,8 @@ fitSlope(
 \item{gamma_sd}{prior SD for gamma}
 
 \item{...}{further arguments passed to rstan::sampling}
+
+\item{alpha_mu}{prior mean for alpha}
 }
 \description{
 Fit the beta slope model: effect of A on B
