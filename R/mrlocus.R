@@ -97,6 +97,6 @@ fitSlope <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
   } else {
     m <- 1e5
     slope <- rnorm(m, beta_hat_b, sd_b)/rnorm(m, beta_hat_a, sd_a)
-    c(mean(slope), sd(slope))
+    c(median(slope), mad(slope))
   }
 }
