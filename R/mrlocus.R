@@ -49,7 +49,9 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
 #' 
 #' @export
 fitSlope <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
-                     alpha_sd=1, sigma_sd=1,
+                     alpha_mu=1,
+                     alpha_sd=1,
+                     sigma_sd=1,
                      gamma_sd=1e-3, ...) {
   n <- length(beta_hat_a)
   stopifnot(length(beta_hat_b) == n)

@@ -9,6 +9,7 @@ fitSlope(
   beta_hat_b,
   sd_a,
   sd_b,
+  alpha_mu = 1,
   alpha_sd = 1,
   sigma_sd = 1,
   gamma_sd = 0.001,
@@ -24,6 +25,8 @@ fitSlope(
 
 \item{sd_b}{" " for B}
 
+\item{alpha_mu}{prior mean for alpha}
+
 \item{alpha_sd}{prior SD for alpha}
 
 \item{sigma_sd}{prior SD for sigma}
@@ -31,8 +34,6 @@ fitSlope(
 \item{gamma_sd}{prior SD for gamma}
 
 \item{...}{further arguments passed to rstan::sampling}
-
-\item{alpha_mu}{prior mean for alpha}
 }
 \description{
 Fit the beta slope model: effect of A on B
