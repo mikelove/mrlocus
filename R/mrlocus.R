@@ -85,12 +85,18 @@ fitSlope <- function(beta_hat_a, beta_hat_b, sd_a, sd_b,
   n <- length(beta_hat_a)
   stopifnot(length(beta_hat_b) == n)
   stopifnot(length(sd_a) == n)
-  stopifnot(length(sd_b) == n) 
-  data <- list(n=n,
-               beta_hat_a=beta_hat_a,
-               beta_hat_b=beta_hat_b,
-               sd_a=sd_a, sd_b=sd_b,
-               alpha_sd=alpha_sd,
-               sigma_sd=sigma_sd)
-  rstan::sampling(stanmodels$slope, data, ...)
+  stopifnot(length(sd_b) == n)
+  if (n > 1) {
+    data <- list(n=n,
+                 beta_hat_a=beta_hat_a,
+                 beta_hat_b=beta_hat_b,
+                 sd_a=sd_a, sd_b=sd_b,
+                 alpha_sd=alpha_sd,
+                 sigma_sd=sigma_sd)
+    rstan::sampling(stanmodels$slope, data, ...)
+  } else {
+    m <- 1e5
+    slope <- rnorm(m, beta_hat_b, sd_b)/rnorm(m, beta_hat_a, sd_a)
+    c(mean(slope), sd(slope))
+  }
 }
