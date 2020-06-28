@@ -12,7 +12,6 @@ fitSlope(
   alpha_mu = 1,
   alpha_sd = 1,
   sigma_sd = 1,
-  gamma_sd = 0.001,
   ...
 )
 }
@@ -30,8 +29,6 @@ fitSlope(
 \item{alpha_sd}{prior SD for alpha}
 
 \item{sigma_sd}{prior SD for sigma}
-
-\item{gamma_sd}{prior SD for gamma}
 
 \item{...}{further arguments passed to rstan::sampling}
 }
