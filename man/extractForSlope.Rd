@@ -4,25 +4,16 @@
 \alias{extractForSlope}
 \title{Extract SNPs from colocalization for slope fitting}
 \usage{
-extractForSlope(
-  beta_hat_a,
-  beta_hat_b,
-  sd_a,
-  sd_b,
-  niter = 0,
-  plot = TRUE,
-  a = "eQTL",
-  b = "GWAS"
-)
+extractForSlope(res, niter = 0, plot = TRUE, a = "eQTL", b = "GWAS")
 }
 \arguments{
-\item{beta_hat_a}{list of coefficients for A}
-
-\item{beta_hat_b}{" " for B}
-
-\item{sd_a}{list of posterior SD for A}
-
-\item{sd_b}{" " for B}
+\item{res}{list with the following named elements:
+\itemize{
+\item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
+\item beta_hat_b - " " for B
+\item sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A 
+\item sd_b - " " for B
+}}
 
 \item{niter}{number of iterations of EM to run
 for Mclust, if set to 0, only the maximum

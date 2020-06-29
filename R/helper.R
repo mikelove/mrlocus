@@ -220,10 +220,13 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 
 #' Extract SNPs from colocalization for slope fitting
 #'
-#' @param beta_hat_a list of coefficients for A
-#' @param beta_hat_b " " for B
-#' @param sd_a list of posterior SD for A
-#' @param sd_b " " for B
+#' @param res list with the following named elements:
+#' \itemize{
+#' \item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
+#' \item beta_hat_b - " " for B
+#' \item sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A 
+#' \item sd_b - " " for B
+#' }
 #' @param niter number of iterations of EM to run
 #' for Mclust, if set to 0, only the maximum
 #' variant (in terms of A effect size) per
@@ -240,23 +243,21 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' indicated a negative effect on A)
 #'
 #' @export
-extractForSlope <- function(beta_hat_a,
-                            beta_hat_b,
-                            sd_a, sd_b,
+extractForSlope <- function(res,
                             niter=0,
                             plot=TRUE,
                             a="eQTL", b="GWAS") {
-  nsnp <- lengths(beta_hat_a)
-  stopifnot(all(lengths(beta_hat_b) == nsnp))
-  stopifnot(all(lengths(sd_a) == nsnp))
-  stopifnot(all(lengths(sd_b) == nsnp))
+  nsnp <- lengths(res$beta_hat_a)
+  stopifnot(all(lengths(res$beta_hat_b) == nsnp))
+  stopifnot(all(lengths(res$sd_a) == nsnp))
+  stopifnot(all(lengths(res$sd_b) == nsnp))
   if (niter == 0) {
     z <- ifelse(
-      unlist(lapply(beta_hat_a,
+      unlist(lapply(res$beta_hat_a,
                     function(x) x == max(x))), 2, 1)
   } else {
-    beta_max_a <- sapply(beta_hat_a, max)
-    dat <- pmax(unlist(beta_hat_a),0)
+    beta_max_a <- sapply(res$beta_hat_a, max)
+    dat <- pmax(unlist(res$beta_hat_a),0)
     kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
     z <- kfit$cluster
     for (i in 1:niter) {
@@ -267,18 +268,18 @@ extractForSlope <- function(beta_hat_a,
   }
   if (plot) {
     par(mfrow=c(1,2))
-    plot(unlist(beta_hat_a), unlist(beta_hat_b),
+    plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b),
          col=rep(seq_along(nsnp),nsnp),
          pch=rep(seq_along(nsnp),nsnp),
          xlab=paste("beta",a), ylab=paste("beta",b))
-    plot(unlist(beta_hat_a), unlist(beta_hat_b), col=z,
+    plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b), col=z,
          pch=rep(seq_along(nsnp),nsnp),
          xlab=paste("beta",a), ylab=paste("beta",b))
   }
   stopifnot(any(z == 2))
   idx <- z == 2
-  list(beta_hat_a=unlist(beta_hat_a)[idx],
-       beta_hat_b=unlist(beta_hat_b)[idx],
-       sd_a=unlist(sd_a)[idx],
-       sd_b=unlist(sd_b)[idx])
+  list(beta_hat_a=unlist(res$beta_hat_a)[idx],
+       beta_hat_b=unlist(res$beta_hat_b)[idx],
+       sd_a=unlist(res$sd_a)[idx],
+       sd_b=unlist(res$sd_b)[idx])
 }
