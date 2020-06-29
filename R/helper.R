@@ -247,6 +247,7 @@ extractForSlope <- function(res,
                             niter=0,
                             plot=TRUE,
                             a="eQTL", b="GWAS") {
+  stopifnot(all(c("beta_hat_a","beta_hat_b","sd_a","sd_b") %in% names(res)))
   nsnp <- lengths(res$beta_hat_a)
   stopifnot(all(lengths(res$beta_hat_b) == nsnp))
   stopifnot(all(lengths(res$sd_a) == nsnp))
