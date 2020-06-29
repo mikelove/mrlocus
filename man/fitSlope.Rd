@@ -4,25 +4,16 @@
 \alias{fitSlope}
 \title{Fit the beta slope model: effect of A on B}
 \usage{
-fitSlope(
-  beta_hat_a,
-  beta_hat_b,
-  sd_a,
-  sd_b,
-  alpha_mu = 1,
-  alpha_sd = 1,
-  sigma_sd = 1,
-  ...
-)
+fitSlope(res, alpha_mu = NULL, alpha_sd = NULL, sigma_sd = 1, ...)
 }
 \arguments{
-\item{beta_hat_a}{vector of length sum(nsnp), first step point estimates of beta for A}
-
-\item{beta_hat_b}{" " for B}
-
-\item{sd_a}{vector of length sum(nsnp), first step posterior SD for beta for A}
-
-\item{sd_b}{" " for B}
+\item{res}{list with the following named elements:
+\itemize{
+\item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
+\item beta_hat_b - " " for B
+\item sd_a - vector of length sum(nsnp), first step posterior SD for beta for A
+\item sd_b - " " for B
+}}
 
 \item{alpha_mu}{prior mean for alpha}
 
