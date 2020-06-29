@@ -94,7 +94,8 @@ fitSlope <- function(res,
   } else {
     # parametric simulation if just one SNP
     m <- 1e5
-    slope <- rnorm(m, beta_hat_b, sd_b)/rnorm(m, beta_hat_a, sd_a)
+    slope <- rnorm(m, res$beta_hat_b, res$sd_b) /
+      rnorm(m, res$beta_hat_a, res$sd_a)
     est <- c(median(slope), mad(slope))
     out <- list(est=est)
   }
