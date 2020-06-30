@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.12</span>
       </span>
     </div>
 
@@ -124,10 +124,11 @@
   <span class='no'>eff</span>,
   <span class='no'>beta</span>,
   <span class='no'>se</span>,
-  <span class='no'>major_plink</span>,
+  <span class='no'>a2_plink</span>,
   <span class='no'>snp_id</span>,
   <span class='no'>sep</span>,
   <span class='kw'>ab_last</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>alleles_same</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
@@ -167,8 +168,13 @@
       <td><p>name of standard error</p></td>
     </tr>
     <tr>
-      <th>major_plink</th>
-      <td><p>name of major plink allele</p></td>
+      <th>a2_plink</th>
+      <td><p>name of the column representing the a2 allele
+(reference allele) according to plink. the default for plink v1.9
+and earlier was to reset a2 to the major allele, unless
+an optional flag was used. in plink v2.0 and onward, one
+should check to see which allele is used as reference for
+calculating the LD matrix</p></td>
     </tr>
     <tr>
       <th>snp_id</th>
@@ -180,8 +186,12 @@
     </tr>
     <tr>
       <th>ab_last</th>
-      <td><p>A/B descriptor is last in column names
+      <td><p>logical, A/B descriptor is last in column names
 (e.g. "beta_eqtl", "se_eqtl"))</p></td>
+    </tr>
+    <tr>
+      <th>alleles_same</th>
+      <td><p>logical, A/B/LD matrix alleles are identical</p></td>
     </tr>
     <tr>
       <th>plot</th>
