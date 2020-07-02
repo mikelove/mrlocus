@@ -72,12 +72,13 @@ fitSlope <- function(res,
   stopifnot(sigma_sd > 0)
 
   # specify prior for alpha
-  naive <- unname(coef(lm(res$beta_hat_b ~ res$beta_hat_a + 0)))
+  lmfit <- lm(res$beta_hat_b ~ res$beta_hat_a + 0)
+  lmsum <- summary(lmfit)$coefficients
   if (is.null(alpha_mu)) {
-    alpha_mu=naive[1]
+    alpha_mu=lmsum[1,1]
   }
   if (is.null(alpha_sd)) {
-    alpha_sd=abs(naive[1])/2
+    alpha_sd=2*abs(lmsum[1,1])
   }
 
   if (n > 1) {
