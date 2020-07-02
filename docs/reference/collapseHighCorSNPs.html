@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.12</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
     <p>Collapse high correlation SNPs</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(<span class='no'>sum_stat</span>, <span class='no'>ld_mat</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(<span class='no'>sum_stat</span>, <span class='no'>ld_mat</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -127,6 +127,13 @@
     <tr>
       <th>ld_mat</th>
       <td><p>list of LD matrices</p></td>
+    </tr>
+    <tr>
+      <th>score</th>
+      <td><p>name of a column of sum_stat data.frames
+with a score, such that collapsing will choose the
+highest score SNP per collapsed cluster. Otherwise,
+if set to NULL, the first SNP will be used</p></td>
     </tr>
     <tr>
       <th>plot</th>
