@@ -284,3 +284,106 @@ extractForSlope <- function(res,
        sd_a=unlist(res$sd_a)[idx],
        sd_b=unlist(res$sd_b)[idx])
 }
+
+#' Make simulated data for mrlocus
+#'
+#' @param nsnp number of SNPs per signal cluster
+#' @param idx the causal SNP (same per cluster for
+#' simplicity)
+#' @param alpha the true slope of B coefficients over A coefficients
+#' @param sigma the SD of true B coefficients around the conditional
+#' values given true A coefficients
+#' @param betas the true A coefficients
+#' @param se the standard errors for betas
+#' 
+#' @return a list of beta_hat_a, beta_hat_b, se_a, and se_b,
+#' Sigma_a, and Sigma_b (themselves lists)
+#'
+#' @export
+makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
+                                  alpha=.5, sigma=.05,
+                                  betas=1:4, se=.25) {
+  stopifnot(idx >= 3)
+  stopifnot(all(nsnp >= idx))
+  stopifnot(all(betas > 0))
+  stopifnot(length(betas) == length(nsnp))
+  nclust <- length(nsnp)
+  Sigma_a <- Sigma_b <- list()
+  for (j in 1:nclust) {
+    Sigma_a[[j]] <- diag(nsnp[j]) # A will be eQTL
+    Sigma_b[[j]] <- diag(nsnp[j]) # B will be GWAS
+    z <- idx + -2:2
+    Sigma_a[[j]][z,z] <- ifelse(Sigma_a[[j]][z,z] == 0, .5, 1)
+    Sigma_b[[j]][z,z] <- ifelse(Sigma_b[[j]][z,z] == 0, .5, 1)
+  }
+  x <- idx - 1
+  y <- max(nsnp) - idx
+  beta <- lapply(1:nclust, function(j) (rep(c(0,betas[j],0),c(x,1,y)))[1:nsnp[j]])
+  beta_hat_a <- beta_hat_b <- beta
+  se_a <- se_b <- lapply(1:nclust, function(j) rep(se, nsnp[j]))
+  mu <- mean(sapply(beta, `[`, x+1))
+  for (j in 1:nclust) {
+    beta_a_j <- beta[[j]]
+    beta_hat_a[[j]] <- MASS::mvrnorm(1,
+                       mu=Sigma_a[[j]] %*% beta_a_j,
+                       diag(se_a[[j]]) %*% Sigma_a[[j]] %*% diag(se_a[[j]]))
+    beta_b_j <- alpha * beta_a_j + ifelse(beta_a_j==0,0,rnorm(nsnp[j],0,sigma))
+    beta_hat_b[[j]] <- MASS::mvrnorm(1,
+                       mu=Sigma_b[[j]] %*% beta_b_j,
+                       diag(se_b[[j]]) %*% Sigma_b[[j]] %*% diag(se_b[[j]]))
+  }
+  list(beta_hat_a=beta_hat_a,
+       beta_hat_b=beta_hat_b,
+       se_a=se_a,
+       se_b=se_b,
+       Sigma_a=Sigma_a,
+       Sigma_b=Sigma_b)
+}
+
+#' Plot mrlocus estimates
+#'
+#' @param res the output from fitSlope
+#' @param a name of A experiment
+#' @param b name of B experiment
+#' @param ... arguments passed to plot()
+#'
+#' @export
+plotMrlocus <- function(res, a="eQTL", b="GWAS", ...) {
+  par(mfrow=c(1,1))
+  stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=c())$summary
+  alpha.hat <- stansum["alpha","mean"]
+  alpha.sd <- stansum["alpha","sd"]
+  sigma.hat <- stansum["sigma","mean"]
+  xx <- max(res$beta_hat_a)
+  xlim <- c(0, 1.5*xx)
+  yy <- 1.5*max(abs(res$beta_hat_b))
+  ylim <- c(-yy, yy)
+  plot(res$beta_hat_a, res$beta_hat_b,
+       xlim=xlim, ylim=ylim, pch=19,
+       xlab=paste("beta", a),
+       ylab=paste("beta", b), ...)
+  arrows(res$beta_hat_a - res$sd_a, res$beta_hat_b,
+         res$beta_hat_a + res$sd_a, res$beta_hat_b,
+         code=3, angle=90, length=.05)
+  arrows(res$beta_hat_a, res$beta_hat_b - res$sd_b,
+         res$beta_hat_a, res$beta_hat_b + res$sd_b,
+         code=3, angle=90, length=.05)
+  polygon(c(0,2*xx,2*xx,0),
+          c(-sigma.hat,alpha.hat*2*xx-sigma.hat,
+            alpha.hat*2*xx+sigma.hat,sigma.hat),
+          col=rgb(0,0,1,.1), border=NA)
+  segments(0, 0, 2*xx, alpha.hat*2*xx, col="blue")
+  segments(0, -alpha.sd, 2*xx, alpha.hat*2*xx-alpha.sd,
+           col=rgb(0,0,1,.3))
+  segments(0, alpha.sd, 2*xx, alpha.hat*2*xx+alpha.sd,
+           col=rgb(0,0,1,.3))
+  abline(h=0, lty=2)
+  where <- if (alpha.hat > 0) "bottomleft" else "topleft"
+  legend(where, lwd=c(1,5), col=rgb(0,0,1,c(1,.15)),
+         inset=.05, y.intersp=1.1,
+         legend=c(as.expression(bquote(paste(hat(alpha),"=",
+                                             .(round(alpha.hat,3))," (",
+                                             .(round(alpha.sd,3)),")"))),
+                  as.expression(bquote(paste(hat(sigma),"=",
+                                             .(round(sigma.hat,3)))))))
+}

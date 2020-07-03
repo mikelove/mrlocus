@@ -3,3 +3,5 @@
 *.h
 *.cc
 docs
+mrlocus_files
+vignettes/mrlocus.html

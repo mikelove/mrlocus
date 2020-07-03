@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
       <h1 data-toc-skip>mrlocus</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">06/30/2020</h4>
+            <h4 class="date">07/03/2020</h4>
       
       
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -75,20 +75,64 @@
 
     
     
-<div id="mrlocus" class="section level1">
-<h1 class="hasAnchor">
-<a href="#mrlocus" class="anchor"></a>mrlocus</h1>
 <p>This is a vignette. This is a citation <span class="citation">(Carpenter et al. 2017)</span>.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">20</span>)</pre></body></html></div>
-<pre><code>##  [1] -0.19486067 -1.04692000  1.21614164 -1.49749668 -0.70327431  0.46781221
-##  [7]  0.41255106 -0.63004313 -0.42585679  1.28005413 -0.10141695  0.46197680
-## [13] -0.52758410 -0.02950831 -1.07329430  1.39985667 -0.63274390  0.84143962
-## [19]  1.36842354 -0.03006369</code></pre>
-</div>
+<p>Here we show <em>mrlocus</em> on simulated data. We also have helper functions <code>collapseHighCorSNPs</code> and <code>flipAllelesAndGather</code> for importing summary statistics.</p>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mrlocus</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
+<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/makeSimDataForMrlocus.html">makeSimDataForMrlocus</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="../reference/plotInitEstimates.html">plotInitEstimates</a></span>(<span class="no">out</span>)</pre></body></html></div>
+<p><img src="mrlocus_files/figure-html/initests-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>()
+<span class="no">nsnp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span>(<span class="no">out</span>$<span class="no">beta_hat_a</span>)
+<span class="no">nclust</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">nsnp</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="kw">mc.cores</span><span class="kw">=</span><span class="fl">2</span>)
+<span class="kw">for</span> (<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">nclust</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>({
+    <span class="no">fit</span><span class="kw">[[</span><span class="no">j</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitBetaColoc.html">fitBetaColoc</a></span>(<span class="kw">nsnp</span><span class="kw">=</span><span class="no">nsnp</span>[<span class="no">j</span>],
+                             <span class="kw">beta_hat_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">beta_hat_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                             <span class="kw">beta_hat_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">beta_hat_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                             <span class="kw">se_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                             <span class="kw">se_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                             <span class="kw">Sigma_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">Sigma_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                             <span class="kw">Sigma_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">Sigma_b</span><span class="kw">[[</span><span class="no">j</span>]])
+  })
+}</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">beta_hat_a</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_a"</span>),
+            <span class="kw">beta_hat_b</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_b"</span>),
+            <span class="kw">sd_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_a</span>,
+            <span class="kw">sd_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_b</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractForSlope.html">extractForSlope</a></span>(<span class="no">res</span>, <span class="kw">plot</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<p><img src="mrlocus_files/figure-html/extract-1.png" width="700"></p>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>({
+  <span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSlope.html">fitSlope</a></span>(<span class="no">res</span>, <span class="kw">iter</span><span class="kw">=</span><span class="fl">10000</span>)
+})</pre></body></html></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rstan</span>)</pre></body></html></div>
+<pre><code>## Loading required package: StanHeaders</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## rstan (Version 2.19.3, GitRev: 2e1f913d3ca3)</code></pre>
+<pre><code>## For execution on a local, multicore CPU with excess RAM we recommend calling
+## options(mc.cores = parallel::detectCores()).
+## To avoid recompilation of unchanged Stan programs, we recommend calling
+## rstan_options(auto_write = TRUE)</code></pre>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">stanfit</span>, <span class="kw">pars</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"alpha"</span>,<span class="st">"sigma"</span>), <span class="kw">digits</span><span class="kw">=</span><span class="fl">3</span>)</pre></body></html></div>
+<pre><code>## Inference for Stan model: slope.
+## 4 chains, each with iter=10000; warmup=5000; thin=1; 
+## post-warmup draws per chain=5000, total post-warmup draws=20000.
+## 
+##        mean se_mean    sd  2.5%   25%   50%   75% 97.5% n_eff  Rhat
+## alpha 0.488   0.001 0.085 0.318 0.443 0.495 0.530 0.652  4496 1.002
+## sigma 0.253   0.020 0.245 0.030 0.076 0.180 0.341 0.929   156 1.020
+## 
+## Samples were drawn using NUTS(diag_e) at Fri Jul  3 15:19:13 2020.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMrlocus.html">plotMrlocus</a></span>(<span class="no">res</span>, <span class="kw">main</span><span class="kw">=</span><span class="st">"mrlocus"</span>)</pre></body></html></div>
+<p><img src="mrlocus_files/figure-html/mrlocus-1.png" width="700"></p>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
 <pre><code>## R version 4.0.0 (2020-04-24)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.5
@@ -103,13 +147,24 @@
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
+## other attached packages:
+## [1] rstan_2.19.3       ggplot2_3.3.0      StanHeaders_2.19.2 mrlocus_0.0.13    
+## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.4.6     rprojroot_1.3-2  crayon_1.3.4     digest_0.6.25   
-##  [5] assertthat_0.2.1 MASS_7.3-51.6    R6_2.4.1         backports_1.1.6 
-##  [9] magrittr_1.5     evaluate_0.14    stringi_1.4.6    rlang_0.4.6     
-## [13] fs_1.4.1         rmarkdown_2.1    pkgdown_1.5.1    desc_1.2.0      
-## [17] tools_4.0.0      stringr_1.4.0    yaml_2.2.1       xfun_0.13       
-## [21] compiler_4.0.0   memoise_1.1.0    htmltools_0.4.0  knitr_1.28</code></pre>
+##  [1] Rcpp_1.0.4.6       pillar_1.4.4       compiler_4.0.0     prettyunits_1.1.1 
+##  [5] tools_4.0.0        digest_0.6.25      pkgbuild_1.0.8     tibble_3.0.1      
+##  [9] evaluate_0.14      memoise_1.1.0      lifecycle_0.2.0    gtable_0.3.0      
+## [13] pkgconfig_2.0.3    rlang_0.4.6        cli_2.0.2          parallel_4.0.0    
+## [17] yaml_2.2.1         pkgdown_1.5.1      xfun_0.13          loo_2.2.0         
+## [21] gridExtra_2.3      withr_2.2.0        dplyr_0.8.5        stringr_1.4.0     
+## [25] knitr_1.28         vctrs_0.2.4        desc_1.2.0         fs_1.4.1          
+## [29] tidyselect_1.0.0   stats4_4.0.0       rprojroot_1.3-2    grid_4.0.0        
+## [33] inline_0.3.15      glue_1.4.0         R6_2.4.1           processx_3.4.2    
+## [37] fansi_0.4.1        rmarkdown_2.1      purrr_0.3.4        callr_3.4.3       
+## [41] magrittr_1.5       codetools_0.2-16   matrixStats_0.56.0 ellipsis_0.3.0    
+## [45] backports_1.1.6    scales_1.1.1       ps_1.3.3           htmltools_0.4.0   
+## [49] MASS_7.3-51.6      assertthat_0.2.1   colorspace_1.4-1   stringi_1.4.6     
+## [53] munsell_0.5.0      crayon_1.3.4</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

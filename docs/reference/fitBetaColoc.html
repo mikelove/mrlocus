@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collapse high correlation SNPs — collapseHighCorSNPs • mrlocus</title>
+<title>Fit the beta colocalization per signal cluster — fitBetaColoc • mrlocus</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Collapse high correlation SNPs — collapseHighCorSNPs" />
-<meta property="og:description" content="Collapse high correlation SNPs" />
+<meta property="og:title" content="Fit the beta colocalization per signal cluster — fitBetaColoc" />
+<meta property="og:description" content="Fit the beta colocalization per signal cluster" />
 
 
 
@@ -106,51 +106,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collapse high correlation SNPs</h1>
+    <h1>Fit the beta colocalization per signal cluster</h1>
     
-    <div class="hidden name"><code>collapseHighCorSNPs.Rd</code></div>
+    <div class="hidden name"><code>fitBetaColoc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Collapse high correlation SNPs</p>
+    <p>Fit the beta colocalization per signal cluster</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(<span class='no'>sum_stat</span>, <span class='no'>ld_mat</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>fitBetaColoc</span>(<span class='no'>nsnp</span>, <span class='no'>beta_hat_a</span>, <span class='no'>beta_hat_b</span>, <span class='no'>se_a</span>, <span class='no'>se_b</span>, <span class='no'>Sigma_a</span>, <span class='no'>Sigma_b</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sum_stat</th>
-      <td><p>list of summary statistic tables</p></td>
+      <th>beta_hat_a</th>
+      <td><p>vector of length nsnp, estimated coefficients for A</p></td>
     </tr>
     <tr>
-      <th>ld_mat</th>
-      <td><p>list of LD matrices</p></td>
+      <th>beta_hat_b</th>
+      <td><p>" " for B</p></td>
     </tr>
     <tr>
-      <th>score</th>
-      <td><p>name of a column of sum_stat data.frames
-with a score, such that collapsing will choose the
-highest score SNP per collapsed cluster. Otherwise,
-if set to NULL, the first SNP will be used</p></td>
+      <th>se_a</th>
+      <td><p>vector of length nsnp, standard errors for beta_hat_a</p></td>
     </tr>
     <tr>
-      <th>plot</th>
-      <td><p>logical, draw a before/after grid of plots</p></td>
+      <th>se_b</th>
+      <td><p>" " for beta_hat_b</p></td>
     </tr>
     <tr>
-      <th>threshold</th>
-      <td><p>threshold on absolute value of
-correlation for collapsing, e.g. will collapse
-if SNPs are more correlated (or anti-correlated)
-than this amount</p></td>
+      <th>Sigma_a</th>
+      <td><p>correlation matrix of SNPs for A, dimension should be nsnp x nsnp</p></td>
+    </tr>
+    <tr>
+      <th>Sigma_b</th>
+      <td><p>" " for B (this could be different for different LD structures)</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments passed to rstan::sampling</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>list with modified ld_mat and sum_stat lists</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

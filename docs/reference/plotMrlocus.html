@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collapse high correlation SNPs — collapseHighCorSNPs • mrlocus</title>
+<title>Plot mrlocus estimates — plotMrlocus • mrlocus</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Collapse high correlation SNPs — collapseHighCorSNPs" />
-<meta property="og:description" content="Collapse high correlation SNPs" />
+<meta property="og:title" content="Plot mrlocus estimates — plotMrlocus" />
+<meta property="og:description" content="Plot mrlocus estimates" />
 
 
 
@@ -106,51 +106,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collapse high correlation SNPs</h1>
+    <h1>Plot mrlocus estimates</h1>
     
-    <div class="hidden name"><code>collapseHighCorSNPs.Rd</code></div>
+    <div class="hidden name"><code>plotMrlocus.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Collapse high correlation SNPs</p>
+    <p>Plot mrlocus estimates</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(<span class='no'>sum_stat</span>, <span class='no'>ld_mat</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>plotMrlocus</span>(<span class='no'>res</span>, <span class='kw'>a</span> <span class='kw'>=</span> <span class='st'>"eQTL"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"GWAS"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sum_stat</th>
-      <td><p>list of summary statistic tables</p></td>
+      <th>res</th>
+      <td><p>the output from fitSlope</p></td>
     </tr>
     <tr>
-      <th>ld_mat</th>
-      <td><p>list of LD matrices</p></td>
+      <th>a</th>
+      <td><p>name of A experiment</p></td>
     </tr>
     <tr>
-      <th>score</th>
-      <td><p>name of a column of sum_stat data.frames
-with a score, such that collapsing will choose the
-highest score SNP per collapsed cluster. Otherwise,
-if set to NULL, the first SNP will be used</p></td>
+      <th>b</th>
+      <td><p>name of B experiment</p></td>
     </tr>
     <tr>
-      <th>plot</th>
-      <td><p>logical, draw a before/after grid of plots</p></td>
-    </tr>
-    <tr>
-      <th>threshold</th>
-      <td><p>threshold on absolute value of
-correlation for collapsing, e.g. will collapse
-if SNPs are more correlated (or anti-correlated)
-than this amount</p></td>
+      <th>...</th>
+      <td><p>arguments passed to plot()</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>list with modified ld_mat and sum_stat lists</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

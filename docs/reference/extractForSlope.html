@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collapse high correlation SNPs — collapseHighCorSNPs • mrlocus</title>
+<title>Extract SNPs from colocalization for slope fitting — extractForSlope • mrlocus</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Collapse high correlation SNPs — collapseHighCorSNPs" />
-<meta property="og:description" content="Collapse high correlation SNPs" />
+<meta property="og:title" content="Extract SNPs from colocalization for slope fitting — extractForSlope" />
+<meta property="og:description" content="Extract SNPs from colocalization for slope fitting" />
 
 
 
@@ -106,51 +106,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collapse high correlation SNPs</h1>
+    <h1>Extract SNPs from colocalization for slope fitting</h1>
     
-    <div class="hidden name"><code>collapseHighCorSNPs.Rd</code></div>
+    <div class="hidden name"><code>extractForSlope.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Collapse high correlation SNPs</p>
+    <p>Extract SNPs from colocalization for slope fitting</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(<span class='no'>sum_stat</span>, <span class='no'>ld_mat</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>extractForSlope</span>(<span class='no'>res</span>, <span class='kw'>niter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>a</span> <span class='kw'>=</span> <span class='st'>"eQTL"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"GWAS"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sum_stat</th>
-      <td><p>list of summary statistic tables</p></td>
+      <th>res</th>
+      <td><p>list with the following named elements:</p><ul>
+<li><p>beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A</p></li>
+<li><p>beta_hat_b - " " for B</p></li>
+<li><p>sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A</p></li>
+<li><p>sd_b - " " for B</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>ld_mat</th>
-      <td><p>list of LD matrices</p></td>
-    </tr>
-    <tr>
-      <th>score</th>
-      <td><p>name of a column of sum_stat data.frames
-with a score, such that collapsing will choose the
-highest score SNP per collapsed cluster. Otherwise,
-if set to NULL, the first SNP will be used</p></td>
+      <th>niter</th>
+      <td><p>number of iterations of EM to run
+for Mclust, if set to 0, only the maximum
+variant (in terms of A effect size) per
+signal cluster is output.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>logical, draw a before/after grid of plots</p></td>
+      <td><p>logical, draw a before after of which
+variants will be included for slope estimation</p></td>
     </tr>
     <tr>
-      <th>threshold</th>
-      <td><p>threshold on absolute value of
-correlation for collapsing, e.g. will collapse
-if SNPs are more correlated (or anti-correlated)
-than this amount</p></td>
+      <th>a</th>
+      <td><p>name of A experiment</p></td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td><p>name of B experiment</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with modified ld_mat and sum_stat lists</p>
+    <p>list of vectors of the first four arguments,
+collapsed now across signal clusters, representing
+variants with positive effect on A. So the null variants
+have been removed (and any variants per cluster that
+indicated a negative effect on A)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

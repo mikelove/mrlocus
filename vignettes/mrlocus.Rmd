@@ -2,7 +2,9 @@
 title: "mrlocus"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 author: "Anqi Zhu, Nana Matoba, Jason Stein, Michael Love"
-output: rmarkdown::html_document
+output: 
+  rmarkdown::html_document:
+    self_contained: false
 bibliography: library.bib
 vignette: |
   %\VignetteIndexEntry{mrlocus}
@@ -10,12 +12,67 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-# mrlocus
-
 This is a vignette. This is a citation [@stan].
 
+Here we show *mrlocus* on simulated data. We also have helper
+functions `collapseHighCorSNPs` and `flipAllelesAndGather` for
+importing summary statistics.
+
 ```{r}
-rnorm(20)
+library(mrlocus)
+set.seed(1)
+out <- makeSimDataForMrlocus()
+```
+
+```{r initests, fig.height=7}
+plotInitEstimates(out)
+```
+
+```{r}
+fit <- list()
+nsnp <- lengths(out$beta_hat_a)
+nclust <- length(nsnp)
+```
+
+```{r}
+options(mc.cores=2)
+for (j in 1:nclust) {
+  suppressWarnings({
+    fit[[j]] <- fitBetaColoc(nsnp=nsnp[j],
+                             beta_hat_a=out$beta_hat_a[[j]],
+                             beta_hat_b=out$beta_hat_b[[j]],
+                             se_a=out$se_a[[j]],
+                             se_b=out$se_b[[j]],
+                             Sigma_a=out$Sigma_a[[j]],
+                             Sigma_b=out$Sigma_b[[j]])
+  })
+}
+```
+
+```{r}
+res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
+            beta_hat_b=lapply(fit, `[[`, "beta_hat_b"),
+            sd_a=out$se_a,
+            sd_b=out$se_b)
+```
+
+```{r extract}
+res <- extractForSlope(res, plot=TRUE)
+```
+
+```{r}
+suppressWarnings({
+  res <- fitSlope(res, iter=10000)
+})
+```
+
+```{r}
+library(rstan)
+print(res$stanfit, pars=c("alpha","sigma"), digits=3)
+```
+
+```{r mrlocus, fig.height=7}
+plotMrlocus(res, main="mrlocus")
 ```
 
 # Session info
