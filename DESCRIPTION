@@ -2,7 +2,7 @@ Package: mrlocus
 Title: Mendelian randomization per locus
 Version: 0.0.13
 Authors@R: c(
-    person("Anzi", "Zhu", role = "aut"),
+    person("Anqi", "Zhu", role = "aut"),
     person("Nana", "Matoba", role = "aut"),
     person("Jason", "Stein", role = "aut"),
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role=c("aut","cre"))
