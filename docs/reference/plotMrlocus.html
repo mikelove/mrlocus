@@ -115,7 +115,7 @@
     <p>Plot mrlocus estimates</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotMrlocus</span>(<span class='no'>res</span>, <span class='kw'>a</span> <span class='kw'>=</span> <span class='st'>"eQTL"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"GWAS"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>plotMrlocus</span>(<span class='no'>res</span>, <span class='kw'>q</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>0.9</span>), <span class='kw'>a</span> <span class='kw'>=</span> <span class='st'>"eQTL"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"GWAS"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -123,6 +123,11 @@
     <tr>
       <th>res</th>
       <td><p>the output from fitSlope</p></td>
+    </tr>
+    <tr>
+      <th>q</th>
+      <td><p>the quantiles of the posterior
+to use for drawing the uncertainty on the slope</p></td>
     </tr>
     <tr>
       <th>a</th>

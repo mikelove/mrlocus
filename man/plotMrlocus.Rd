@@ -4,10 +4,13 @@
 \alias{plotMrlocus}
 \title{Plot mrlocus estimates}
 \usage{
-plotMrlocus(res, a = "eQTL", b = "GWAS", ...)
+plotMrlocus(res, q = c(0.1, 0.9), a = "eQTL", b = "GWAS", ...)
 }
 \arguments{
 \item{res}{the output from fitSlope}
+
+\item{q}{the quantiles of the posterior
+to use for drawing the uncertainty on the slope}
 
 \item{a}{name of A experiment}
 
