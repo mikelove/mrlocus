@@ -343,47 +343,62 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' Plot mrlocus estimates
 #'
 #' @param res the output from fitSlope
+#' @param q the quantiles of the posterior
+#' to use for drawing the uncertainty on the slope
 #' @param a name of A experiment
 #' @param b name of B experiment
 #' @param ... arguments passed to plot()
 #'
 #' @export
-plotMrlocus <- function(res, a="eQTL", b="GWAS", ...) {
+plotMrlocus <- function(res, 
+                        q=c(.1,.9),
+                        a="eQTL", b="GWAS",
+                        ...) {
   par(mfrow=c(1,1))
-  stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=c())$summary
+  stopifnot(length(q) == 2)
+  stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=q)$summary
   alpha.hat <- stansum["alpha","mean"]
-  alpha.sd <- stansum["alpha","sd"]
+  qs <- paste0(q * 100,"%")
+  message(paste0("plotting a ",qs[1],"-",qs[2]," interval"))
+  alpha.qs <- stansum["alpha",qs]
   sigma.hat <- stansum["sigma","mean"]
   xx <- max(res$beta_hat_a)
   xlim <- c(0, 1.5*xx)
   yy <- 1.5*max(abs(res$beta_hat_b))
   ylim <- c(-yy, yy)
   plot(res$beta_hat_a, res$beta_hat_b,
-       xlim=xlim, ylim=ylim, pch=19,
+       xlim=xlim, ylim=ylim, type="n",
        xlab=paste("beta", a),
        ylab=paste("beta", b), ...)
+  # alpha (slope), sigma, and uncertainty on slope
+  polygon(c(0,2*xx,2*xx,0),
+          c(-sigma.hat,alpha.hat*2*xx-sigma.hat,
+            alpha.hat*2*xx+sigma.hat,sigma.hat),
+          col=rgb(0,0,1,.1), border=NA)
+  segments(0, 0, 2*xx, alpha.hat*2*xx, col="blue", lwd=2)
+  segments(0, 0, 2*xx, (alpha.qs[1])*2*xx,
+           col=rgb(0,0,1,.5))
+  segments(0, 0, 2*xx, (alpha.qs[2])*2*xx,
+           col=rgb(0,0,1,.5))
+  abline(h=0, lty=2)
+
+  # the pairs and their SEs
+  points(res$beta_hat_a, res$beta_hat_b, pch=19)
   arrows(res$beta_hat_a - res$sd_a, res$beta_hat_b,
          res$beta_hat_a + res$sd_a, res$beta_hat_b,
          code=3, angle=90, length=.05)
   arrows(res$beta_hat_a, res$beta_hat_b - res$sd_b,
          res$beta_hat_a, res$beta_hat_b + res$sd_b,
          code=3, angle=90, length=.05)
-  polygon(c(0,2*xx,2*xx,0),
-          c(-sigma.hat,alpha.hat*2*xx-sigma.hat,
-            alpha.hat*2*xx+sigma.hat,sigma.hat),
-          col=rgb(0,0,1,.1), border=NA)
-  segments(0, 0, 2*xx, alpha.hat*2*xx, col="blue")
-  segments(0, -alpha.sd, 2*xx, alpha.hat*2*xx-alpha.sd,
-           col=rgb(0,0,1,.3))
-  segments(0, alpha.sd, 2*xx, alpha.hat*2*xx+alpha.sd,
-           col=rgb(0,0,1,.3))
-  abline(h=0, lty=2)
+  
   where <- if (alpha.hat > 0) "bottomleft" else "topleft"
-  legend(where, lwd=c(1,5), col=rgb(0,0,1,c(1,.15)),
+  legend(where, lwd=c(2,5), col=rgb(0,0,1,c(1,.15)),
          inset=.05, y.intersp=1.1,
-         legend=c(as.expression(bquote(paste(hat(alpha),"=",
-                                             .(round(alpha.hat,3))," (",
-                                             .(round(alpha.sd,3)),")"))),
-                  as.expression(bquote(paste(hat(sigma),"=",
+         legend=c(as.expression(bquote(paste(hat(alpha)," = ",
+                                             .(round(alpha.hat,3))," [",
+                                             .(round(alpha.qs[1],3)),",",
+                                             .(round(alpha.qs[2],3)),
+                                             "]"))),
+                  as.expression(bquote(paste(hat(sigma)," = ",
                                              .(round(sigma.hat,3)))))))
 }
