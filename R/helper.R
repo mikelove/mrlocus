@@ -370,6 +370,7 @@ plotMrlocus <- function(res,
        xlim=xlim, ylim=ylim, type="n",
        xlab=paste("beta", a),
        ylab=paste("beta", b), ...)
+
   # alpha (slope), sigma, and uncertainty on slope
   polygon(c(0,2*xx,2*xx,0),
           c(-sigma.hat,alpha.hat*2*xx-sigma.hat,

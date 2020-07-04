@@ -34,7 +34,7 @@ test_that("mrlocus works on simple sim data", {
 
   # print the estimated slope
   library(rstan)
-  print(res$stanfit, pars=c("alpha","sigma"), digits=3)
+  print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
 
   # plot
   plotMrlocus(res, main="mrlocus")

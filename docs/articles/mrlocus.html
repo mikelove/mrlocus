@@ -114,16 +114,16 @@
 ## options(mc.cores = parallel::detectCores()).
 ## To avoid recompilation of unchanged Stan programs, we recommend calling
 ## rstan_options(auto_write = TRUE)</code></pre>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">stanfit</span>, <span class="kw">pars</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"alpha"</span>,<span class="st">"sigma"</span>), <span class="kw">digits</span><span class="kw">=</span><span class="fl">3</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">stanfit</span>, <span class="kw">pars</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"alpha"</span>,<span class="st">"sigma"</span>), <span class="kw">probs</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">.1</span>,<span class="fl">.9</span>), <span class="kw">digits</span><span class="kw">=</span><span class="fl">3</span>)</pre></body></html></div>
 <pre><code>## Inference for Stan model: slope.
 ## 4 chains, each with iter=10000; warmup=5000; thin=1; 
 ## post-warmup draws per chain=5000, total post-warmup draws=20000.
 ## 
-##        mean se_mean    sd  2.5%   25%   50%   75% 97.5% n_eff  Rhat
-## alpha 0.488   0.001 0.085 0.318 0.443 0.495 0.530 0.652  4496 1.002
-## sigma 0.253   0.020 0.245 0.030 0.076 0.180 0.341 0.929   156 1.020
+##        mean se_mean    sd   10%   90% n_eff  Rhat
+## alpha 0.488   0.001 0.085 0.394 0.581  4496 1.002
+## sigma 0.253   0.020 0.245 0.034 0.557   156 1.020
 ## 
-## Samples were drawn using NUTS(diag_e) at Fri Jul  3 20:05:19 2020.
+## Samples were drawn using NUTS(diag_e) at Fri Jul  3 20:08:27 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
