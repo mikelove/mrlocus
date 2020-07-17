@@ -53,32 +53,41 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
 #' \item sd_a - vector of length sum(nsnp), first step posterior SD for beta for A
 #' \item sd_b - " " for B
 #' }
-#' @param alpha_mu prior mean for alpha
-#' @param alpha_sd prior SD for alpha
-#' @param sigma_sd prior SD for sigma
+#' @param sd_beta prior SD for beta A
+#' @param mu_alpha prior mean for alpha
+#' @param sd_alpha prior SD for alpha
+#' @param sd_sigma prior SD for sigma
 #' @param ... further arguments passed to rstan::sampling
 #' 
 #' @export
 fitSlope <- function(res,
-                     alpha_mu=NULL,
-                     alpha_sd=NULL,
-                     sigma_sd=1,
+                     sd_beta=NULL,
+                     mu_alpha=NULL,
+                     sd_alpha=NULL,
+                     sd_sigma=1,
                      ...) {
+  
   n <- length(res$beta_hat_a)
   stopifnot(length(res$beta_hat_b) == n)
   stopifnot(length(res$sd_a) == n)
   stopifnot(length(res$sd_b) == n)
-  stopifnot(alpha_sd > 0)
-  stopifnot(sigma_sd > 0)
+  stopifnot(sd_beta > 0)
+  stopifnot(sd_alpha > 0)
+  stopifnot(sd_sigma > 0)
 
+  # specify SD for prior for beta A
+  if (is.null(sd_beta)) {
+    sd_beta <- 2 * max(abs(res$beta_hat_a))
+  }
+  
   # specify prior for alpha
   lmfit <- lm(res$beta_hat_b ~ res$beta_hat_a + 0)
   lmsum <- summary(lmfit)$coefficients
-  if (is.null(alpha_mu)) {
-    alpha_mu=lmsum[1,1]
+  if (is.null(mu_alpha)) {
+    mu_alpha=lmsum[1,1]
   }
-  if (is.null(alpha_sd)) {
-    alpha_sd=2*abs(lmsum[1,1])
+  if (is.null(sd_alpha)) {
+    sd_alpha=2*abs(lmsum[1,1])
   }
 
   if (n > 1) {
@@ -87,9 +96,10 @@ fitSlope <- function(res,
                  beta_hat_b=res$beta_hat_b,
                  sd_a=res$sd_a,
                  sd_b=res$sd_b,
-                 alpha_mu=alpha_mu,
-                 alpha_sd=alpha_sd,
-                 sigma_sd=sigma_sd)
+                 sd_beta=sd_beta,
+                 mu_alpha=mu_alpha,
+                 sd_alpha=sd_alpha,
+                 sd_sigma=sd_sigma)
     stanfit <- rstan::sampling(stanmodels$slope, data, ...)
     out <- list(stanfit=stanfit)
   } else {

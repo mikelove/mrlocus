@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.14</span>
       </span>
     </div>
 
@@ -115,7 +115,14 @@
     <p>Fit the beta slope model: effect of A on B</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fitSlope</span>(<span class='no'>res</span>, <span class='kw'>alpha_mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha_sd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sigma_sd</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>fitSlope</span>(
+  <span class='no'>res</span>,
+  <span class='kw'>sd_beta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mu_alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sd_alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sd_sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,15 +137,19 @@
 </ul></td>
     </tr>
     <tr>
-      <th>alpha_mu</th>
+      <th>sd_beta</th>
+      <td><p>prior SD for beta A</p></td>
+    </tr>
+    <tr>
+      <th>mu_alpha</th>
       <td><p>prior mean for alpha</p></td>
     </tr>
     <tr>
-      <th>alpha_sd</th>
+      <th>sd_alpha</th>
       <td><p>prior SD for alpha</p></td>
     </tr>
     <tr>
-      <th>sigma_sd</th>
+      <th>sd_sigma</th>
       <td><p>prior SD for sigma</p></td>
     </tr>
     <tr>

@@ -4,7 +4,14 @@
 \alias{fitSlope}
 \title{Fit the beta slope model: effect of A on B}
 \usage{
-fitSlope(res, alpha_mu = NULL, alpha_sd = NULL, sigma_sd = 1, ...)
+fitSlope(
+  res,
+  sd_beta = NULL,
+  mu_alpha = NULL,
+  sd_alpha = NULL,
+  sd_sigma = 1,
+  ...
+)
 }
 \arguments{
 \item{res}{list with the following named elements:
@@ -15,11 +22,13 @@ fitSlope(res, alpha_mu = NULL, alpha_sd = NULL, sigma_sd = 1, ...)
 \item sd_b - " " for B
 }}
 
-\item{alpha_mu}{prior mean for alpha}
+\item{sd_beta}{prior SD for beta A}
 
-\item{alpha_sd}{prior SD for alpha}
+\item{mu_alpha}{prior mean for alpha}
 
-\item{sigma_sd}{prior SD for sigma}
+\item{sd_alpha}{prior SD for alpha}
+
+\item{sd_sigma}{prior SD for sigma}
 
 \item{...}{further arguments passed to rstan::sampling}
 }

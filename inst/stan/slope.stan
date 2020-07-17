@@ -4,9 +4,10 @@ data {
   vector[n] beta_hat_b;
   vector[n] sd_a;
   vector[n] sd_b;
-  real alpha_mu;
-  real alpha_sd;
-  real sigma_sd;
+  real sd_beta;
+  real mu_alpha;
+  real sd_alpha;
+  real sd_sigma;
 }
 parameters {
   real alpha;
@@ -17,7 +18,8 @@ parameters {
 model {
   beta_hat_a ~ normal(beta_a, sd_a);
   beta_hat_b ~ normal(beta_b, sd_b);
+  beta_a ~ normal(0, sd_beta);
   beta_b ~ normal(alpha * beta_a, sigma);
-  alpha ~ normal(alpha_mu, alpha_sd);
-  sigma ~ normal(0, sigma_sd);
+  alpha ~ normal(mu_alpha, sd_alpha);
+  sigma ~ normal(0, sd_sigma);
 }
