@@ -262,8 +262,8 @@ extractForSlope <- function(res,
     kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
     z <- kfit$cluster
     for (i in 1:niter) {
-      ms <- Mclust::mstep(modelName="V", data=dat, z=unmap(z))
-      es <- MClust::estep(modelName="V", data=dat, parameters=ms$parameters)
+      ms <- mclust::mstep(modelName="V", data=dat, z=unmap(z))
+      es <- mclust::estep(modelName="V", data=dat, parameters=ms$parameters)
       z <- ifelse(es$z[,2] > .5, 2, 1)
     }
   }
