@@ -5,13 +5,19 @@ test_that("benchmark sigma estimation", {
 
   if (FALSE) {
 
-    #ptm <- proc.time()
     library(pbapply)
-    sigmas <- rep(1:8 * .1, each=3)
+    library(ggplot2)
+    n <- 4
+    sigmas <- rep(1:4 * .25, each=n)
 
     ests <- pblapply(seq_along(sigmas), function(i) {
       set.seed(i)
-      out <- makeSimDataForMrlocus(nsnp=rep(10,5),betas=1:5,sigma=sigmas[i],se=.05)
+      out <- makeSimDataForMrlocus(nsnp=rep(7,6),
+                                   idx=4,
+                                   alpha=1,
+                                   sigma=sigmas[i],
+                                   betas=1:6,
+                                   se=0.1)
       fit <- list()
       nsnp <- lengths(out$beta_hat_a)
       nclust <- length(nsnp)
@@ -34,11 +40,22 @@ test_that("benchmark sigma estimation", {
       cap.out <- capture.output({
         res <- fitSlope(res, iter=10000)
       })
-      rstan::summary(res$stanfit, pars="sigma")$summary["sigma","mean"]
-    }, cl=3)
+      rstan::summary(res$stanfit, pars="sigma",
+                     probs=c(.1,.9))$summary["sigma",c("mean","10%","90%")]
+    }, cl=4)
 
-    ests <- unlist(ests)
-    dat <- data.frame(sigmas, ests)
-    format(dat, digits=2)
+    dat <- as.data.frame(do.call(rbind, ests))
+    names(dat) <- c("estimate","ymin","ymax")
+    dat$rep <- factor(rep(1:n,times=nrow(dat)/n))
+    dat$sigma <- sigmas
+    dat$cover <- factor(dat$sigma > dat$ymin & dat$sigma < dat$ymax, c("FALSE","TRUE"))
+
+    png(file="~/Desktop/sigma_est.png", width=800, height=800, res=125)
+    ggplot(dat, aes(sigma, estimate, ymin=ymin, ymax=ymax, group=rep, col=cover)) +
+      geom_pointrange(position=position_dodge(width=.1)) +
+      scale_color_manual(values=c("FALSE"="red","TRUE"="black")) +
+      geom_abline(slope=1,intercept=0,alpha=0.25)
+    dev.off()
+    
   }
 })
