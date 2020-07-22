@@ -7,20 +7,21 @@ test_that("benchmark sigma estimation", {
 
     library(pbapply)
     library(ggplot2)
-    n <- 4
-    sigmas <- rep(1:4 * .25, each=n)
+    n <- 10
+    sigmas <- rep(rep(1:4 * .25, each=n),2)
+    nclusts <- rep(c(4,6),each=length(sigmas)/2)
 
     ests <- pblapply(seq_along(sigmas), function(i) {
       set.seed(i)
-      out <- makeSimDataForMrlocus(nsnp=rep(7,6),
+      nclust <- nclusts[i]
+      nsnp <- rep(7,nclust)
+      out <- makeSimDataForMrlocus(nsnp=nsnp,
                                    idx=4,
                                    alpha=1,
                                    sigma=sigmas[i],
-                                   betas=1:6,
-                                   se=0.1)
+                                   betas=1:nclust,
+                                   se=0.05)
       fit <- list()
-      nsnp <- lengths(out$beta_hat_a)
-      nclust <- length(nsnp)
       for (j in 1:nclust) {
         cap.out <- capture.output({
           fit[[j]] <- with(out, 
@@ -44,18 +45,22 @@ test_that("benchmark sigma estimation", {
                      probs=c(.1,.9))$summary["sigma",c("mean","10%","90%")]
     }, cl=4)
 
+    #save(sigmas, nclusts, ests, file="~/Downloads/sigma_bench.rda")
+    
     dat <- as.data.frame(do.call(rbind, ests))
     names(dat) <- c("estimate","ymin","ymax")
     dat$rep <- factor(rep(1:n,times=nrow(dat)/n))
     dat$sigma <- sigmas
+    dat$nclust <- nclusts
     dat$cover <- factor(dat$sigma > dat$ymin & dat$sigma < dat$ymax, c("FALSE","TRUE"))
 
-    png(file="~/Desktop/sigma_est.png", width=800, height=800, res=125)
+    #png(file="~/Desktop/sigma_est.png", width=1600, height=800, res=125)
     ggplot(dat, aes(sigma, estimate, ymin=ymin, ymax=ymax, group=rep, col=cover)) +
       geom_pointrange(position=position_dodge(width=.1)) +
       scale_color_manual(values=c("FALSE"="red","TRUE"="black")) +
-      geom_abline(slope=1,intercept=0,alpha=0.25)
-    dev.off()
+      geom_abline(slope=1,intercept=0,alpha=0.25) +
+      facet_wrap(~nclust, labeller=label_both)
+    #dev.off()
     
   }
 })

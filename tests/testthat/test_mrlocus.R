@@ -21,9 +21,9 @@ test_that("mrlocus works on simple sim data", {
                 verbose=FALSE, open_progress=FALSE,
                 show_messages=FALSE, refresh=-1))
   }
-  j <- 1
-  rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_a[",1:nsnp[j],"]"))
-  rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_b[",1:nsnp[j],"]"))
+  #j <- 1
+  #rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_a[",1:nsnp[j],"]"))
+  #rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_b[",1:nsnp[j],"]"))
   # extract results from colocalization for slope fitting:
   res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
               beta_hat_b=lapply(fit, `[[`, "beta_hat_b"),
