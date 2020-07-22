@@ -8,8 +8,8 @@ test_that("benchmark sigma estimation", {
     library(pbapply)
     library(ggplot2)
     n <- 10
-    sigmas <- rep(rep(1:4 * .25, each=n),2)
-    nclusts <- rep(c(4,6),each=length(sigmas)/2)
+    sigmas <- rep(1:4 * .25, each=3 * 10)
+    nclusts <- rep(rep(c(4,6,8), each=n), times=4)
 
     ests <- pblapply(seq_along(sigmas), function(i) {
       set.seed(i)
@@ -54,7 +54,7 @@ test_that("benchmark sigma estimation", {
     dat$nclust <- nclusts
     dat$cover <- factor(dat$sigma > dat$ymin & dat$sigma < dat$ymax, c("FALSE","TRUE"))
 
-    #png(file="~/Desktop/sigma_est.png", width=1600, height=800, res=125)
+    #png(file="~/Desktop/sigma_est.png", width=1800, height=600, res=125)
     ggplot(dat, aes(sigma, estimate, ymin=ymin, ymax=ymax, group=rep, col=cover)) +
       geom_pointrange(position=position_dodge(width=.1)) +
       scale_color_manual(values=c("FALSE"="red","TRUE"="black")) +
