@@ -20,7 +20,7 @@ test_that("benchmark sigma estimation", {
                                    alpha=1,
                                    sigma=sigmas[i],
                                    betas=1:nclust,
-                                   se=0.05)
+                                   se=0.1)
       fit <- list()
       for (j in 1:nclust) {
         cap.out <- capture.output({
