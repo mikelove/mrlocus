@@ -7,6 +7,7 @@
 flipAllelesAndGather(
   sum_stat,
   ld_mat,
+  ld_mat2 = NULL,
   a,
   b,
   ref,
@@ -25,6 +26,12 @@ flipAllelesAndGather(
 \item{sum_stat}{list of summary statistic tables}
 
 \item{ld_mat}{list of LD matrices}
+
+\item{ld_mat2}{optional second list of LD matrices
+(for different populations). it will be returned
+alongside the first \code{ld_mat}, which is used
+for the allele flipping. the second list of LD
+matrices is just flipped in the same way}
 
 \item{a}{name of A in columns of sum_stat ("eQTL")}
 

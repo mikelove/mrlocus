@@ -118,6 +118,7 @@
     <pre class="usage"><span class='fu'>flipAllelesAndGather</span>(
   <span class='no'>sum_stat</span>,
   <span class='no'>ld_mat</span>,
+  <span class='kw'>ld_mat2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>a</span>,
   <span class='no'>b</span>,
   <span class='no'>ref</span>,
@@ -142,6 +143,14 @@
     <tr>
       <th>ld_mat</th>
       <td><p>list of LD matrices</p></td>
+    </tr>
+    <tr>
+      <th>ld_mat2</th>
+      <td><p>optional second list of LD matrices
+(for different populations). it will be returned
+alongside the first <code>ld_mat</code>, which is used
+for the allele flipping. the second list of LD
+matrices is just flipped in the same way</p></td>
     </tr>
     <tr>
       <th>a</th>

@@ -4,12 +4,26 @@
 \alias{collapseHighCorSNPs}
 \title{Collapse high correlation SNPs}
 \usage{
-collapseHighCorSNPs(sum_stat, ld_mat, thresh = 0.95, score = NULL, plot = TRUE)
+collapseHighCorSNPs(
+  sum_stat,
+  ld_mat,
+  ld_mat2 = NULL,
+  thresh = 0.95,
+  score = NULL,
+  plot = TRUE
+)
 }
 \arguments{
 \item{sum_stat}{list of summary statistic tables}
 
 \item{ld_mat}{list of LD matrices}
+
+\item{ld_mat2}{optional second list of LD matrices
+(for different populations). it will be returned
+alongside the first \code{ld_mat}, which is used
+for the collapsing. the second list of LD
+matrices is just subset to the same set of SNPs
+as the first}
 
 \item{score}{name of a column of sum_stat data.frames
 with a score, such that collapsing will choose the

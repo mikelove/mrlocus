@@ -2,6 +2,12 @@
 #'
 #' @param sum_stat list of summary statistic tables
 #' @param ld_mat list of LD matrices
+#' @param ld_mat2 optional second list of LD matrices
+#' (for different populations). it will be returned
+#' alongside the first \code{ld_mat}, which is used
+#' for the collapsing. the second list of LD
+#' matrices is just subset to the same set of SNPs
+#' as the first
 #' @param threshold threshold on absolute value of
 #' correlation for collapsing, e.g. will collapse
 #' if SNPs are more correlated (or anti-correlated)
@@ -15,11 +21,19 @@
 #' @return list with modified ld_mat and sum_stat lists
 #' 
 #' @export
-collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=TRUE) {
+collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
+                                thresh=.95, score=NULL, plot=TRUE) {
   stopifnot(length(sum_stat) == length(ld_mat))
   stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
   stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))
+  two.ld <- !is.null(ld_mat2)
+  if (two.ld) {
+    stopifnot(length(sum_stat) == length(ld_mat2))
+    stopifnot(all(sapply(ld_mat2, is, "matrix")))
+    stopifnot(nrow(ld_mat2[[1]]) == ncol(ld_mat2[[1]]))
+    stopifnot(nrow(ld_mat2[[1]]) == nrow(sum_stat[[1]]))
+  }
   nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
   message(paste0("pre:  ",paste(nsnps,collapse=",")))
   gs <- list()
@@ -55,6 +69,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
     idx <- match(seq_len(nhclust), hclusters)
     ld_mat[[j]] <- ld_mat[[j]][idx,idx,drop=FALSE]
     sum_stat[[j]] <- sum_stat[[j]][idx,]
+    if (two.ld) {
+      ld_mat2[[j]] <- ld_mat2[[j]][idx,idx,drop=FALSE]
+    }
     if (plot) {
       gs[[2*j]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
                                       cluster_rows=FALSE, cluster_cols=FALSE,
@@ -68,13 +85,22 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
   }
   nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
   message(paste0("post: ",paste(nsnps,collapse=",")))
-  list(sum_stat=sum_stat, ld_mat=ld_mat)
+  if (two.ld) {
+    list(sum_stat=sum_stat, ld_mat=ld_mat, ld_mat2=ld_mat2)
+  } else {
+    list(sum_stat=sum_stat, ld_mat=ld_mat)
+  }
 }
 
 #' Flip alleles and gather results into lists
 #'
 #' @param sum_stat list of summary statistic tables
 #' @param ld_mat list of LD matrices
+#' @param ld_mat2 optional second list of LD matrices
+#' (for different populations). it will be returned
+#' alongside the first \code{ld_mat}, which is used
+#' for the allele flipping. the second list of LD
+#' matrices is just flipped in the same way
 #' @param a name of A in columns of sum_stat ("eQTL")
 #' @param b name of B ("GWAS")
 #' @param ref name of reference allele
@@ -99,6 +125,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, thresh=.95, score=NULL, plot=T
 #' 
 #' @export
 flipAllelesAndGather <- function(sum_stat, ld_mat,
+                                 ld_mat2=NULL,
                                  a, b, ref, eff,
                                  beta, se, a2_plink, snp_id,
                                  sep, ab_last=TRUE,
@@ -110,7 +137,13 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   }
   stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
-  stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))  
+  stopifnot(nrow(ld_mat[[1]]) == nrow(sum_stat[[1]]))
+  two.ld <- !is.null(ld_mat2)
+  if (two.ld) {
+    stopifnot(all(sapply(ld_mat2, is, "matrix")))
+    stopifnot(nrow(ld_mat2[[1]]) == ncol(ld_mat2[[1]]))
+    stopifnot(nrow(ld_mat2[[1]]) == nrow(sum_stat[[1]]))
+  }
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
   # if users manually had to modify their column names.
@@ -133,6 +166,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   se_a <- list()
   se_b <- list()
   Sigma <- list()
+  Sigma2 <- list()
   alleles <- list()
   
   for (j in seq_along(sum_stat)) {
@@ -163,6 +197,9 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     # only flip LD matrix based on positive correlation with index (bc it comes from plink)
     ld.flipped <- t(t(ld_mat[[j]]) * ld.sign) * ld.sign
     Sigma[[j]] <- ld.flipped
+    if (two.ld) {
+      Sigma2[[j]] <- t(t(ld_mat2[[j]]) * ld.sign) * ld.sign
+    }
     # record the alleles after all the flipping
     alleles[[j]] <- data.frame(
       id=sum_stat[[j]][[snp_id]],
@@ -193,6 +230,9 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
               se_a=se_a, se_b=se_b,
               Sigma=Sigma,
               alleles=alleles)
+  if (two.ld) {
+    out$Sigma2 <- Sigma2
+  }
   if (plot) {
     plotInitEstimates(out, a=a, b=b)
   }
