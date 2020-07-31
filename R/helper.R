@@ -164,9 +164,11 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     ld.flipped <- t(t(ld_mat[[j]]) * ld.sign) * ld.sign
     Sigma[[j]] <- ld.flipped
     # record the alleles after all the flipping
-    alleles[[j]] <- data.frame(ref=sum_stat[[j]][[ref_a_nm]],
-                               eff=sum_stat[[j]][[eff_a_nm]],
-                               stringsAsFactors=FALSE)
+    alleles[[j]] <- data.frame(
+      id=sum_stat[[j]][[snp_id]],
+      ref=sum_stat[[j]][[ref_a_nm]],
+      eff=sum_stat[[j]][[eff_a_nm]],
+      stringsAsFactors=FALSE)
     idx2 <- ld.sign * plink.agree == -1
     tmp.ref <- alleles[[j]]$ref[idx2]
     tmp.eff <- alleles[[j]]$eff[idx2]
