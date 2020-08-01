@@ -15,6 +15,7 @@ flipAllelesAndGather(
   beta,
   se,
   a2_plink,
+  a2_plink_mat2 = NULL,
   snp_id,
   sep,
   ab_last = TRUE,
@@ -51,6 +52,10 @@ and earlier was to reset a2 to the major allele, unless
 an optional flag was used. in plink v2.0 and onward, one
 should check to see which allele is used as reference for
 calculating the LD matrix}
+
+\item{a2_plink_mat2}{name of the column representing
+the a2 allele for the second LD matrix, \code{ld_mat2}
+(needed only if \code{ld_mat2} was specified)}
 
 \item{snp_id}{name of SNP id}
 

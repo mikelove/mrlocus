@@ -113,6 +113,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 #' an optional flag was used. in plink v2.0 and onward, one
 #' should check to see which allele is used as reference for
 #' calculating the LD matrix
+#' @param a2_plink_mat2 name of the column representing
+#' the a2 allele for the second LD matrix, \code{ld_mat2}
+#' (needed only if \code{ld_mat2} was specified)
 #' @param snp_id name of SNP id
 #' @param sep character separator in column names that involve A/B
 #' @param ab_last logical, A/B descriptor is last in column names
@@ -127,7 +130,10 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 flipAllelesAndGather <- function(sum_stat, ld_mat,
                                  ld_mat2=NULL,
                                  a, b, ref, eff,
-                                 beta, se, a2_plink, snp_id,
+                                 beta, se,
+                                 a2_plink,
+                                 a2_plink_mat2=NULL,
+                                 snp_id,
                                  sep, ab_last=TRUE,
                                  alleles_same=FALSE,
                                  plot=TRUE) {
@@ -143,6 +149,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     stopifnot(all(sapply(ld_mat2, is, "matrix")))
     stopifnot(nrow(ld_mat2[[1]]) == ncol(ld_mat2[[1]]))
     stopifnot(nrow(ld_mat2[[1]]) == nrow(sum_stat[[1]]))
+    stopifnot(!is.null(a2_plink_mat2))
   }
   # the following allow for arbitrary incoming column names.
   # the point of this is to reduce mistakes that might occur
@@ -198,6 +205,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
     ld.flipped <- t(t(ld_mat[[j]]) * ld.sign) * ld.sign
     Sigma[[j]] <- ld.flipped
     if (two.ld) {
+      two.ld.agree <- ifelse(sum_stat[[j]][[a2_plink]] == sum_stat[[j]][[a2_plink_mat2]], 1, -1)
+      ld.sign <- ld.sign * two.ld.agree
       Sigma2[[j]] <- t(t(ld_mat2[[j]]) * ld.sign) * ld.sign
     }
     # record the alleles after all the flipping

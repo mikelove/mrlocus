@@ -126,6 +126,7 @@
   <span class='no'>beta</span>,
   <span class='no'>se</span>,
   <span class='no'>a2_plink</span>,
+  <span class='kw'>a2_plink_mat2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>snp_id</span>,
   <span class='no'>sep</span>,
   <span class='kw'>ab_last</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -184,6 +185,12 @@ and earlier was to reset a2 to the major allele, unless
 an optional flag was used. in plink v2.0 and onward, one
 should check to see which allele is used as reference for
 calculating the LD matrix</p></td>
+    </tr>
+    <tr>
+      <th>a2_plink_mat2</th>
+      <td><p>name of the column representing
+the a2 allele for the second LD matrix, <code>ld_mat2</code>
+(needed only if <code>ld_mat2</code> was specified)</p></td>
     </tr>
     <tr>
       <th>snp_id</th>
