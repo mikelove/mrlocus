@@ -324,7 +324,8 @@ extractForSlope <- function(res,
          col=rep(seq_along(nsnp),nsnp),
          pch=rep(seq_along(nsnp),nsnp),
          xlab=paste("beta",a), ylab=paste("beta",b))
-    plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b), col=z,
+    plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b),
+         col=ifelse(z == 1, "black", "blue"),
          pch=rep(seq_along(nsnp),nsnp),
          xlab=paste("beta",a), ylab=paste("beta",b))
   }
@@ -396,14 +397,23 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param res the output from fitSlope
 #' @param q the quantiles of the posterior
 #' to use for drawing the uncertainty on the slope
+#' @param sigma_mult multiplier on estimate of sigma
+#' for drawing the dispersion band 
+#' (e.g. \code{qnorm(1 - .2/2) = 1.28} should include
+#' 80% of coefficient pairs)
 #' @param a name of A experiment
 #' @param b name of B experiment
+#' @param legend logical, whether to show a legend
+#' @param digits number of digits to show in legend
 #' @param ... arguments passed to plot()
 #'
 #' @export
 plotMrlocus <- function(res, 
                         q=c(.1,.9),
+                        sigma_mult=1,
                         a="eQTL", b="GWAS",
+                        legend=TRUE,
+                        digits=2,
                         ...) {
   par(mfrow=c(1,1))
   stopifnot(length(q) == 2)
@@ -424,15 +434,15 @@ plotMrlocus <- function(res,
 
   # alpha (slope), sigma, and uncertainty on slope
   polygon(c(0,2*xx,2*xx,0),
-          c(-sigma.hat,alpha.hat*2*xx-sigma.hat,
-            alpha.hat*2*xx+sigma.hat,sigma.hat),
+          c(-sigma_mult*sigma.hat, alpha.hat*2*xx -sigma_mult*sigma.hat,
+            alpha.hat*2*xx + sigma_mult*sigma.hat, sigma_mult*sigma.hat),
           col=rgb(0,0,1,.1), border=NA)
   segments(0, 0, 2*xx, alpha.hat*2*xx, col="blue", lwd=2)
   segments(0, 0, 2*xx, (alpha.qs[1])*2*xx,
-           col=rgb(0,0,1,.5))
+           col=rgb(0,0,1,.5), lwd=2, lty=2)
   segments(0, 0, 2*xx, (alpha.qs[2])*2*xx,
-           col=rgb(0,0,1,.5))
-  abline(h=0, lty=2)
+           col=rgb(0,0,1,.5), lwd=2, lty=2)
+  abline(h=0, col=rgb(0,0,0,.25))
 
   # the pairs and their SEs
   points(res$beta_hat_a, res$beta_hat_b, pch=19)
@@ -442,15 +452,28 @@ plotMrlocus <- function(res,
   arrows(res$beta_hat_a, res$beta_hat_b - res$sd_b,
          res$beta_hat_a, res$beta_hat_b + res$sd_b,
          code=3, angle=90, length=.05)
-  
-  where <- if (alpha.hat > 0) "bottomleft" else "topleft"
-  legend(where, lwd=c(2,5), col=rgb(0,0,1,c(1,.15)),
-         inset=.05, y.intersp=1.1,
-         legend=c(as.expression(bquote(paste(hat(alpha)," = ",
-                                             .(round(alpha.hat,3))," [",
-                                             .(round(alpha.qs[1],3)),",",
-                                             .(round(alpha.qs[2],3)),
-                                             "]"))),
-                  as.expression(bquote(paste(hat(sigma)," = ",
-                                             .(round(sigma.hat,3)))))))
+
+  if (legend) {
+    where <- if (alpha.hat > 0) "bottomleft" else "topleft"
+    slope.leg <- as.expression(bquote(paste("slope ", hat(alpha)," = ",
+                                            .(round(alpha.hat,digits)))))
+    slope.int.leg <- paste0(100*diff(q), "% int. = (",
+                            round(alpha.qs[1],digits),
+                           ", ",round(alpha.qs[2],digits),
+                           ")")
+    sigma.leg <- if (sigma_mult == 1) {
+                   as.expression(bquote(paste(hat(sigma)," = ",
+                                              .(round(sigma.hat,digits)))))
+                 } else {
+                   as.expression(bquote(paste("" %+-% .(sigma_mult) %*% "(", hat(sigma)," = ",
+                                              .(round(sigma.hat,digits)), ")")))
+                 }
+    legend(where,
+           lwd=c(2,2,5),
+           lty=c(1,2,1),
+           col=rgb(0,0,1,c(1,.5,.15)),
+           inset=.05,
+           y.intersp=1.1,
+           legend=c(slope.leg, slope.int.leg, sigma.leg))
+  }
 }
