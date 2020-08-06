@@ -5,6 +5,7 @@ test_that("mrlocus works on simple sim data", {
 
   set.seed(1)
   out <- makeSimDataForMrlocus()
+  #out <- makeSimDataForMrlocus(alpha=0,n_mult=100)
   plotInitEstimates(out)
 
   # colocalization:

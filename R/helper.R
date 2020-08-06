@@ -347,6 +347,7 @@ extractForSlope <- function(res,
 #' values given true A coefficients
 #' @param betas the true A coefficients
 #' @param se the standard errors for betas
+#' @param n_mult how many more samples the B study has
 #' 
 #' @return a list of beta_hat_a, beta_hat_b, se_a, and se_b,
 #' Sigma_a, and Sigma_b (themselves lists)
@@ -354,7 +355,7 @@ extractForSlope <- function(res,
 #' @export
 makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
                                   alpha=.5, sigma=.05,
-                                  betas=1:4, se=.25) {
+                                  betas=1:4, se=.25, n_mult=1) {
   stopifnot(idx >= 3)
   stopifnot(all(nsnp >= idx))
   stopifnot(all(betas > 0))
@@ -373,6 +374,9 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
   beta <- lapply(1:nclust, function(j) (rep(c(0,betas[j],0),c(x,1,y)))[1:nsnp[j]])
   beta_hat_a <- beta_hat_b <- beta
   se_a <- se_b <- lapply(1:nclust, function(j) rep(se, nsnp[j]))
+  if (n_mult != 1) {
+    se_b <- lapply(se_b, function(x) x/sqrt(n_mult))
+  }
   mu <- mean(sapply(beta, `[`, x+1))
   for (j in 1:nclust) {
     beta_a_j <- beta[[j]]
@@ -398,22 +402,27 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param q the quantiles of the posterior
 #' to use for drawing the uncertainty on the slope
 #' @param sigma_mult multiplier on estimate of sigma
-#' for drawing the dispersion band 
-#' (e.g. \code{qnorm(1 - .2/2) = 1.28} should include
+#' for drawing the dispersion band
+#' (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
 #' 80% of coefficient pairs)
 #' @param a name of A experiment
 #' @param b name of B experiment
+#' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
+#' @param pointers logical, whether to show labels
+#' with pointing arrows
 #' @param ... arguments passed to plot()
 #'
 #' @export
 plotMrlocus <- function(res, 
                         q=c(.1,.9),
-                        sigma_mult=1,
+                        sigma_mult=1.28,
                         a="eQTL", b="GWAS",
+                        ylim=NULL,
                         legend=TRUE,
                         digits=2,
+                        pointers=FALSE,
                         ...) {
   par(mfrow=c(1,1))
   stopifnot(length(q) == 2)
@@ -426,7 +435,9 @@ plotMrlocus <- function(res,
   xx <- max(res$beta_hat_a)
   xlim <- c(0, 1.5*xx)
   yy <- 1.5*max(abs(res$beta_hat_b))
-  ylim <- c(-yy, yy)
+  if (is.null(ylim)) {
+    ylim <- c(-yy, yy)
+  }
   plot(res$beta_hat_a, res$beta_hat_b,
        xlim=xlim, ylim=ylim, type="n",
        xlab=paste("beta", a),
@@ -475,5 +486,36 @@ plotMrlocus <- function(res,
            inset=.05,
            y.intersp=1.1,
            legend=c(slope.leg, slope.int.leg, sigma.leg))
+  }
+
+  if (pointers) {
+    # only works for a pos slope example...
+    xr <- 1.5 * max(res$beta_hat_a)
+    yr <- 2.5 * max(res$beta_hat_b)
+    idx <- which.min(res$beta_hat_a)
+    arrows(res$beta_hat_a[idx] + xr/10, -yr/3,
+           res$beta_hat_a[idx] + xr/50, res$beta_hat_b[idx] - yr/10,
+           angle=45, length=.05)
+    text(res$beta_hat_a[idx] + xr/10, -yr/3,
+         "MRLocus est. coef.\nand SE bars",
+         pos=1, cex=.75)
+    arrows(.5 * xr, -yr/8, .4 * xr,
+           .6 * alpha.hat * .4 * xr,
+           angle=45, length=.05, col=rgb(0,0,1,.5))
+    text(.5 * xr, -yr/8,
+         "80% dispersion\nband",
+         pos=1, cex=.75, col=rgb(0,0,1,.5))
+    arrows(.75 * xr, yr/5, .75 * xr,
+           .95 * alpha.hat * .75 * xr,
+           angle=45, length=.05, col="blue")
+    text(.75 * xr, yr/5,
+         "gene-to-trait\nslope",
+         pos=1, cex=.75, col="blue")
+    arrows(.9 * xr, -yr/8, .9 * xr,
+           .75 * alpha.hat * .9 * xr,
+           angle=45, length=.05, col=rgb(0,0,1,.5))
+    text(.9 * xr, -yr/8,
+         "80% interval\non slope",
+         pos=1, cex=.75, col=rgb(0,0,1,.5))
   }
 }

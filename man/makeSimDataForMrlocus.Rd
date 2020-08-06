@@ -10,7 +10,8 @@ makeSimDataForMrlocus(
   alpha = 0.5,
   sigma = 0.05,
   betas = 1:4,
-  se = 0.25
+  se = 0.25,
+  n_mult = 1
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ values given true A coefficients}
 \item{betas}{the true A coefficients}
 
 \item{se}{the standard errors for betas}
+
+\item{n_mult}{how many more samples the B study has}
 }
 \value{
 a list of beta_hat_a, beta_hat_b, se_a, and se_b,

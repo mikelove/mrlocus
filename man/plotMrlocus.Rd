@@ -4,7 +4,18 @@
 \alias{plotMrlocus}
 \title{Plot mrlocus estimates}
 \usage{
-plotMrlocus(res, q = c(0.1, 0.9), a = "eQTL", b = "GWAS", ...)
+plotMrlocus(
+  res,
+  q = c(0.1, 0.9),
+  sigma_mult = 1.28,
+  a = "eQTL",
+  b = "GWAS",
+  ylim = NULL,
+  legend = TRUE,
+  digits = 2,
+  pointers = FALSE,
+  ...
+)
 }
 \arguments{
 \item{res}{the output from fitSlope}
@@ -12,9 +23,23 @@ plotMrlocus(res, q = c(0.1, 0.9), a = "eQTL", b = "GWAS", ...)
 \item{q}{the quantiles of the posterior
 to use for drawing the uncertainty on the slope}
 
+\item{sigma_mult}{multiplier on estimate of sigma
+for drawing the dispersion band
+(e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
+80% of coefficient pairs)}
+
 \item{a}{name of A experiment}
 
 \item{b}{name of B experiment}
+
+\item{ylim}{ylim (if NULL will be set automatically)}
+
+\item{legend}{logical, whether to show a legend}
+
+\item{digits}{number of digits to show in legend}
+
+\item{pointers}{logical, whether to show labels
+with pointing arrows}
 
 \item{...}{arguments passed to plot()}
 }
