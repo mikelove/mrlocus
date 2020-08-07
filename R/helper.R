@@ -405,6 +405,8 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' for drawing the dispersion band
 #' (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
 #' 80% of coefficient pairs)
+#' @param label what preceeds \code{a} and \code{b} in
+#' the x- and y-axis labels?
 #' @param a name of A experiment
 #' @param b name of B experiment
 #' @param ylim ylim (if NULL will be set automatically)
@@ -418,6 +420,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 plotMrlocus <- function(res, 
                         q=c(.1,.9),
                         sigma_mult=1.28,
+                        label="beta",
                         a="eQTL", b="GWAS",
                         ylim=NULL,
                         legend=TRUE,
@@ -440,8 +443,8 @@ plotMrlocus <- function(res,
   }
   plot(res$beta_hat_a, res$beta_hat_b,
        xlim=xlim, ylim=ylim, type="n",
-       xlab=paste("beta", a),
-       ylab=paste("beta", b), ...)
+       xlab=paste(label, a),
+       ylab=paste(label, b), ...)
 
   # alpha (slope), sigma, and uncertainty on slope
   polygon(c(0,2*xx,2*xx,0),
@@ -491,31 +494,34 @@ plotMrlocus <- function(res,
   if (pointers) {
     # only works for a pos slope example...
     xr <- 1.5 * max(res$beta_hat_a)
-    yr <- 2.5 * max(res$beta_hat_b)
+    yr <- diff(ylim)
     idx <- which.min(res$beta_hat_a)
-    arrows(res$beta_hat_a[idx] + xr/10, -yr/3,
-           res$beta_hat_a[idx] + xr/50, res$beta_hat_b[idx] - yr/10,
+    arrows(res$beta_hat_a[idx] + xr/20, -yr/3,
+           res$beta_hat_a[idx], res$beta_hat_b[idx] - yr/20,
            angle=45, length=.05)
-    text(res$beta_hat_a[idx] + xr/10, -yr/3,
+    text(res$beta_hat_a[idx] + xr/20, -yr/3,
          "MRLocus est. coef.\nand SE bars",
          pos=1, cex=.75)
+    blue <- "blue3"
     arrows(.5 * xr, -yr/8, .4 * xr,
-           .6 * alpha.hat * .4 * xr,
-           angle=45, length=.05, col=rgb(0,0,1,.5))
-    text(.5 * xr, -yr/8,
-         "80% dispersion\nband",
-         pos=1, cex=.75, col=rgb(0,0,1,.5))
+           .75 * alpha.hat * .4 * xr,
+           angle=45, length=.05, col=blue)
+    text(.5 * xr, -yr/6,
+         c("80% dispersion\n",
+           as.expression(bquote(paste("band (using ",hat(sigma),")")))),
+         pos=1, cex=.75, col=blue)
     arrows(.75 * xr, yr/5, .75 * xr,
-           .95 * alpha.hat * .75 * xr,
-           angle=45, length=.05, col="blue")
-    text(.75 * xr, yr/5,
-         "gene-to-trait\nslope",
-         pos=1, cex=.75, col="blue")
+           .97 * alpha.hat * .75 * xr,
+           angle=45, length=.05, col=blue)
+    text(.75 * xr, yr/6,
+         c("gene-to-trait\n",
+           as.expression(bquote(paste("slope (",hat(alpha),")")))),
+         pos=1, cex=.75, col=blue)
     arrows(.9 * xr, -yr/8, .9 * xr,
-           .75 * alpha.hat * .9 * xr,
-           angle=45, length=.05, col=rgb(0,0,1,.5))
+           .85 * alpha.hat * .9 * xr,
+           angle=45, length=.05, col=blue)
     text(.9 * xr, -yr/8,
          "80% interval\non slope",
-         pos=1, cex=.75, col=rgb(0,0,1,.5))
+         pos=1, cex=.75, col=blue)
   }
 }

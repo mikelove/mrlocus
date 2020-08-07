@@ -8,6 +8,7 @@ plotMrlocus(
   res,
   q = c(0.1, 0.9),
   sigma_mult = 1.28,
+  label = "beta",
   a = "eQTL",
   b = "GWAS",
   ylim = NULL,
@@ -27,6 +28,9 @@ to use for drawing the uncertainty on the slope}
 for drawing the dispersion band
 (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
 80% of coefficient pairs)}
+
+\item{label}{what preceeds \code{a} and \code{b} in
+the x- and y-axis labels?}
 
 \item{a}{name of A experiment}
 

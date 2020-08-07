@@ -4,8 +4,11 @@ library(mrlocus)
 test_that("mrlocus works on simple sim data", {
 
   set.seed(1)
-  out <- makeSimDataForMrlocus()
-  #out <- makeSimDataForMrlocus(alpha=0,n_mult=100)
+  out <- makeSimDataForMrlocus(n_mult=10)
+  #set.seed(2)
+  #out <- makeSimDataForMrlocus(n_mult=10,sigma=.5)
+  #set.seed(2)
+  #out <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=.5)
   plotInitEstimates(out)
 
   # colocalization:
@@ -38,6 +41,8 @@ test_that("mrlocus works on simple sim data", {
   print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
 
   # plot
-  plotMrlocus(res, main="mrlocus")
-  
+  #plotMrlocus(res)
+  #plotMrlocus(res, label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
+  plotMrlocus(res, label="Effect size of", legend=FALSE, pointers=TRUE, ylim=c(-2.5,2.5))
+
 })
