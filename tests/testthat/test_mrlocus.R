@@ -41,8 +41,19 @@ test_that("mrlocus works on simple sim data", {
   print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
 
   # plot
-  #plotMrlocus(res)
-  #plotMrlocus(res, label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
-  plotMrlocus(res, label="Effect size of", legend=FALSE, pointers=TRUE, ylim=c(-2.5,2.5))
+  plotMrlocus(res)
+
+  ## png(file="~/Desktop/sim.png", width=1500, height=500, res=150)
+  ## par(mfrow=c(1,3))
+  ## load("~/Desktop/sim_lowdisp.rda")
+  ## plotMrlocus(res, main="SNPs → gene → trait\n(mediation with low dispersion)",
+  ##             label="Effect size of", legend=FALSE, pointers=TRUE, ylim=c(-2.5,2.5))
+  ## load("~/Desktop/sim_highdisp.rda")
+  ## plotMrlocus(res, main="SNPs → gene → trait\n(mediation with high dispersion)",
+  ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
+  ## load("~/Desktop/sim_alpha0_highdisp.rda")
+  ## plotMrlocus(res, main="SNPs → gene → trait\n(no mediation)",
+  ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
+  ## dev.off()
 
 })

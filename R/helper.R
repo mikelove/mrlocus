@@ -427,7 +427,6 @@ plotMrlocus <- function(res,
                         digits=2,
                         pointers=FALSE,
                         ...) {
-  par(mfrow=c(1,1))
   stopifnot(length(q) == 2)
   stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=q)$summary
   alpha.hat <- stansum["alpha","mean"]
