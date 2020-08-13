@@ -4,7 +4,7 @@ navbar:
   title: "MRLocus"
   left:
     - text: "Vignette"
-      href: articles/index.html
+      href: articles/mrlocus.html
     - text: "Functions"
       href: reference/index.html
   right:
