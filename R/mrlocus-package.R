@@ -1,6 +1,19 @@
-#' The 'mrlocus' package.
+#' MRLocus - Mendelian Randomization per locus
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description Mendelian Randomization per locus, leveraging eQTL
+#' and GWAS summary statistics, for estimation of gene-to-trait
+#' effect size and dispersion.
+#'
+#' The main functions (in order of typical usage) are:
+#'
+#' \itemize{
+#' \item \code{\link{collapseHighCorSNPs}} - collapse high correlation SNPs
+#' \item \code{\link{flipAllelesAndGather}} - flip alleles and gather for colocalization
+#' \item \code{\link{fitBetaColoc}} - perform colocalization across signal clusters
+#' \item \code{\link{extractForSlope}} - extract one SNP per signal cluster for MR analysis
+#' \item \code{\link{fitSlope}} - perform MR analysis to estimate gene-to-trait effect
+#' \item \code{\link{plotMrlocus}} - plot estimates from MR analysis
+#' }
 #'
 #' @docType package
 #' @name mrlocus-package

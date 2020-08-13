@@ -4,7 +4,14 @@
 \alias{extractForSlope}
 \title{Extract SNPs from colocalization for slope fitting}
 \usage{
-extractForSlope(res, niter = 0, plot = TRUE, a = "eQTL", b = "GWAS")
+extractForSlope(
+  res,
+  niter = 0,
+  plot = TRUE,
+  label = "Effect size of",
+  a = "eQTL",
+  b = "GWAS"
+)
 }
 \arguments{
 \item{res}{list with the following named elements:
@@ -23,6 +30,9 @@ signal cluster is output.}
 \item{plot}{logical, draw a before after of which
 variants will be included for slope estimation}
 
+\item{label}{what preceeds \code{a} and \code{b} in
+the x- and y-axis labels}
+
 \item{a}{name of A experiment}
 
 \item{b}{name of B experiment}
@@ -32,7 +42,10 @@ list of vectors of the first four arguments,
 collapsed now across signal clusters, representing
 variants with positive effect on A. So the null variants
 have been removed (and any variants per cluster that
-indicated a negative effect on A)
+indicated a negative effect on A). If \code{alleles}
+data.frames were included in the input, they will
+also be passed through as a single data.frame with the
+selected SNPs per signal cluster
 }
 \description{
 Extract SNPs from colocalization for slope fitting

@@ -70,7 +70,7 @@ the a2 allele for the second LD matrix, \code{ld_mat2}
 }
 \value{
 list with estimated coefficients, standard
-errors, LD matrix, and allele table
+errors, LD matrix, and allele data.frame
 }
 \description{
 Flip alleles and gather results into lists

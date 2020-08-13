@@ -32,6 +32,11 @@ fitSlope(
 
 \item{...}{further arguments passed to rstan::sampling}
 }
+\value{
+list with the following elements: stanfit object,
+original estimated coefficients and standard deviations,
+as well as the alleles data.frame (if it was provided)
+}
 \description{
 Fit the beta slope model: effect of A on B
 }

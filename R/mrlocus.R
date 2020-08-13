@@ -7,6 +7,19 @@
 #' @param Sigma_a correlation matrix of SNPs for A, dimension should be nsnp x nsnp
 #' @param Sigma_b " " for B (this could be different for different LD structures)
 #' @param ... further arguments passed to rstan::sampling
+#'
+#' @importFrom matrixStats colSds
+#'
+#' @return a list with the following elements: stanfit object,
+#' posterior means for estimated coefficients,
+#' posterior standard deviations, and scaling factors.
+#' Two important notes: (1) in MRLocus manuscript, original
+#' SE are used instead of posterior SD in the slope fitting step,
+#' (2) the posterior means and SD for estimated coefficients 
+#' are appropriately scaled, while the results from the
+#' stanfit object are not scaled. In order to scale the
+#' results from the stanfit object, scale_a and scale_b
+#' should be divided out (see Supplementary Methods).
 #' 
 #' @export
 fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
@@ -58,6 +71,10 @@ fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
 #' @param sd_alpha prior SD for alpha
 #' @param sd_sigma prior SD for sigma
 #' @param ... further arguments passed to rstan::sampling
+#'
+#' @return list with the following elements: stanfit object,
+#' original estimated coefficients and standard deviations,
+#' as well as the alleles data.frame (if it was provided)
 #' 
 #' @export
 fitSlope <- function(res,
@@ -110,11 +127,13 @@ fitSlope <- function(res,
     est <- c(median(slope), mad(slope))
     out <- list(est=est)
   }
-  out <- c(list(beta_hat_a=res$beta_hat_a,
+  out <- c(out,
+           list(beta_hat_a=res$beta_hat_a,
                 beta_hat_b=res$beta_hat_b,
                 sd_a=res$sd_a,
-                sd_b=res$sd_b),
-           out)
-
+                sd_b=res$sd_b))
+  if ("alleles" %in% names(res)) {
+    out$alleles <- res$alleles
+  }
   return(out)
 }

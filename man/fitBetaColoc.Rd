@@ -21,6 +21,18 @@ fitBetaColoc(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b, ...)
 
 \item{...}{further arguments passed to rstan::sampling}
 }
+\value{
+a list with the following elements: stanfit object,
+posterior means for estimated coefficients,
+posterior standard deviations, and scaling factors.
+Two important notes: (1) in MRLocus manuscript, original
+SE are used instead of posterior SD in the slope fitting step,
+(2) the posterior means and SD for estimated coefficients 
+are appropriately scaled, while the results from the
+stanfit object are not scaled. In order to scale the
+results from the stanfit object, scale_a and scale_b
+should be divided out (see Supplementary Methods).
+}
 \description{
 Fit the beta colocalization per signal cluster
 }

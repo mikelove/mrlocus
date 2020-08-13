@@ -1,0 +1,12 @@
+url: https://mikelove.github.io/mrlocus
+
+navbar:
+  title: "MRLocus"
+  left:
+    - text: "Vignette"
+      href: articles/index.html
+    - text: "Functions"
+      href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/mikelove/mrlocus

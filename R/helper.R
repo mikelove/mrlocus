@@ -19,6 +19,7 @@
 #' @param plot logical, draw a before/after grid of plots
 #'
 #' @return list with modified ld_mat and sum_stat lists
+#' (and ld_mat2 if provided)
 #' 
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
@@ -33,6 +34,14 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
     stopifnot(all(sapply(ld_mat2, is, "matrix")))
     stopifnot(nrow(ld_mat2[[1]]) == ncol(ld_mat2[[1]]))
     stopifnot(nrow(ld_mat2[[1]]) == nrow(sum_stat[[1]]))
+  }
+  if (plot) {
+    if (!requireNamespace("pheatmap", quietly=TRUE)) {
+      stop("plot=TRUE requires package 'pheatmap'")
+    }
+    if (!requireNamespace("gridExtra", quietly=TRUE)) {
+      stop("plot=TRUE requires package 'gridExtra'")
+    }
   }
   nsnps <- formatC(sapply(sum_stat,nrow), width=2, flag=0)
   message(paste0("pre:  ",paste(nsnps,collapse=",")))
@@ -124,7 +133,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 #' @param plot logical, draw a scatterplot of the flipped betas
 #'
 #' @return list with estimated coefficients, standard
-#' errors, LD matrix, and allele table
+#' errors, LD matrix, and allele data.frame
 #' 
 #' @export
 flipAllelesAndGather <- function(sum_stat, ld_mat,
@@ -252,15 +261,17 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #'
 #' @param x list of signal clusters data with beta_hat_a
 #' and beta_hat_b lists
+#' @param label what preceeds \code{a} and \code{b} in
+#' the x- and y-axis labels
 #' @param a name of A experiment
 #' @param b name of B experiment
 #'
 #' @export
-plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
+plotInitEstimates <- function(x, label="Effect size of", a="eQTL", b="GWAS") {
   nsnp <- lengths(x$beta_hat_a)
   plot(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
-       xlab=paste("beta", a),
-       ylab=paste("beta", b), 
+       xlab=paste(label, a),
+       ylab=paste(label, b), 
        col=rep(seq_along(nsnp),nsnp),
        pch=rep(seq_along(nsnp),nsnp))
   text(unlist(x$beta_hat_a), unlist(x$beta_hat_b),
@@ -284,6 +295,8 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' signal cluster is output.
 #' @param plot logical, draw a before after of which
 #' variants will be included for slope estimation
+#' @param label what preceeds \code{a} and \code{b} in
+#' the x- and y-axis labels
 #' @param a name of A experiment
 #' @param b name of B experiment
 #'
@@ -291,12 +304,16 @@ plotInitEstimates <- function(x, a="eQTL", b="GWAS") {
 #' collapsed now across signal clusters, representing
 #' variants with positive effect on A. So the null variants
 #' have been removed (and any variants per cluster that
-#' indicated a negative effect on A)
+#' indicated a negative effect on A). If \code{alleles}
+#' data.frames were included in the input, they will
+#' also be passed through as a single data.frame with the
+#' selected SNPs per signal cluster
 #'
 #' @export
 extractForSlope <- function(res,
                             niter=0,
                             plot=TRUE,
+                            label="Effect size of",
                             a="eQTL", b="GWAS") {
   stopifnot(all(c("beta_hat_a","beta_hat_b","sd_a","sd_b") %in% names(res)))
   nsnp <- lengths(res$beta_hat_a)
@@ -308,6 +325,9 @@ extractForSlope <- function(res,
       unlist(lapply(res$beta_hat_a,
                     function(x) x == max(x))), 2, 1)
   } else {
+    if (!requireNamespace("mclust", quietly=TRUE)) {
+      stop("niter > 0 requires package 'mclust'")
+    }
     beta_max_a <- sapply(res$beta_hat_a, max)
     dat <- pmax(unlist(res$beta_hat_a),0)
     kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
@@ -323,18 +343,24 @@ extractForSlope <- function(res,
     plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b),
          col=rep(seq_along(nsnp),nsnp),
          pch=rep(seq_along(nsnp),nsnp),
-         xlab=paste("beta",a), ylab=paste("beta",b))
+         xlab=paste(label,a), ylab=paste(label,b))
     plot(unlist(res$beta_hat_a), unlist(res$beta_hat_b),
          col=ifelse(z == 1, "black", "blue"),
          pch=rep(seq_along(nsnp),nsnp),
-         xlab=paste("beta",a), ylab=paste("beta",b))
+         xlab=paste(label,a), ylab=paste(label,b))
   }
   stopifnot(any(z == 2))
   idx <- z == 2
-  list(beta_hat_a=unlist(res$beta_hat_a)[idx],
-       beta_hat_b=unlist(res$beta_hat_b)[idx],
-       sd_a=unlist(res$sd_a)[idx],
-       sd_b=unlist(res$sd_b)[idx])
+  out <- list(beta_hat_a=unlist(res$beta_hat_a)[idx],
+              beta_hat_b=unlist(res$beta_hat_b)[idx],
+              sd_a=unlist(res$sd_a)[idx],
+              sd_b=unlist(res$sd_b)[idx])
+  if ("alleles" %in% names(res)) {
+    alleles <- res$alleles
+    alleles <- do.call(rbind, alleles)[idx,,drop=FALSE]
+    out$alleles <- alleles
+  }
+  out
 }
 
 #' Make simulated data for mrlocus
@@ -350,8 +376,11 @@ extractForSlope <- function(res,
 #' @param n_mult how many more samples the B study has
 #' 
 #' @return a list of beta_hat_a, beta_hat_b, se_a, and se_b,
-#' Sigma_a, and Sigma_b (themselves lists)
+#' Sigma_a, Sigma_b (themselves lists), and alleles
+#' (a list of data.frames each with id, ref, eff for the SNP id,
+#' reference allele, and effect allele).
 #'
+#' @importFrom MASS mvrnorm
 #' @export
 makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
                                   alpha=.5, sigma=.05,
@@ -388,15 +417,21 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
                        mu=Sigma_b[[j]] %*% beta_b_j,
                        diag(se_b[[j]]) %*% Sigma_b[[j]] %*% diag(se_b[[j]]))
   }
+  alleles <- lapply(nsnp, function(n) {
+    data.frame(id=paste0("rs",round(runif(n,1,1e6))),
+               ref=rep(c("A","C"),length.out=n),
+               eff=rep(c("T","G"),length.out=n))
+  })
   list(beta_hat_a=beta_hat_a,
        beta_hat_b=beta_hat_b,
        se_a=se_a,
        se_b=se_b,
        Sigma_a=Sigma_a,
-       Sigma_b=Sigma_b)
+       Sigma_b=Sigma_b,
+       alleles=alleles)
 }
 
-#' Plot mrlocus estimates
+#' Plot estimates from MRLocus slope fitting step
 #'
 #' @param res the output from fitSlope
 #' @param q the quantiles of the posterior
@@ -404,9 +439,9 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param sigma_mult multiplier on estimate of sigma
 #' for drawing the dispersion band
 #' (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
-#' 80% of coefficient pairs)
+#' 80 percent of coefficient pairs)
 #' @param label what preceeds \code{a} and \code{b} in
-#' the x- and y-axis labels?
+#' the x- and y-axis labels
 #' @param a name of A experiment
 #' @param b name of B experiment
 #' @param ylim ylim (if NULL will be set automatically)
@@ -420,11 +455,11 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 plotMrlocus <- function(res, 
                         q=c(.1,.9),
                         sigma_mult=1.28,
-                        label="beta",
+                        label="Effect size of",
                         a="eQTL", b="GWAS",
                         ylim=NULL,
                         legend=TRUE,
-                        digits=2,
+                        digits=3,
                         pointers=FALSE,
                         ...) {
   stopifnot(length(q) == 2)
@@ -491,36 +526,41 @@ plotMrlocus <- function(res,
   }
 
   if (pointers) {
-    # only works for a pos slope example...
-    xr <- 1.5 * max(res$beta_hat_a)
-    yr <- diff(ylim)
-    idx <- which.min(res$beta_hat_a)
-    arrows(res$beta_hat_a[idx] + xr/20, -yr/3,
-           res$beta_hat_a[idx], res$beta_hat_b[idx] - yr/20,
-           angle=45, length=.05)
-    text(res$beta_hat_a[idx] + xr/20, -yr/3,
-         "MRLocus est. coef.\nand SE bars",
-         pos=1, cex=.75)
-    blue <- "blue3"
-    arrows(.5 * xr, -yr/8, .4 * xr,
-           .75 * alpha.hat * .4 * xr,
-           angle=45, length=.05, col=blue)
-    text(.5 * xr, -yr/6,
-         c("80% dispersion\n",
-           as.expression(bquote(paste("band (using ",hat(sigma),")")))),
-         pos=1, cex=.75, col=blue)
-    arrows(.75 * xr, yr/5, .75 * xr,
-           .97 * alpha.hat * .75 * xr,
-           angle=45, length=.05, col=blue)
-    text(.75 * xr, yr/6,
-         c("gene-to-trait\n",
-           as.expression(bquote(paste("slope (",hat(alpha),")")))),
-         pos=1, cex=.75, col=blue)
-    arrows(.9 * xr, -yr/8, .9 * xr,
-           .85 * alpha.hat * .9 * xr,
-           angle=45, length=.05, col=blue)
-    text(.9 * xr, -yr/8,
-         "80% interval\non slope",
-         pos=1, cex=.75, col=blue)
+    # only works for a pos slope example
+    addPointers(res, ylim, alpha.hat)
   }
+}
+
+addPointers <- function(res, ylim, alpha.hat) {
+  # only works for a pos slope example
+  xr <- 1.5 * max(res$beta_hat_a)
+  yr <- diff(ylim)
+  idx <- which.min(res$beta_hat_a)
+  arrows(res$beta_hat_a[idx] + xr/20, -yr/3,
+         res$beta_hat_a[idx], res$beta_hat_b[idx] - yr/20,
+         angle=45, length=.05)
+  text(res$beta_hat_a[idx] + xr/20, -yr/3,
+       "MRLocus est. coef.\nand SE bars",
+       pos=1, cex=.75)
+  blue <- "blue3"
+  arrows(.5 * xr, -yr/8, .4 * xr,
+         .75 * alpha.hat * .4 * xr,
+         angle=45, length=.05, col=blue)
+  text(.5 * xr, -yr/6,
+       c("80% dispersion\n",
+         as.expression(bquote(paste("band (using ",hat(sigma),")")))),
+       pos=1, cex=.75, col=blue)
+  arrows(.75 * xr, yr/5, .75 * xr,
+         .97 * alpha.hat * .75 * xr,
+         angle=45, length=.05, col=blue)
+  text(.75 * xr, yr/6,
+       c("gene-to-trait\n",
+         as.expression(bquote(paste("slope (",hat(alpha),")")))),
+       pos=1, cex=.75, col=blue)
+  arrows(.9 * xr, -yr/8, .9 * xr,
+         .85 * alpha.hat * .9 * xr,
+         angle=45, length=.05, col=blue)
+  text(.9 * xr, -yr/8,
+       "80% interval\non slope",
+       pos=1, cex=.75, col=blue)
 }

@@ -4,11 +4,14 @@
 \alias{plotInitEstimates}
 \title{Plot initial estimates over signal clusters}
 \usage{
-plotInitEstimates(x, a = "eQTL", b = "GWAS")
+plotInitEstimates(x, label = "Effect size of", a = "eQTL", b = "GWAS")
 }
 \arguments{
 \item{x}{list of signal clusters data with beta_hat_a
 and beta_hat_b lists}
+
+\item{label}{what preceeds \code{a} and \code{b} in
+the x- and y-axis labels}
 
 \item{a}{name of A experiment}
 

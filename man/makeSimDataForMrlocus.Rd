@@ -33,7 +33,9 @@ values given true A coefficients}
 }
 \value{
 a list of beta_hat_a, beta_hat_b, se_a, and se_b,
-Sigma_a, and Sigma_b (themselves lists)
+Sigma_a, Sigma_b (themselves lists), and alleles
+(a list of data.frames each with id, ref, eff for the SNP id,
+reference allele, and effect allele).
 }
 \description{
 Make simulated data for mrlocus

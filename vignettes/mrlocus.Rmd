@@ -1,22 +1,65 @@
 ---
-title: "mrlocus"
+title: "MRLocus - estimation of gene-to-trait effects"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 author: "Anqi Zhu, Nana Matoba, Jason Stein, Michael Love"
 output: 
   rmarkdown::html_document:
     self_contained: false
+    highlight: pygments
+abstract: |
+  MRLocus provides estimation of gene-to-trait effects from eQTL and
+  GWAS summary statistics, for loci with allelic heterogeneity:
+  multiple LD-independent signal clusters representing distinct
+  eQTLs. Evidence is aggregated across signal clusters for mediation
+  of the downstream GWAS trait through the gene.
+  MRLocus package version: `r packageVersion("mrlocus")`
 bibliography: library.bib
 vignette: |
-  %\VignetteIndexEntry{mrlocus}
+  %\VignetteIndexEntry{MRLocus - estimation of gene-to-trait effects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-This is a vignette. This is a citation [@stan].
+```{r setup, echo=FALSE, results="hide"}
+knitr::opts_chunk$set(cache=FALSE, message=FALSE, warning=FALSE)
+```
 
-Here we show *mrlocus* on simulated data. We also have helper
-functions `collapseHighCorSNPs` and `flipAllelesAndGather` for
-importing summary statistics.
+# Introduction
+
+MRLocus provides Bayesian analysis of gene-to-trait mediation effects,
+making use of the Stan and RStan software packages for inference
+[@stan;@rstan].
+The author list of the associated MRLocus manuscript is:
+
+> Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L.Tapia,
+> Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love
+
+\* Both authors contributed equally to this work.
+
+In this vignette we demonstrate use of MRLocus on simulated summary
+statistics. We provide helper functions `collapseHighCorSNPs` and
+`flipAllelesAndGather` for importing summary statistics across
+LD-independent signal clusters (sets of SNPs that are non-overlapping
+and have low correlation in a reference population). We recommend
+using PLINK [@plink] for generation of signal clusters (see Methods
+section of MRLocus manuscript). We use the phrase
+"LD-independent signal cluster" as in the PTWAS software and paper
+[@ptwas].
+
+The first helper function collapses highly correlated SNPs before
+modeling (e.g. clustering SNPs at Pearson correlation of 0.95), while
+the second helper function ensures that both studies refer to the same
+allele, which is the expression-increasing allele for an index SNP
+within each LD-independent signal cluster.
+
+# Simulated input data
+
+The following simulated summary statistics are generated from a
+multivariate normal distribution, similar to the model used in
+eCAVIAR [@eCAVIAR]. In contrast, the simulations in the MRLocus
+manuscript make use of
+the [twas_sim](https://github.com/mancusolab/twas_sim) framework 
+[@twassim].
 
 ```{r}
 library(mrlocus)
@@ -24,15 +67,37 @@ set.seed(1)
 out <- makeSimDataForMrlocus()
 ```
 
+This simulated data consists of a list of lists. The elements are: 
+`beta_hat_a`, `beta_hat_b`, `se_a`, `se_b`, `Sigma_a`, `Sigma_b`, and
+`alleles`, which provide the estimated coefficients, standard errors
+(SE), and LD matrices for the two studies, A and B (typically, eQTL and
+GWAS), as well as a data.frame with allele information (SNP ID,
+reference allele, and effect allele).
+The LD matrices can be identical if distinct matrices for each study
+are not available. Each element itself should be a list of
+vectors/matrices/data.frames across LD-independent signal clusters.
+
+We can make a simple plot of the `beta_hat`'s, estimated coefficients
+from A and B. The coefficients are numbered by the SNP order within
+each signal cluster.
+
 ```{r initests, fig.height=7}
 plotInitEstimates(out)
 ```
+
+# Colocalization step
+
+The first step in MRLocus is to perform colocalization of the
+studies. To do so, we loop over the signal clusters, and store the
+fitted models in a list called `fit`.
 
 ```{r}
 fit <- list()
 nsnp <- lengths(out$beta_hat_a)
 nclust <- length(nsnp)
 ```
+
+The following code chunk loops over signal clusters:
 
 ```{r}
 options(mc.cores=2)
@@ -49,30 +114,70 @@ for (j in 1:nclust) {
 }
 ```
 
+We now create a list containing the posterior mean from the
+colocalization step, and the original SE values. Note the SE values
+are now referred to as `sd`.
+
 ```{r}
 res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
             beta_hat_b=lapply(fit, `[[`, "beta_hat_b"),
             sd_a=out$se_a,
-            sd_b=out$se_b)
+            sd_b=out$se_b,
+            alleles=out$alleles)
 ```
+
+# Slope fitting step
+
+The following function extracts one SNP per signal cluster with the
+largest posterior mean for the coefficient for study A
+(e.g. eQTL). The selected SNPs and their posterior mean values are
+plotted on the right panel in blue. We note that it is also possible
+to perform EM-based clustering [@mclust] to extract more than one SNP
+per signal cluster, through use of the `niter` argument, although this
+was not evaluated in the MRLocus manuscript.
 
 ```{r extract}
 res <- extractForSlope(res, plot=TRUE)
 ```
 
-```{r}
-suppressWarnings({
-  res <- fitSlope(res, iter=10000)
-})
-```
+Now we are ready to fit the slope. In our testing we have used 10,000
+iterations, though fewer may be sufficient. This step is typically
+much faster than the colocalization step.
 
 ```{r}
-library(rstan)
+res <- fitSlope(res, iter=10000)
+```
+
+# Examine MRLocus estimates
+
+One of the elements in the results list `res` is the `stanfit` object,
+which can be explored with functions from the `rstan` package.
+
+The posterior mean for the gene-to-trait slope, alpha, is near the
+simulated value of 0.5. The posterior mean for the dispersion around
+the slope, sigma, is also estimated. Note that the estimate for sigma
+has a large 80% credible interval, as we only have 4 signal clusters
+over which to estimate dispersion.
+
+```{r}
+suppressPackageStartupMessages(library(rstan))
 print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
 ```
 
+MRLocus provides a plot that summarizes the estimation of the
+gene-to-trait effect. The estimated slope and an 80% credible interval
+are indicated with a solid blue line and dashed blue lines,
+respectively. The black points and error bars represent the posterior
+mean for top SNPs from colocalization and the original SE.
+An 80% band in light blue indicates a region that is
+expected to contain 80% of the eQTL-GWAS pairs across signal
+clusters, so reflecting the allelic heterogeneity. If the estimate of
+$\sigma$ is of comparable size to $\alpha$ times typical eQTL effect
+sizes (slope $\times$ location of black points on the x-axis), this
+indicates a high degree of heterogeneity.
+
 ```{r mrlocus, fig.height=7}
-plotMrlocus(res, main="mrlocus")
+plotMrlocus(res, main="MRLocus gene-to-trait effect estimate")
 ```
 
 # Session info

@@ -39,6 +39,7 @@ than this amount}
 }
 \value{
 list with modified ld_mat and sum_stat lists
+(and ld_mat2 if provided)
 }
 \description{
 Collapse high correlation SNPs

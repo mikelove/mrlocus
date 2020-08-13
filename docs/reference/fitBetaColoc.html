@@ -79,20 +79,19 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../articles/index.html">Vignette</a>
 </li>
 <li>
-  <a href="../articles/mrlocus.html">Get started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/mikelove/mrlocus">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -150,6 +149,18 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a list with the following elements: stanfit object,
+posterior means for estimated coefficients,
+posterior standard deviations, and scaling factors.
+Two important notes: (1) in MRLocus manuscript, original
+SE are used instead of posterior SD in the slope fitting step,
+(2) the posterior means and SD for estimated coefficients 
+are appropriately scaled, while the results from the
+stanfit object are not scaled. In order to scale the
+results from the stanfit object, scale_a and scale_b
+should be divided out (see Supplementary Methods).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
