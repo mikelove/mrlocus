@@ -1,4 +1,4 @@
-#' MRLocus - Mendelian Randomization per locus
+#' MRLocus - see this page for typical order of functions
 #'
 #' @description Mendelian Randomization per locus, leveraging eQTL
 #' and GWAS summary statistics, for estimation of gene-to-trait

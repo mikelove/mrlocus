@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="Collapse high correlation SNPs — collapseHighCorSNPs" />
-<meta property="og:description" content="Collapse high correlation SNPs" />
+<meta property="og:description" content="A helper function to collapse sets of highly correlated
+SNPs within signal clusters. This is recommended to run
+before flipAllelesAndGather, and before
+fitBetaColoc." />
 
 
 
@@ -111,7 +114,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Collapse high correlation SNPs</p>
+    <p>A helper function to collapse sets of highly correlated
+SNPs within signal clusters. This is recommended to run
+before <code><a href='flipAllelesAndGather.html'>flipAllelesAndGather</a></code>, and before
+<code><a href='fitBetaColoc.html'>fitBetaColoc</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(
@@ -128,18 +134,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sum_stat</th>
-      <td><p>list of summary statistic tables</p></td>
+      <td><p>list of summary statistic tables,
+which is a list over signal clusters.
+Each element of the list should be a data.frame
+describing the eQTL and GWAS summary statistics.
+The only column in <code>sum_stat</code> that is used
+by the function is <code>score</code> (optional)</p></td>
     </tr>
     <tr>
       <th>ld_mat</th>
-      <td><p>list of LD matrices</p></td>
+      <td><p>list of LD matrices across
+signal clusters</p></td>
     </tr>
     <tr>
       <th>ld_mat2</th>
       <td><p>optional second list of LD matrices
 (for different populations). it will be returned
 alongside the first <code>ld_mat</code>, which is used
-for the collapsing. the second list of LD
+for the collapsing. The second list of LD
 matrices is just subset to the same set of SNPs
 as the first</p></td>
     </tr>
@@ -165,8 +177,8 @@ than this amount</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with modified ld_mat and sum_stat lists
-(and ld_mat2 if provided)</p>
+    <p>list with subset <code>ld_mat</code> and <code>sum_stat</code>
+lists (and <code>ld_mat2</code> if provided)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -4,7 +4,7 @@
 \name{mrlocus-package}
 \alias{mrlocus-package}
 \alias{mrlocus}
-\title{MRLocus - Mendelian Randomization per locus}
+\title{MRLocus - see this page for typical order of functions}
 \description{
 Mendelian Randomization per locus, leveraging eQTL
 and GWAS summary statistics, for estimation of gene-to-trait

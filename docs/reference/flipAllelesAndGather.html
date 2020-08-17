@@ -40,7 +40,15 @@
 
 
 <meta property="og:title" content="Flip alleles and gather results into lists — flipAllelesAndGather" />
-<meta property="og:description" content="Flip alleles and gather results into lists" />
+<meta property="og:description" content="A helper function to flip alleles from eQTL and GWAS
+datasets, such that they agree on the effect allele,
+that the SNPs in a signal cluster are in postive
+correlation with the index SNP (eQTL), and that the
+effect allele is coded such that it is the expression
+increasing allele.
+This is recommended to run after
+collapseHighCorSNPs, and before
+fitBetaColoc." />
 
 
 
@@ -111,7 +119,15 @@
     </div>
 
     <div class="ref-description">
-    <p>Flip alleles and gather results into lists</p>
+    <p>A helper function to flip alleles from eQTL and GWAS
+datasets, such that they agree on the effect allele,
+that the SNPs in a signal cluster are in postive
+correlation with the index SNP (eQTL), and that the
+effect allele is coded such that it is the expression
+increasing allele.
+This is recommended to run after
+<code><a href='collapseHighCorSNPs.html'>collapseHighCorSNPs</a></code>, and before
+<code><a href='fitBetaColoc.html'>fitBetaColoc</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>flipAllelesAndGather</span>(
@@ -138,7 +154,12 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sum_stat</th>
-      <td><p>list of summary statistic tables</p></td>
+      <td><p>list of summary statistic tables.
+A list over signal clusters, where each element is a
+data.frame with summary statistics from eQTL and GWAS
+datasets. The names of the columns are specified by
+arguments below (e.g. <code>a</code>, <code>b</code>, <code>ref</code>,
+<code>eff</code>, etc.)</p></td>
     </tr>
     <tr>
       <th>ld_mat</th>
@@ -217,7 +238,7 @@ the a2 allele for the second LD matrix, <code>ld_mat2</code>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list with estimated coefficients, standard
-errors, LD matrix, and allele data.frame</p>
+errors, LD matrix, and alleles data.frame</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

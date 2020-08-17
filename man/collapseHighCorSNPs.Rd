@@ -14,14 +14,20 @@ collapseHighCorSNPs(
 )
 }
 \arguments{
-\item{sum_stat}{list of summary statistic tables}
+\item{sum_stat}{list of summary statistic tables,
+which is a list over signal clusters.
+Each element of the list should be a data.frame
+describing the eQTL and GWAS summary statistics.
+The only column in \code{sum_stat} that is used
+by the function is \code{score} (optional)}
 
-\item{ld_mat}{list of LD matrices}
+\item{ld_mat}{list of LD matrices across
+signal clusters}
 
 \item{ld_mat2}{optional second list of LD matrices
 (for different populations). it will be returned
 alongside the first \code{ld_mat}, which is used
-for the collapsing. the second list of LD
+for the collapsing. The second list of LD
 matrices is just subset to the same set of SNPs
 as the first}
 
@@ -38,9 +44,12 @@ if SNPs are more correlated (or anti-correlated)
 than this amount}
 }
 \value{
-list with modified ld_mat and sum_stat lists
-(and ld_mat2 if provided)
+list with subset \code{ld_mat} and \code{sum_stat}
+lists (and \code{ld_mat2} if provided)
 }
 \description{
-Collapse high correlation SNPs
+A helper function to collapse sets of highly correlated
+SNPs within signal clusters. This is recommended to run
+before \code{\link{flipAllelesAndGather}}, and before
+\code{\link{fitBetaColoc}}.
 }

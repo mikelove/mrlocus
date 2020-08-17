@@ -1,11 +1,22 @@
 #' Collapse high correlation SNPs
 #'
-#' @param sum_stat list of summary statistic tables
-#' @param ld_mat list of LD matrices
+#' A helper function to collapse sets of highly correlated
+#' SNPs within signal clusters. This is recommended to run
+#' before \code{\link{flipAllelesAndGather}}, and before
+#' \code{\link{fitBetaColoc}}.
+#' 
+#' @param sum_stat list of summary statistic tables,
+#' which is a list over signal clusters.
+#' Each element of the list should be a data.frame
+#' describing the eQTL and GWAS summary statistics.
+#' The only column in \code{sum_stat} that is used
+#' by the function is \code{score} (optional)
+#' @param ld_mat list of LD matrices across
+#' signal clusters
 #' @param ld_mat2 optional second list of LD matrices
 #' (for different populations). it will be returned
 #' alongside the first \code{ld_mat}, which is used
-#' for the collapsing. the second list of LD
+#' for the collapsing. The second list of LD
 #' matrices is just subset to the same set of SNPs
 #' as the first
 #' @param threshold threshold on absolute value of
@@ -18,8 +29,8 @@
 #' if set to NULL, the first SNP will be used
 #' @param plot logical, draw a before/after grid of plots
 #'
-#' @return list with modified ld_mat and sum_stat lists
-#' (and ld_mat2 if provided)
+#' @return list with subset \code{ld_mat} and \code{sum_stat}
+#' lists (and \code{ld_mat2} if provided)
 #' 
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
@@ -103,7 +114,22 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 
 #' Flip alleles and gather results into lists
 #'
-#' @param sum_stat list of summary statistic tables
+#' A helper function to flip alleles from eQTL and GWAS
+#' datasets, such that they agree on the effect allele,
+#' that the SNPs in a signal cluster are in postive
+#' correlation with the index SNP (eQTL), and that the
+#' effect allele is coded such that it is the expression
+#' increasing allele.
+#' This is recommended to run after
+#' \code{\link{collapseHighCorSNPs}}, and before
+#' \code{\link{fitBetaColoc}}.
+#'
+#' @param sum_stat list of summary statistic tables.
+#' A list over signal clusters, where each element is a
+#' data.frame with summary statistics from eQTL and GWAS
+#' datasets. The names of the columns are specified by
+#' arguments below (e.g. \code{a}, \code{b}, \code{ref},
+#' \code{eff}, etc.)
 #' @param ld_mat list of LD matrices
 #' @param ld_mat2 optional second list of LD matrices
 #' (for different populations). it will be returned
@@ -133,7 +159,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 #' @param plot logical, draw a scatterplot of the flipped betas
 #'
 #' @return list with estimated coefficients, standard
-#' errors, LD matrix, and allele data.frame
+#' errors, LD matrix, and alleles data.frame
 #' 
 #' @export
 flipAllelesAndGather <- function(sum_stat, ld_mat,

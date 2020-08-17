@@ -24,7 +24,12 @@ flipAllelesAndGather(
 )
 }
 \arguments{
-\item{sum_stat}{list of summary statistic tables}
+\item{sum_stat}{list of summary statistic tables.
+A list over signal clusters, where each element is a
+data.frame with summary statistics from eQTL and GWAS
+datasets. The names of the columns are specified by
+arguments below (e.g. \code{a}, \code{b}, \code{ref},
+\code{eff}, etc.)}
 
 \item{ld_mat}{list of LD matrices}
 
@@ -70,8 +75,16 @@ the a2 allele for the second LD matrix, \code{ld_mat2}
 }
 \value{
 list with estimated coefficients, standard
-errors, LD matrix, and allele data.frame
+errors, LD matrix, and alleles data.frame
 }
 \description{
-Flip alleles and gather results into lists
+A helper function to flip alleles from eQTL and GWAS
+datasets, such that they agree on the effect allele,
+that the SNPs in a signal cluster are in postive
+correlation with the index SNP (eQTL), and that the
+effect allele is coded such that it is the expression
+increasing allele.
+This is recommended to run after
+\code{\link{collapseHighCorSNPs}}, and before
+\code{\link{fitBetaColoc}}.
 }
