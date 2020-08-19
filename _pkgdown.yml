@@ -1,5 +1,9 @@
 url: https://mikelove.github.io/mrlocus
 
+template:
+  params:
+    ganalytics: UA-175865595-1
+
 navbar:
   title: "MRLocus"
   left:
