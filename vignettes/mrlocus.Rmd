@@ -29,7 +29,9 @@ knitr::opts_chunk$set(cache=FALSE, message=FALSE, warning=FALSE)
 MRLocus provides Bayesian analysis of gene-to-trait mediation effects,
 making use of the Stan and RStan software packages for inference
 [@stan;@rstan].
-The author list of the associated MRLocus manuscript is:
+
+The authors of the associated [MRLocus manuscript](https://doi.org/10.1101/2020.08.14.250720)
+[@mrlocus] is:
 
 > Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L.Tapia,
 > Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love
@@ -37,20 +39,40 @@ The author list of the associated MRLocus manuscript is:
 \* Both authors contributed equally to this work.
 
 In this vignette we demonstrate use of MRLocus on simulated summary
-statistics. We provide helper functions `collapseHighCorSNPs` and
-`flipAllelesAndGather` for importing summary statistics across
+statistics. The simulated data in this vignette does not include
+the steps of importing summary statistics and LD matrices from
+external files. For that, we recommend looking at the R code we used
+for analysis of the 
+[public datasets](https://github.com/mikelove/mrlocusPaper/blob/master/public/analysis.R)
+in the manuscript. 
+
+Briefly, two important helper functions for import and preprocessing
+that are provided in this package are `collapseHighCorSNPs` and
+`flipAllelesAndGather`, for importing summary statistics across
 LD-independent signal clusters (sets of SNPs that are non-overlapping
-and have low correlation in a reference population). We recommend
-using PLINK [@plink] for generation of signal clusters (see Methods
-section of MRLocus manuscript). We use the phrase
+and have low correlation in a reference population). We use the phrase
 "LD-independent signal cluster" as in the PTWAS software and paper
 [@ptwas].
 
-The first helper function collapses highly correlated SNPs before
-modeling (e.g. clustering SNPs at Pearson correlation of 0.95), while
-the second helper function ensures that both studies refer to the same
-allele, which is the expression-increasing allele for an index SNP
-within each LD-independent signal cluster.
+It is strongly recommended to use these two functions for data import,
+in particular as the first function will reduce the number of SNPs per
+cluster and help deal with identifiability issues during the Bayesian
+colocalization step. As described in the manuscript, MRLocus does not
+attempt to resolve putative causal SNPs among sets of SNPs with
+correlation $> 0.95$, but instead it collapses this redundancy using
+`collapseHighCorSNPs`. The second function ensures that the alleles
+are flipped properly across eQTL and GWAS datasets (the function will
+handle this to avoid manual processing by the user), such that the
+alleles are coded in such a way that the downstream statistical
+modeling functions will expect. The second function ensures that both
+studies refer to the same allele, which is the expression-increasing
+allele for an index SNP within each LD-independent signal cluster.
+
+We recommend using PLINK [@plink] for generation of signal clusters
+(see Methods section of MRLocus manuscript). 
+
+We have not yet implemented, but plan on providing an import function
+from the [TwoSampleMR](https://github.com/MRCIEU/TwoSampleMR) package.
 
 # Simulated input data
 
