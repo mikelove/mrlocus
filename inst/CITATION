@@ -1,0 +1,20 @@
+citEntry(entry="article",
+         title = "MRLocus: identifying causal genes mediating a trait through Bayesian estimation of allelic heterogeneity",
+         author = personList(
+           as.person("Anqi Zhu"),
+           as.person("Nana Matoba"),
+           as.person("Emmaleigh Wilson"),
+           as.person("Amanda L. Tapia"),
+           as.person("Yun Li"),
+           as.person("Joseph G. Ibrahim"),
+           as.person("Jason L. Stein"), 
+           as.person("Michael I. Love")),
+         year = 2020,
+         journal = "bioRxiv",
+         doi = "10.1101/2020.08.14.250720",
+         textVersion =
+           paste("Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,",
+                 "Joseph G. Ibrahim, Jason L. Stein, Michael I. Love",
+                 "MRLocus: identifying causal genes mediating a trait through",
+                 "Bayesian estimation of allelic heterogeneity",
+                 "bioRxiv (2020)" ) )
