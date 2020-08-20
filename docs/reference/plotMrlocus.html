@@ -134,7 +134,6 @@
   <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>pointers</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -148,7 +147,8 @@
     <tr>
       <th>q</th>
       <td><p>the quantiles of the posterior
-to use for drawing the uncertainty on the slope</p></td>
+to use for drawing the uncertainty on the slope.
+The default is an 80 percent interval</p></td>
     </tr>
     <tr>
       <th>sigma_mult</th>
@@ -181,11 +181,6 @@ the x- and y-axis labels</p></td>
     <tr>
       <th>digits</th>
       <td><p>number of digits to show in legend</p></td>
-    </tr>
-    <tr>
-      <th>pointers</th>
-      <td><p>logical, whether to show labels
-with pointing arrows</p></td>
     </tr>
     <tr>
       <th>...</th>

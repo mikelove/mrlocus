@@ -34,7 +34,7 @@
 #' 
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
-                                thresh=.95, score=NULL, plot=TRUE) {
+                                threshold=.95, score=NULL, plot=TRUE) {
   stopifnot(length(sum_stat) == length(ld_mat))
   stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
@@ -71,8 +71,8 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
                                         silent=TRUE)$gtable
     }
     hc <- hclust(as.dist(1-abs(ld_mat[[j]])))
-    #plot(hc); abline(h=1-thresh,col="red")
-    hclusters <- cutree(hc, h=1-thresh)
+    #plot(hc); abline(h=1-threshold,col="red")
+    hclusters <- cutree(hc, h=1-threshold)
     nhclust <- max(hclusters)
     # greedy reduction:
     # just take the first SNP for each hierarchical cluster,
@@ -359,7 +359,7 @@ extractForSlope <- function(res,
     kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
     z <- kfit$cluster
     for (i in 1:niter) {
-      ms <- mclust::mstep(modelName="V", data=dat, z=unmap(z))
+      ms <- mclust::mstep(modelName="V", data=dat, z=mclust::unmap(z))
       es <- mclust::estep(modelName="V", data=dat, parameters=ms$parameters)
       z <- ifelse(es$z[,2] > .5, 2, 1)
     }
@@ -462,7 +462,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param res the output from fitSlope
 #' @param q the quantiles of the posterior
 #' to use for drawing the uncertainty on the slope.
-#' The default is an 80% interval
+#' The default is an 80 percent interval
 #' @param sigma_mult multiplier on estimate of sigma
 #' for drawing the dispersion band
 #' (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
@@ -474,8 +474,6 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
-#' @param pointers logical, whether to show labels
-#' with pointing arrows
 #' @param ... arguments passed to plot()
 #'
 #' @export
@@ -487,7 +485,6 @@ plotMrlocus <- function(res,
                         ylim=NULL,
                         legend=TRUE,
                         digits=3,
-                        pointers=FALSE,
                         ...) {
   stopifnot(length(q) == 2)
   stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=q)$summary
@@ -550,43 +547,38 @@ plotMrlocus <- function(res,
            y.intersp=1.1,
            legend=c(slope.leg, slope.int.leg, sigma.leg))
   }
-
-  if (pointers) {
-    # only works for a pos slope example
-    addPointers(res, ylim, alpha.hat)
-  }
 }
 
-addPointers <- function(res, ylim, alpha.hat) {
-  # only works for a pos slope example
-  xr <- 1.5 * max(res$beta_hat_a)
-  yr <- diff(ylim)
-  idx <- which.min(res$beta_hat_a)
-  arrows(res$beta_hat_a[idx] + xr/20, -yr/3,
-         res$beta_hat_a[idx], res$beta_hat_b[idx] - yr/20,
-         angle=45, length=.05)
-  text(res$beta_hat_a[idx] + xr/20, -yr/3,
-       "MRLocus est. coef.\nand SE bars",
-       pos=1, cex=.75)
-  blue <- "blue3"
-  arrows(.5 * xr, -yr/8, .4 * xr,
-         .75 * alpha.hat * .4 * xr,
-         angle=45, length=.05, col=blue)
-  text(.5 * xr, -yr/6,
-       c("80% dispersion\n",
-         as.expression(bquote(paste("band (using ",hat(sigma),")")))),
-       pos=1, cex=.75, col=blue)
-  arrows(.75 * xr, yr/5, .75 * xr,
-         .97 * alpha.hat * .75 * xr,
-         angle=45, length=.05, col=blue)
-  text(.75 * xr, yr/6,
-       c("gene-to-trait\n",
-         as.expression(bquote(paste("slope (",hat(alpha),")")))),
-       pos=1, cex=.75, col=blue)
-  arrows(.9 * xr, -yr/8, .9 * xr,
-         .85 * alpha.hat * .9 * xr,
-         angle=45, length=.05, col=blue)
-  text(.9 * xr, -yr/8,
-       "80% interval\non slope",
-       pos=1, cex=.75, col=blue)
-}
+## addPointers <- function(res, ylim, alpha.hat) {
+##   # only works for a pos slope example
+##   xr <- 1.5 * max(res$beta_hat_a)
+##   yr <- diff(ylim)
+##   idx <- which.min(res$beta_hat_a)
+##   arrows(res$beta_hat_a[idx] + xr/20, -yr/3,
+##          res$beta_hat_a[idx], res$beta_hat_b[idx] - yr/20,
+##          angle=45, length=.05)
+##   text(res$beta_hat_a[idx] + xr/20, -yr/3,
+##        "MRLocus est. coef.\nand SE bars",
+##        pos=1, cex=.75)
+##   blue <- "blue3"
+##   arrows(.5 * xr, -yr/8, .4 * xr,
+##          .75 * alpha.hat * .4 * xr,
+##          angle=45, length=.05, col=blue)
+##   text(.5 * xr, -yr/6,
+##        c("80% dispersion\n",
+##          as.expression(bquote(paste("band (using ",hat(sigma),")")))),
+##        pos=1, cex=.75, col=blue)
+##   arrows(.75 * xr, yr/5, .75 * xr,
+##          .97 * alpha.hat * .75 * xr,
+##          angle=45, length=.05, col=blue)
+##   text(.75 * xr, yr/6,
+##        c("gene-to-trait\n",
+##          as.expression(bquote(paste("slope (",hat(alpha),")")))),
+##        pos=1, cex=.75, col=blue)
+##   arrows(.9 * xr, -yr/8, .9 * xr,
+##          .85 * alpha.hat * .9 * xr,
+##          angle=45, length=.05, col=blue)
+##   text(.9 * xr, -yr/8,
+##        "80% interval\non slope",
+##        pos=1, cex=.75, col=blue)
+## }

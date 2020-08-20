@@ -22,11 +22,16 @@ Imports:
     Rcpp (>= 0.12.0),
     rstan (>= 2.18.1),
     rstantools (>= 2.0.0),
-    matrixStats
+    matrixStats,
+    MASS
 Suggests:
     mclust,
     pheatmap,
-    gridExtra
+    gridExtra,
+    knitr,
+    rmarkdown,
+    testthat,
+    covr
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
@@ -35,3 +40,6 @@ LinkingTo:
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
 RoxygenNote: 7.1.1
+VignetteBuilder:
+    knitr,
+    rmarkdown

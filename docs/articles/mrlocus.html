@@ -73,7 +73,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">08/19/2020</h4>
+            <h4 class="date">08/20/2020</h4>
       
       
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -124,13 +124,15 @@
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="kw">mc.cores</span><span class="kw">=</span><span class="fl">2</span>)
 <span class="kw">for</span> (<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">nclust</span>) {
   <span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>({
-    <span class="no">fit</span><span class="kw">[[</span><span class="no">j</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitBetaColoc.html">fitBetaColoc</a></span>(<span class="kw">nsnp</span><span class="kw">=</span><span class="no">nsnp</span>[<span class="no">j</span>],
-                             <span class="kw">beta_hat_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">beta_hat_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                             <span class="kw">beta_hat_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">beta_hat_b</span><span class="kw">[[</span><span class="no">j</span>]],
-                             <span class="kw">se_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                             <span class="kw">se_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_b</span><span class="kw">[[</span><span class="no">j</span>]],
-                             <span class="kw">Sigma_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">Sigma_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                             <span class="kw">Sigma_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">Sigma_b</span><span class="kw">[[</span><span class="no">j</span>]])
+    <span class="no">fit</span><span class="kw">[[</span><span class="no">j</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">out</span>,
+                     <span class="fu"><a href="../reference/fitBetaColoc.html">fitBetaColoc</a></span>(
+                       <span class="kw">beta_hat_a</span> <span class="kw">=</span> <span class="no">beta_hat_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                       <span class="kw">beta_hat_b</span> <span class="kw">=</span> <span class="no">beta_hat_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                       <span class="kw">se_a</span> <span class="kw">=</span> <span class="no">se_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                       <span class="kw">se_b</span> <span class="kw">=</span> <span class="no">se_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                       <span class="kw">Sigma_a</span> <span class="kw">=</span> <span class="no">Sigma_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                       <span class="kw">Sigma_b</span> <span class="kw">=</span> <span class="no">Sigma_b</span><span class="kw">[[</span><span class="no">j</span>]]
+                     ))
   })
 }</pre></body></html></div>
 <p>We now create a list containing the posterior mean from the colocalization step, and the original SE values. Note the SE values are now referred to as <code>sd</code>.</p>
@@ -164,7 +166,7 @@
 ## alpha 0.490   0.001 0.086 0.400 0.587  3333 1.005
 ## sigma 0.264   0.012 0.246 0.044 0.567   445 1.015
 ## 
-## Samples were drawn using NUTS(diag_e) at Wed Aug 19 15:51:46 2020.
+## Samples were drawn using NUTS(diag_e) at Thu Aug 20 16:08:05 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>

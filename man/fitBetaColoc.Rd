@@ -4,7 +4,7 @@
 \alias{fitBetaColoc}
 \title{Fit the beta colocalization per signal cluster}
 \usage{
-fitBetaColoc(nsnp, beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b, ...)
+fitBetaColoc(beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b, ...)
 }
 \arguments{
 \item{beta_hat_a}{vector of length nsnp, estimated coefficients for A}

@@ -125,13 +125,15 @@ The following code chunk loops over signal clusters:
 options(mc.cores=2)
 for (j in 1:nclust) {
   suppressWarnings({
-    fit[[j]] <- fitBetaColoc(nsnp=nsnp[j],
-                             beta_hat_a=out$beta_hat_a[[j]],
-                             beta_hat_b=out$beta_hat_b[[j]],
-                             se_a=out$se_a[[j]],
-                             se_b=out$se_b[[j]],
-                             Sigma_a=out$Sigma_a[[j]],
-                             Sigma_b=out$Sigma_b[[j]])
+    fit[[j]] <- with(out,
+                     fitBetaColoc(
+                       beta_hat_a = beta_hat_a[[j]],
+                       beta_hat_b = beta_hat_b[[j]],
+                       se_a = se_a[[j]],
+                       se_b = se_b[[j]],
+                       Sigma_a = Sigma_a[[j]],
+                       Sigma_b = Sigma_b[[j]]
+                     ))
   })
 }
 ```

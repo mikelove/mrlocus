@@ -134,7 +134,7 @@ before <code><a href='flipAllelesAndGather.html'>flipAllelesAndGather</a></code>
   <span class='no'>sum_stat</span>,
   <span class='no'>ld_mat</span>,
   <span class='kw'>ld_mat2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
+  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
   <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
@@ -166,6 +166,13 @@ matrices is just subset to the same set of SNPs
 as the first</p></td>
     </tr>
     <tr>
+      <th>threshold</th>
+      <td><p>threshold on absolute value of
+correlation for collapsing, e.g. will collapse
+if SNPs are more correlated (or anti-correlated)
+than this amount</p></td>
+    </tr>
+    <tr>
       <th>score</th>
       <td><p>name of a column of sum_stat data.frames
 with a score, such that collapsing will choose the
@@ -175,13 +182,6 @@ if set to NULL, the first SNP will be used</p></td>
     <tr>
       <th>plot</th>
       <td><p>logical, draw a before/after grid of plots</p></td>
-    </tr>
-    <tr>
-      <th>threshold</th>
-      <td><p>threshold on absolute value of
-correlation for collapsing, e.g. will collapse
-if SNPs are more correlated (or anti-correlated)
-than this amount</p></td>
     </tr>
     </table>
 

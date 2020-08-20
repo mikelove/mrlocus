@@ -8,7 +8,7 @@ collapseHighCorSNPs(
   sum_stat,
   ld_mat,
   ld_mat2 = NULL,
-  thresh = 0.95,
+  threshold = 0.95,
   score = NULL,
   plot = TRUE
 )
@@ -31,17 +31,17 @@ for the collapsing. The second list of LD
 matrices is just subset to the same set of SNPs
 as the first}
 
+\item{threshold}{threshold on absolute value of
+correlation for collapsing, e.g. will collapse
+if SNPs are more correlated (or anti-correlated)
+than this amount}
+
 \item{score}{name of a column of sum_stat data.frames
 with a score, such that collapsing will choose the
 highest score SNP per collapsed cluster. Otherwise,
 if set to NULL, the first SNP will be used}
 
 \item{plot}{logical, draw a before/after grid of plots}
-
-\item{threshold}{threshold on absolute value of
-correlation for collapsing, e.g. will collapse
-if SNPs are more correlated (or anti-correlated)
-than this amount}
 }
 \value{
 list with subset \code{ld_mat} and \code{sum_stat}

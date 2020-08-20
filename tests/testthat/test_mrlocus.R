@@ -10,6 +10,7 @@ test_that("mrlocus works on simple sim data", {
   #set.seed(2)
   #out <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=.5)
   plotInitEstimates(out)
+  dev.off()
 
   # colocalization:
   fit <- list()
@@ -18,12 +19,13 @@ test_that("mrlocus works on simple sim data", {
   for (j in 1:nclust) {
     print(paste("----",j,"----"))
     fit[[j]] <- with(out, 
-                fitBetaColoc(nsnp=nsnp[j],
-                beta_hat_a=beta_hat_a[[j]], beta_hat_b=beta_hat_b[[j]],
-                se_a=se_a[[j]], se_b=se_b[[j]],
-                Sigma_a=Sigma_a[[j]], Sigma_b=Sigma_b[[j]],
-                verbose=FALSE, open_progress=FALSE,
-                show_messages=FALSE, refresh=-1))
+                fitBetaColoc(
+                  beta_hat_a=beta_hat_a[[j]], beta_hat_b=beta_hat_b[[j]],
+                  se_a=se_a[[j]], se_b=se_b[[j]],
+                  Sigma_a=Sigma_a[[j]], Sigma_b=Sigma_b[[j]],
+                  verbose=FALSE, open_progress=FALSE,
+                  show_messages=FALSE, refresh=-1
+                ))
   }
   #j <- 1
   #rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_a[",1:nsnp[j],"]"))
@@ -42,6 +44,7 @@ test_that("mrlocus works on simple sim data", {
 
   # plot
   plotMrlocus(res)
+  dev.off()
 
   ## png(file="~/Desktop/sim.png", width=1500, height=500, res=150)
   ## par(mfrow=c(1,3))

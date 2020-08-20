@@ -14,7 +14,6 @@ plotMrlocus(
   ylim = NULL,
   legend = TRUE,
   digits = 3,
-  pointers = FALSE,
   ...
 )
 }
@@ -23,7 +22,7 @@ plotMrlocus(
 
 \item{q}{the quantiles of the posterior
 to use for drawing the uncertainty on the slope.
-The default is an 80% interval}
+The default is an 80 percent interval}
 
 \item{sigma_mult}{multiplier on estimate of sigma
 for drawing the dispersion band
@@ -42,9 +41,6 @@ the x- and y-axis labels}
 \item{legend}{logical, whether to show a legend}
 
 \item{digits}{number of digits to show in legend}
-
-\item{pointers}{logical, whether to show labels
-with pointing arrows}
 
 \item{...}{arguments passed to plot()}
 }

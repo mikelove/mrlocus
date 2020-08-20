@@ -9,6 +9,9 @@
 #' @param ... further arguments passed to rstan::sampling
 #'
 #' @importFrom matrixStats colSds
+#' @importFrom stats as.dist cutree hclust kmeans lm mad median rnorm runif
+#' @importFrom graphics abline arrows par points polygon segments text
+#' @importFrom grDevices rgb
 #'
 #' @return a list with the following elements: stanfit object,
 #' posterior means for estimated coefficients,
@@ -22,7 +25,7 @@
 #' should be divided out (see Supplementary Methods).
 #' 
 #' @export
-fitBetaColoc <- function(nsnp, beta_hat_a, beta_hat_b,
+fitBetaColoc <- function(beta_hat_a, beta_hat_b,
                          se_a, se_b, Sigma_a, Sigma_b, ...) {
   n <- length(beta_hat_a)
   stopifnot(length(beta_hat_b) == n)
