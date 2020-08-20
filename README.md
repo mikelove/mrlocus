@@ -1,21 +1,23 @@
-# MRLocus - Mendelian Randomization per locus
+# MRLocus
 
 [![Build Status](https://travis-ci.com/mikelove/mrlocus.svg?branch=master)](https://travis-ci.com/mikelove/mrlocus)
 [![codecov](https://codecov.io/github/mikelove/mrlocus/branch/master/graphs/badge.svg)](https://codecov.io/github/mikelove/mrlocus)
 
-<https://mikelove.github.io/mrlocus>
+### About
 
-Mendelian Randomization per locus, leveraging eQTL
-and GWAS summary statistics, for estimation of gene-to-trait
-effect size and dispersion.
+MRLocus is a statistical method providing Mendelian Randomization
+analysis per locus, leveraging eQTL and GWAS summary statistics, for
+estimation of gene-to-trait effect size and dispersion.
 
 See `Vignette` tab for software vignette, and `Functions` tab for
 manual pages of the individual functions.
 
+### Issues
+
 For bug reports, feature requests, or questions, please post 
 [here](https://github.com/mikelove/mrlocus/issues/new/choose).
 
-### Preprint:
+### Preprint
 
 Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
 Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
