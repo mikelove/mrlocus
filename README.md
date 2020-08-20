@@ -1,5 +1,8 @@
 # MRLocus - Mendelian Randomization per locus
 
+[![Build Status](https://travis-ci.com/mikelove/mrlocus.svg?branch=master)](https://travis-ci.com/mikelove/mrlocus)
+[![codecov](https://codecov.io/github/mikelove/mrlocus/branch/master/graphs/badge.svg)](https://codecov.io/github/mikelove/mrlocus)
+
 <https://mikelove.github.io/mrlocus>
 
 Mendelian Randomization per locus, leveraging eQTL

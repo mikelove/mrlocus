@@ -11,6 +11,6 @@ addons:
 script:
   - |
     R CMD build .
-    travis_wait 30 R CMD check mrlocus_*.tar.gz
+    R CMD check mrlocus_*.tar.gz
 after_success:
-  - travis_wait 30 Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov()'
