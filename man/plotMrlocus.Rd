@@ -22,7 +22,8 @@ plotMrlocus(
 \item{res}{the output from fitSlope}
 
 \item{q}{the quantiles of the posterior
-to use for drawing the uncertainty on the slope}
+to use for drawing the uncertainty on the slope.
+The default is an 80% interval}
 
 \item{sigma_mult}{multiplier on estimate of sigma
 for drawing the dispersion band

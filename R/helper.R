@@ -461,7 +461,8 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #'
 #' @param res the output from fitSlope
 #' @param q the quantiles of the posterior
-#' to use for drawing the uncertainty on the slope
+#' to use for drawing the uncertainty on the slope.
+#' The default is an 80% interval
 #' @param sigma_mult multiplier on estimate of sigma
 #' for drawing the dispersion band
 #' (e.g. \code{qnorm(1 - .2/2) ~= 1.28} should include
@@ -492,7 +493,6 @@ plotMrlocus <- function(res,
   stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=q)$summary
   alpha.hat <- stansum["alpha","mean"]
   qs <- paste0(q * 100,"%")
-  message(paste0("plotting a ",qs[1],"-",qs[2]," interval"))
   alpha.qs <- stansum["alpha",qs]
   sigma.hat <- stansum["sigma","mean"]
   xx <- max(res$beta_hat_a)
