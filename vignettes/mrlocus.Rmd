@@ -31,7 +31,7 @@ making use of the Stan and RStan software packages for inference
 [@stan;@rstan].
 
 The authors of the associated [MRLocus manuscript](https://doi.org/10.1101/2020.08.14.250720)
-[@mrlocus] is:
+[@mrlocus] are:
 
 > Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L.Tapia,
 > Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love
