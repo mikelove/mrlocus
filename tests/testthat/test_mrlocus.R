@@ -44,7 +44,7 @@ test_that("mrlocus works on simple sim data", {
   res <- extractForSlope(res)
   dev.off()
 
-  suppresWarnings({
+  suppressWarnings({
     res <- fitSlope(res, iter=10000)
   })
 
