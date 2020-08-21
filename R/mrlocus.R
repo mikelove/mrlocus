@@ -28,6 +28,10 @@
 fitBetaColoc <- function(beta_hat_a, beta_hat_b,
                          se_a, se_b, Sigma_a, Sigma_b, ...) {
   n <- length(beta_hat_a)
+  if (n == 1) {
+    stop("colocalization not needed with n=1 SNP in cluster
+  pass the effect sizes and SE's directly to slope estimation")
+  }
   stopifnot(length(beta_hat_b) == n)
   stopifnot(length(se_a) == n)
   stopifnot(length(se_b) == n)
@@ -124,6 +128,8 @@ fitSlope <- function(res,
     out <- list(stanfit=stanfit)
   } else {
     # parametric simulation if just one SNP
+    message("  only one signal cluster provided.
+  parametric simulation used to estimate slope")
     m <- 1e5
     slope <- rnorm(m, res$beta_hat_b, res$sd_b) /
       rnorm(m, res$beta_hat_a, res$sd_a)

@@ -272,11 +272,11 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   out <- list(beta_hat_a=beta_hat_a,
               beta_hat_b=beta_hat_b,
               se_a=se_a, se_b=se_b,
-              Sigma=Sigma,
-              alleles=alleles)
+              Sigma=Sigma)
   if (two.ld) {
     out$Sigma2 <- Sigma2
   }
+  out$alleles <- alleles
   if (plot) {
     plotInitEstimates(out, a=a, b=b)
   }
@@ -359,8 +359,8 @@ extractForSlope <- function(res,
     kfit <- kmeans(dat, centers=c(0,mean(beta_max_a)))
     z <- kfit$cluster
     for (i in 1:niter) {
-      ms <- mclust::mstep(modelName="V", data=dat, z=mclust::unmap(z))
-      es <- mclust::estep(modelName="V", data=dat, parameters=ms$parameters)
+      ms <- mclust::mstepV(data=dat, z=mclust::unmap(z))
+      es <- mclust::estepV(data=dat, parameters=ms$parameters)
       z <- ifelse(es$z[,2] > .5, 2, 1)
     }
   }

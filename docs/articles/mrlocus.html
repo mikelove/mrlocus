@@ -79,7 +79,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">08/20/2020</h4>
+            <h4 class="date">08/21/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -101,68 +101,91 @@
 <p>Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L.Tapia, Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love</p>
 </blockquote>
 <p>* Both authors contributed equally to this work.</p>
+</div>
+<div id="data-input-and-preprocessing" class="section level1">
+<h1 class="hasAnchor">
+<a href="#data-input-and-preprocessing" class="anchor"></a>Data input and preprocessing</h1>
 <p>In this vignette we demonstrate use of MRLocus on simulated summary statistics. The simulated data in this vignette does not include the steps of importing summary statistics and LD matrices from external files. For that, we recommend looking at the R code we used for analysis of the <a href="https://github.com/mikelove/mrlocusPaper/blob/master/public/analysis.R">public datasets</a> in the manuscript.</p>
 <p>Briefly, two important helper functions for import and preprocessing that are provided in this package are <code>collapseHighCorSNPs</code> and <code>flipAllelesAndGather</code>, for importing summary statistics across LD-independent signal clusters (sets of SNPs that are non-overlapping and have low correlation in a reference population). We use the phrase “LD-independent signal cluster” as in the PTWAS software and paper <span class="citation">(Zhang et al. 2019)</span>.</p>
 <p>It is strongly recommended to use these two functions for data import, in particular as the first function will reduce the number of SNPs per cluster and help deal with identifiability issues during the Bayesian colocalization step. As described in the manuscript, MRLocus does not attempt to resolve putative causal SNPs among sets of SNPs with correlation <span class="math inline">\(&gt; 0.95\)</span>, but instead it collapses this redundancy using <code>collapseHighCorSNPs</code>. The second function ensures that the alleles are flipped properly across eQTL and GWAS datasets (the function will handle this to avoid manual processing by the user), such that the alleles are coded in such a way that the downstream statistical modeling functions will expect. The second function ensures that both studies refer to the same allele, which is the expression-increasing allele for an index SNP within each LD-independent signal cluster.</p>
-<p>We recommend using PLINK <span class="citation">(Purcell et al. 2007)</span> for generation of signal clusters (see Methods section of MRLocus manuscript).</p>
+<p>We recommend using PLINK <span class="citation">(Purcell et al. 2007)</span> for generation of signal clusters (see Methods section of MRLocus manuscript). We have used raw p-value thresholds from eQTL in order to cull lists of signal clusters (instruments) which have an effect on the putative mediator (gene expression).</p>
 <p>We have not yet implemented, but plan on providing an import function from the <a href="https://github.com/MRCIEU/TwoSampleMR">TwoSampleMR</a> package.</p>
+<p>Un-evaluated example code for the two preprocessing functions follows. In the first function the arguments are:</p>
+<ul>
+<li>
+<code>sum_stat</code> - list of summary statistics over signal clusters</li>
+<li>
+<code>ld_mat</code> - list of LD matrices over signal clusters</li>
+<li>optionally, <code>ld_mat2</code> can also be provided for analyses with two populations</li>
+</ul>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># (un-evaluated chunk)</span>
+<span class="no">out1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/collapseHighCorSNPs.html">collapseHighCorSNPs</a></span>(<span class="no">sum_stat</span>, <span class="no">ld_mat</span>)</pre></body></html></div>
+<p>The second function takes the output of the first function, and additionally a number of column names. E.g. this function call implies that we have column names <code>eqtl_ref</code>, <code>eqtl_effect</code>, <code>eqtl_beta</code>, <code>eqtl_se</code>, etc. See the function man page for more details.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># (un-evaluated chunk)</span>
+<span class="no">out2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/flipAllelesAndGather.html">flipAllelesAndGather</a></span>(<span class="no">out1</span>$<span class="no">sum_stat</span>, <span class="no">out1</span>$<span class="no">ld_mat</span>,
+                             <span class="kw">a</span><span class="kw">=</span><span class="st">"eqtl"</span>, <span class="kw">b</span><span class="kw">=</span><span class="st">"gwas"</span>,
+                             <span class="kw">ref</span><span class="kw">=</span><span class="st">"ref"</span>, <span class="kw">eff</span><span class="kw">=</span><span class="st">"effect"</span>,
+                             <span class="kw">beta</span><span class="kw">=</span><span class="st">"beta"</span>, <span class="kw">se</span><span class="kw">=</span><span class="st">"se"</span>,
+                             <span class="kw">a2_plink</span><span class="kw">=</span><span class="st">"major_plink"</span>,
+                             <span class="kw">snp_id</span><span class="kw">=</span><span class="st">"SNP"</span>, <span class="kw">sep</span><span class="kw">=</span><span class="st">"_"</span>)</pre></body></html></div>
+<p>In order to inspect whether allele flipping worked as expected, this function will by default make a plot of the initial estimates, or you can manually run <code>plotInitEstimates</code> on the output of this function. In the next section an evaluation of this plot is discussed.</p>
 </div>
-<div id="simulated-input-data" class="section level1">
+<div id="qc-of-input-pre-colocalization" class="section level1">
 <h1 class="hasAnchor">
-<a href="#simulated-input-data" class="anchor"></a>Simulated input data</h1>
+<a href="#qc-of-input-pre-colocalization" class="anchor"></a>QC of input pre-colocalization</h1>
 <p>The following simulated summary statistics are generated from a multivariate normal distribution, similar to the model used in eCAVIAR <span class="citation">(Hormozdiari et al. 2016)</span>. In contrast, the simulations in the MRLocus manuscript make use of the <a href="https://github.com/mancusolab/twas_sim">twas_sim</a> framework <span class="citation">(Mancuso 2020)</span>.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mrlocus</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mrlocus</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/makeSimDataForMrlocus.html">makeSimDataForMrlocus</a></span>()</pre></body></html></div>
 <p>This simulated data consists of a list of lists. The elements are: <code>beta_hat_a</code>, <code>beta_hat_b</code>, <code>se_a</code>, <code>se_b</code>, <code>Sigma_a</code>, <code>Sigma_b</code>, and <code>alleles</code>, which provide the estimated coefficients, standard errors (SE), and LD matrices for the two studies, A and B (typically, eQTL and GWAS), as well as a data.frame with allele information (SNP ID, reference allele, and effect allele). The LD matrices can be identical if distinct matrices for each study are not available. Each element itself should be a list of vectors/matrices/data.frames across LD-independent signal clusters.</p>
 <p>We can make a simple plot of the <code>beta_hat</code>’s, estimated coefficients from A and B. The coefficients are numbered by the SNP order within each signal cluster.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="../reference/plotInitEstimates.html">plotInitEstimates</a></span>(<span class="no">out</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/plotInitEstimates.html">plotInitEstimates</a></span>(<span class="no">out</span>)</pre></body></html></div>
 <p><img src="mrlocus_files/figure-html/initests-1.png" width="700"></p>
+<p><strong>Evaluating this plot:</strong> The input data for colocalization, e.g. after running <code>collapseHighCorSNPs</code> and <code>flipAllelesAndGather</code> on real eQTL and GWAS summary statistics within PLINK clumps, is typically not more than 20-30 SNPs per clusters, and with a certain pattern of effect sizes within each cluster. You would not expect to have SNPs <em>within a cluster</em> having very discordant effects size in the x- or y-direction, and quality control of the allele coding is important for the colocalization step to give reasonable results. It is fine however for their to be discordant effect sizes in the y-direction <em>across clusters</em>, this is important evidence against a consistent mediation effect.</p>
 </div>
 <div id="colocalization-step" class="section level1">
 <h1 class="hasAnchor">
 <a href="#colocalization-step" class="anchor"></a>Colocalization step</h1>
 <p>The first step in MRLocus is to perform colocalization of the studies. To do so, we loop over the signal clusters, and store the fitted models in a list called <code>fit</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>()
-<span class="no">nsnp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span>(<span class="no">out</span>$<span class="no">beta_hat_a</span>)
-<span class="no">nclust</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">nsnp</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>()
+<span class="no">nclust</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">out</span>$<span class="no">beta_hat_a</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span>(<span class="no">out</span>$<span class="no">beta_hat_a</span>)</pre></body></html></div>
+<pre><code>## [1]  7  8  9 10</code></pre>
 <p>The following code chunk loops over signal clusters:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="kw">mc.cores</span><span class="kw">=</span><span class="fl">2</span>)
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span>(<span class="kw">mc.cores</span><span class="kw">=</span><span class="fl">2</span>)
 <span class="kw">for</span> (<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">nclust</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/warning.html">suppressWarnings</a></span>({
-    <span class="no">fit</span><span class="kw">[[</span><span class="no">j</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">out</span>,
-                     <span class="fu"><a href="../reference/fitBetaColoc.html">fitBetaColoc</a></span>(
-                       <span class="kw">beta_hat_a</span> <span class="kw">=</span> <span class="no">beta_hat_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                       <span class="kw">beta_hat_b</span> <span class="kw">=</span> <span class="no">beta_hat_b</span><span class="kw">[[</span><span class="no">j</span>]],
-                       <span class="kw">se_a</span> <span class="kw">=</span> <span class="no">se_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                       <span class="kw">se_b</span> <span class="kw">=</span> <span class="no">se_b</span><span class="kw">[[</span><span class="no">j</span>]],
-                       <span class="kw">Sigma_a</span> <span class="kw">=</span> <span class="no">Sigma_a</span><span class="kw">[[</span><span class="no">j</span>]],
-                       <span class="kw">Sigma_b</span> <span class="kw">=</span> <span class="no">Sigma_b</span><span class="kw">[[</span><span class="no">j</span>]]
-                     ))
-  })
+  <span class="no">fit</span><span class="kw">[[</span><span class="no">j</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">out</span>,
+                   <span class="fu"><a href="../reference/fitBetaColoc.html">fitBetaColoc</a></span>(
+                     <span class="kw">beta_hat_a</span> <span class="kw">=</span> <span class="no">beta_hat_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                     <span class="kw">beta_hat_b</span> <span class="kw">=</span> <span class="no">beta_hat_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                     <span class="kw">se_a</span> <span class="kw">=</span> <span class="no">se_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                     <span class="kw">se_b</span> <span class="kw">=</span> <span class="no">se_b</span><span class="kw">[[</span><span class="no">j</span>]],
+                     <span class="kw">Sigma_a</span> <span class="kw">=</span> <span class="no">Sigma_a</span><span class="kw">[[</span><span class="no">j</span>]],
+                     <span class="kw">Sigma_b</span> <span class="kw">=</span> <span class="no">Sigma_b</span><span class="kw">[[</span><span class="no">j</span>]]
+                   ))
 }</pre></body></html></div>
-<p>We now create a list containing the posterior mean from the colocalization step, and the original SE values. Note the SE values are now referred to as <code>sd</code>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">beta_hat_a</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_a"</span>),
-            <span class="kw">beta_hat_b</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_b"</span>),
-            <span class="kw">sd_a</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_a</span>,
-            <span class="kw">sd_b</span><span class="kw">=</span><span class="no">out</span>$<span class="no">se_b</span>,
-            <span class="kw">alleles</span><span class="kw">=</span><span class="no">out</span>$<span class="no">alleles</span>)</pre></body></html></div>
+<p>We now create a list containing the posterior mean from the colocalization step, and the original SE values. Note the SE values are now referred to as <code>sd</code>. We can extract the list of e.g. <code>beta_hat_a</code> using <code>lapply</code> and the <code><a href="https://rdrr.io/r/base/Extract.html">[[</a></code> extractor as seen below:</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">beta_hat_a</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_a"</span>),
+            <span class="kw">beta_hat_b</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="no">fit</span>, <span class="no">`[[`</span>, <span class="st">"beta_hat_b"</span>),
+            <span class="kw">sd_a</span> <span class="kw">=</span> <span class="no">out</span>$<span class="no">se_a</span>,
+            <span class="kw">sd_b</span> <span class="kw">=</span> <span class="no">out</span>$<span class="no">se_b</span>,
+            <span class="kw">alleles</span> <span class="kw">=</span> <span class="no">out</span>$<span class="no">alleles</span>)</pre></body></html></div>
 </div>
 <div id="slope-fitting-step" class="section level1">
 <h1 class="hasAnchor">
 <a href="#slope-fitting-step" class="anchor"></a>Slope fitting step</h1>
 <p>The following function extracts one SNP per signal cluster with the largest posterior mean for the coefficient for study A (e.g. eQTL). The selected SNPs and their posterior mean values are plotted on the right panel in blue. We note that it is also possible to perform EM-based clustering <span class="citation">(Scrucca et al. 2016)</span> to extract more than one SNP per signal cluster, through use of the <code>niter</code> argument, although this was not evaluated in the MRLocus manuscript.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractForSlope.html">extractForSlope</a></span>(<span class="no">res</span>, <span class="kw">plot</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractForSlope.html">extractForSlope</a></span>(<span class="no">res</span>)</pre></body></html></div>
 <p><img src="mrlocus_files/figure-html/extract-1.png" width="700"></p>
 <p>Now we are ready to fit the slope. In our testing we have used 10,000 iterations, though fewer may be sufficient. This step is typically much faster than the colocalization step.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSlope.html">fitSlope</a></span>(<span class="no">res</span>, <span class="kw">iter</span><span class="kw">=</span><span class="fl">10000</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSlope.html">fitSlope</a></span>(<span class="no">res</span>, <span class="kw">iter</span><span class="kw">=</span><span class="fl">10000</span>)</pre></body></html></div>
 </div>
 <div id="examine-mrlocus-estimates" class="section level1">
 <h1 class="hasAnchor">
 <a href="#examine-mrlocus-estimates" class="anchor"></a>Examine MRLocus estimates</h1>
 <p>One of the elements in the results list <code>res</code> is the <code>stanfit</code> object, which can be explored with functions from the <code>rstan</code> package.</p>
 <p>The posterior mean for the gene-to-trait slope, alpha, is near the simulated value of 0.5. The posterior mean for the dispersion around the slope, sigma, is also estimated. Note that the estimate for sigma has a large 80% credible interval, as we only have 4 signal clusters over which to estimate dispersion.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rstan</span>))
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rstan</span>))
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">stanfit</span>, <span class="kw">pars</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"alpha"</span>,<span class="st">"sigma"</span>), <span class="kw">probs</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">.1</span>,<span class="fl">.9</span>), <span class="kw">digits</span><span class="kw">=</span><span class="fl">3</span>)</pre></body></html></div>
 <pre><code>## Inference for Stan model: slope.
 ## 4 chains, each with iter=10000; warmup=5000; thin=1; 
@@ -172,18 +195,18 @@
 ## alpha 0.490   0.001 0.086 0.400 0.587  3333 1.005
 ## sigma 0.264   0.012 0.246 0.044 0.567   445 1.015
 ## 
-## Samples were drawn using NUTS(diag_e) at Thu Aug 20 22:49:23 2020.
+## Samples were drawn using NUTS(diag_e) at Fri Aug 21 10:29:38 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>MRLocus provides a plot that summarizes the estimation of the gene-to-trait effect. The estimated slope and an 80% credible interval are indicated with a solid blue line and dashed blue lines, respectively. The black points and error bars represent the posterior mean for top SNPs from colocalization and the original SE. An 80% band in light blue indicates a region that is expected to contain 80% of the eQTL-GWAS pairs across signal clusters, so reflecting the allelic heterogeneity. If the estimate of <span class="math inline">\(\sigma\)</span> is of comparable size to <span class="math inline">\(\alpha\)</span> times typical eQTL effect sizes (slope <span class="math inline">\(\times\)</span> location of black points on the x-axis), this indicates a high degree of heterogeneity.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMrlocus.html">plotMrlocus</a></span>(<span class="no">res</span>, <span class="kw">main</span><span class="kw">=</span><span class="st">"MRLocus gene-to-trait effect estimate"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMrlocus.html">plotMrlocus</a></span>(<span class="no">res</span>, <span class="kw">main</span><span class="kw">=</span><span class="st">"MRLocus gene-to-trait effect estimate"</span>)</pre></body></html></div>
 <p><img src="mrlocus_files/figure-html/mrlocus-1.png" width="700"></p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
 <pre><code>## R version 4.0.2 (2020-06-22)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.6

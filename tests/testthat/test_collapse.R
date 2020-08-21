@@ -18,11 +18,16 @@ test_that("collapsing high cor SNPs", {
                  0,0,0,.99,1
                  ), byrow=TRUE, ncol=5)
   ld_mat <- list(ld)
+  ld_mat2 <- ld_mat
 
-  out <- collapseHighCorSNPs(sum_stat, ld_mat)
+  sum_stat[[1]]
+  
+  out <- collapseHighCorSNPs(sum_stat, ld_mat, ld_mat2)
+  dev.off()
   out$sum_stat[[1]]
   
-  out <- collapseHighCorSNPs(sum_stat, ld_mat, score="abs.z")
+  out <- collapseHighCorSNPs(sum_stat, ld_mat, ld_mat2, score="abs.z")
+  dev.off()
   out$sum_stat[[1]]
   
 })

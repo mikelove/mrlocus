@@ -21,12 +21,17 @@ test_that("flip alleles", {
                  -.5,-.5,-.5,.5,1
                  ), byrow=TRUE, ncol=5)
   ld_mat <- list(ld)
+  ld_mat2 <- ld_mat
 
-  out <- flipAllelesAndGather(sum_stat, ld_mat,
+  out <- flipAllelesAndGather(sum_stat, ld_mat, ld_mat2,
                               a="eqtl", b="gwas",
                               ref="ref", eff="eff",
                               beta="beta", se="se",
                               a2_plink="ref.eqtl",
+                              a2_plink_mat2="ref.eqtl",
                               snp_id="snp", sep=".")
+  dev.off()
+
+  names(out)
 
 })

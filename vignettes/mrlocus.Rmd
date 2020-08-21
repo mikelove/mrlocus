@@ -38,6 +38,8 @@ The authors of the associated [MRLocus manuscript](https://doi.org/10.1101/2020.
 
 \* Both authors contributed equally to this work.
 
+# Data input and preprocessing
+
 In this vignette we demonstrate use of MRLocus on simulated summary
 statistics. The simulated data in this vignette does not include
 the steps of importing summary statistics and LD matrices from
@@ -69,12 +71,49 @@ studies refer to the same allele, which is the expression-increasing
 allele for an index SNP within each LD-independent signal cluster.
 
 We recommend using PLINK [@plink] for generation of signal clusters
-(see Methods section of MRLocus manuscript). 
+(see Methods section of MRLocus manuscript). We have used raw p-value
+thresholds from eQTL in order to cull lists of signal clusters
+(instruments) which have an effect on the putative mediator (gene
+expression). 
 
 We have not yet implemented, but plan on providing an import function
 from the [TwoSampleMR](https://github.com/MRCIEU/TwoSampleMR) package.
 
-# Simulated input data
+Un-evaluated example code for the two preprocessing functions follows.
+In the first function the arguments are:
+
+* `sum_stat` - list of summary statistics over signal clusters
+* `ld_mat` - list of LD matrices over signal clusters
+* optionally, `ld_mat2` can also be provided for analyses
+  with two populations
+
+```{r eval=FALSE}
+# (un-evaluated chunk)
+out1 <- collapseHighCorSNPs(sum_stat, ld_mat)
+```
+The second function takes the output of the first function, and
+additionally a number of column names. E.g. this function call 
+implies that we have column names `eqtl_ref`, `eqtl_effect`,
+`eqtl_beta`, `eqtl_se`, etc. See the function man page for more
+details. 
+
+```{r eval=FALSE}
+# (un-evaluated chunk)
+out2 <- flipAllelesAndGather(out1$sum_stat, out1$ld_mat,
+                             a="eqtl", b="gwas",
+                             ref="ref", eff="effect",
+                             beta="beta", se="se",
+                             a2_plink="major_plink",
+                             snp_id="SNP", sep="_")
+```
+
+In order to inspect whether allele flipping worked as expected, this
+function will by default make a plot of the initial estimates, or you
+can manually run `plotInitEstimates` on the output of this
+function. In the next section an evaluation of this plot is
+discussed.
+
+# QC of input pre-colocalization
 
 The following simulated summary statistics are generated from a
 multivariate normal distribution, similar to the model used in
@@ -107,6 +146,19 @@ each signal cluster.
 plotInitEstimates(out)
 ```
 
+**Evaluating this plot:** 
+The input data for colocalization, e.g. after running
+`collapseHighCorSNPs` and `flipAllelesAndGather` on real eQTL and GWAS
+summary statistics within PLINK clumps, is typically not more than
+20-30 SNPs per clusters, and with a certain pattern of effect sizes
+within each cluster. You would not expect to have SNPs *within a
+cluster* having very discordant effects size in the x- or y-direction,
+and quality control of the allele coding is important for the
+colocalization step to give reasonable results. It is fine however for
+their to be discordant effect sizes in the y-direction *across
+clusters*, this is important evidence against a consistent mediation
+effect.
+
 # Colocalization step
 
 The first step in MRLocus is to perform colocalization of the
@@ -115,8 +167,8 @@ fitted models in a list called `fit`.
 
 ```{r}
 fit <- list()
-nsnp <- lengths(out$beta_hat_a)
-nclust <- length(nsnp)
+nclust <- length(out$beta_hat_a)
+lengths(out$beta_hat_a)
 ```
 
 The following code chunk loops over signal clusters:
@@ -124,30 +176,29 @@ The following code chunk loops over signal clusters:
 ```{r}
 options(mc.cores=2)
 for (j in 1:nclust) {
-  suppressWarnings({
-    fit[[j]] <- with(out,
-                     fitBetaColoc(
-                       beta_hat_a = beta_hat_a[[j]],
-                       beta_hat_b = beta_hat_b[[j]],
-                       se_a = se_a[[j]],
-                       se_b = se_b[[j]],
-                       Sigma_a = Sigma_a[[j]],
-                       Sigma_b = Sigma_b[[j]]
-                     ))
-  })
+  fit[[j]] <- with(out,
+                   fitBetaColoc(
+                     beta_hat_a = beta_hat_a[[j]],
+                     beta_hat_b = beta_hat_b[[j]],
+                     se_a = se_a[[j]],
+                     se_b = se_b[[j]],
+                     Sigma_a = Sigma_a[[j]],
+                     Sigma_b = Sigma_b[[j]]
+                   ))
 }
 ```
 
 We now create a list containing the posterior mean from the
 colocalization step, and the original SE values. Note the SE values
-are now referred to as `sd`.
+are now referred to as `sd`. We can extract the list of
+e.g. `beta_hat_a` using `lapply` and the `[[` extractor as seen below: 
 
 ```{r}
-res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
-            beta_hat_b=lapply(fit, `[[`, "beta_hat_b"),
-            sd_a=out$se_a,
-            sd_b=out$se_b,
-            alleles=out$alleles)
+res <- list(beta_hat_a = lapply(fit, `[[`, "beta_hat_a"),
+            beta_hat_b = lapply(fit, `[[`, "beta_hat_b"),
+            sd_a = out$se_a,
+            sd_b = out$se_b,
+            alleles = out$alleles)
 ```
 
 # Slope fitting step
@@ -161,7 +212,7 @@ per signal cluster, through use of the `niter` argument, although this
 was not evaluated in the MRLocus manuscript.
 
 ```{r extract}
-res <- extractForSlope(res, plot=TRUE)
+res <- extractForSlope(res)
 ```
 
 Now we are ready to fit the slope. In our testing we have used 10,000
