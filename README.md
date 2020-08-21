@@ -8,7 +8,7 @@ MRLocus is a statistical method providing Mendelian Randomization
 analysis per locus, leveraging eQTL and GWAS summary statistics, for
 estimation of gene-to-trait effect size and dispersion.
 
-See `Vignette` tab for software vignette, and `Functions` tab for
+See `Get started` tab for software vignette, and `Reference` tab for
 manual pages of the individual functions.
 
 ### Issues
