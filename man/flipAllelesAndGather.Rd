@@ -39,7 +39,7 @@ alongside the first \code{ld_mat}, which is used
 for the allele flipping. the second list of LD
 matrices is just flipped in the same way}
 
-\item{a}{name of A in columns of sum_stat ("eQTL")}
+\item{a}{name of A in columns of \code{sum_stat} ("eQTL")}
 
 \item{b}{name of B ("GWAS")}
 

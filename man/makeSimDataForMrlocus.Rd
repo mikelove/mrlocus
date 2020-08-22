@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper.R
 \name{makeSimDataForMrlocus}
 \alias{makeSimDataForMrlocus}
-\title{Make simulated data for mrlocus}
+\title{Make simple simulated summary data}
 \usage{
 makeSimDataForMrlocus(
   nsnp = c(7:10),
@@ -32,11 +32,13 @@ values given true A coefficients}
 \item{n_mult}{how many more samples the B study has}
 }
 \value{
-a list of beta_hat_a, beta_hat_b, se_a, and se_b,
-Sigma_a, Sigma_b (themselves lists), and alleles
-(a list of data.frames each with id, ref, eff for the SNP id,
+a list of \code{beta_hat_a}, \code{beta_hat_b},
+\code{se_a}, \code{se_b},
+\code{Sigma_a}, \code{Sigma_b} (themselves lists), and \code{alleles}
+(a list of data.frames each with
+\code{id}, \code{ref}, \code{eff} for the SNP id,
 reference allele, and effect allele).
 }
 \description{
-Make simulated data for mrlocus
+Make simple simulated summary data
 }

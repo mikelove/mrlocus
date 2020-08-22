@@ -24,6 +24,13 @@
 #' @importFrom rstan sampling
 #'
 #' @references
+#'
+#' Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+#' Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
+#' MRLocus: identifying causal genes mediating a trait through
+#' Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
+#' \url{https://doi.org/10.1101/2020.08.14.250720}
+#' 
 #' Stan Development Team (2019). RStan: the R interface to Stan. R package version 2.19.2. https://mc-stan.org
 #'
 NULL

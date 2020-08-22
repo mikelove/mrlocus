@@ -16,16 +16,20 @@ extractForSlope(
 \arguments{
 \item{res}{list with the following named elements:
 \itemize{
-\item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
-\item beta_hat_b - " " for B
-\item sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A 
-\item sd_b - " " for B
+\item \code{beta_hat_a} - list of point estimates of coefficients for A from colocalization
+\item \code{beta_hat_b} - " " for B
+\item \code{sd_a} - list of sampling SD for \code{beta_hat_a} (in practice original
+SE are provided here)
+\item \code{sd_b} - " " for \code{beta_hat_b} " "
+\item {alleles} (optional) list of data.frame with allele information
 }}
 
 \item{niter}{number of iterations of EM to run
-for Mclust, if set to 0, only the maximum
+for mclust, if set to 0, only the maximum
 variant (in terms of A effect size) per
-signal cluster is output.}
+signal cluster is output. Default is to not
+run clustering, but to take the SNP with the
+largest effect size in A (in the positive direction)}
 
 \item{plot}{logical, draw a before after of which
 variants will be included for slope estimation}
@@ -48,5 +52,7 @@ also be passed through as a single data.frame with the
 selected SNPs per signal cluster
 }
 \description{
-Extract SNPs from colocalization for slope fitting
+Extracts one or more SNPs from each signal cluster
+based on the posterior estimate of the effect size
+for A (largest effect size in the positive direction).
 }

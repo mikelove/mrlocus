@@ -136,7 +136,7 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 #' alongside the first \code{ld_mat}, which is used
 #' for the allele flipping. the second list of LD
 #' matrices is just flipped in the same way
-#' @param a name of A in columns of sum_stat ("eQTL")
+#' @param a name of A in columns of \code{sum_stat} ("eQTL")
 #' @param b name of B ("GWAS")
 #' @param ref name of reference allele
 #' @param eff name of effect allele
@@ -285,8 +285,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 
 #' Plot initial estimates over signal clusters
 #'
-#' @param x list of signal clusters data with beta_hat_a
-#' and beta_hat_b lists
+#' @param x list of signal clusters data with \code{beta_hat_a}
+#' and \code{beta_hat_b} lists
 #' @param label what preceeds \code{a} and \code{b} in
 #' the x- and y-axis labels
 #' @param a name of A experiment
@@ -308,17 +308,25 @@ plotInitEstimates <- function(x, label="Effect size of", a="eQTL", b="GWAS") {
 
 #' Extract SNPs from colocalization for slope fitting
 #'
+#' Extracts one or more SNPs from each signal cluster
+#' based on the posterior estimate of the effect size
+#' for A (largest effect size in the positive direction).
+#' 
 #' @param res list with the following named elements:
 #' \itemize{
-#' \item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
-#' \item beta_hat_b - " " for B
-#' \item sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A 
-#' \item sd_b - " " for B
+#' \item \code{beta_hat_a} - list of point estimates of coefficients for A from colocalization
+#' \item \code{beta_hat_b} - " " for B
+#' \item \code{sd_a} - list of sampling SD for \code{beta_hat_a} (in practice original
+#' SE are provided here)
+#' \item \code{sd_b} - " " for \code{beta_hat_b} " "
+#' \item {alleles} (optional) list of data.frame with allele information
 #' }
 #' @param niter number of iterations of EM to run
-#' for Mclust, if set to 0, only the maximum
+#' for mclust, if set to 0, only the maximum
 #' variant (in terms of A effect size) per
-#' signal cluster is output.
+#' signal cluster is output. Default is to not
+#' run clustering, but to take the SNP with the
+#' largest effect size in A (in the positive direction)
 #' @param plot logical, draw a before after of which
 #' variants will be included for slope estimation
 #' @param label what preceeds \code{a} and \code{b} in
@@ -389,7 +397,7 @@ extractForSlope <- function(res,
   out
 }
 
-#' Make simulated data for mrlocus
+#' Make simple simulated summary data
 #'
 #' @param nsnp number of SNPs per signal cluster
 #' @param idx the causal SNP (same per cluster for
@@ -401,9 +409,11 @@ extractForSlope <- function(res,
 #' @param se the standard errors for betas
 #' @param n_mult how many more samples the B study has
 #' 
-#' @return a list of beta_hat_a, beta_hat_b, se_a, and se_b,
-#' Sigma_a, Sigma_b (themselves lists), and alleles
-#' (a list of data.frames each with id, ref, eff for the SNP id,
+#' @return a list of \code{beta_hat_a}, \code{beta_hat_b},
+#' \code{se_a}, \code{se_b},
+#' \code{Sigma_a}, \code{Sigma_b} (themselves lists), and \code{alleles}
+#' (a list of data.frames each with
+#' \code{id}, \code{ref}, \code{eff} for the SNP id,
 #' reference allele, and effect allele).
 #'
 #' @importFrom MASS mvrnorm
@@ -459,7 +469,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 
 #' Plot estimates from MRLocus slope fitting step
 #'
-#' @param res the output from fitSlope
+#' @param res the output from \code{\link{fitSlope}}
 #' @param q the quantiles of the posterior
 #' to use for drawing the uncertainty on the slope.
 #' The default is an 80 percent interval
@@ -474,7 +484,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
-#' @param ... arguments passed to plot()
+#' @param ... arguments passed to \code{plot}
 #'
 #' @export
 plotMrlocus <- function(res, 

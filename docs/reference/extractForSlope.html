@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Extract SNPs from colocalization for slope fitting — extractForSlope" />
-<meta property="og:description" content="Extract SNPs from colocalization for slope fitting" />
+<meta property="og:description" content="Extracts one or more SNPs from each signal cluster
+based on the posterior estimate of the effect size
+for A (largest effect size in the positive direction)." />
 
 
 
@@ -127,7 +129,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Extract SNPs from colocalization for slope fitting</p>
+    <p>Extracts one or more SNPs from each signal cluster
+based on the posterior estimate of the effect size
+for A (largest effect size in the positive direction).</p>
     </div>
 
     <pre class="usage"><span class='fu'>extractForSlope</span>(
@@ -145,18 +149,22 @@
     <tr>
       <th>res</th>
       <td><p>list with the following named elements:</p><ul>
-<li><p>beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A</p></li>
-<li><p>beta_hat_b - " " for B</p></li>
-<li><p>sd_a - vector of length sum(nsnp), first step posterior SD (or SE) for beta for A</p></li>
-<li><p>sd_b - " " for B</p></li>
+<li><p><code>beta_hat_a</code> - list of point estimates of coefficients for A from colocalization</p></li>
+<li><p><code>beta_hat_b</code> - " " for B</p></li>
+<li><p><code>sd_a</code> - list of sampling SD for <code>beta_hat_a</code> (in practice original
+SE are provided here)</p></li>
+<li><p><code>sd_b</code> - " " for <code>beta_hat_b</code> " "</p></li>
+<li><p>alleles (optional) list of data.frame with allele information</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>niter</th>
       <td><p>number of iterations of EM to run
-for Mclust, if set to 0, only the maximum
+for mclust, if set to 0, only the maximum
 variant (in terms of A effect size) per
-signal cluster is output.</p></td>
+signal cluster is output. Default is to not
+run clustering, but to take the SNP with the
+largest effect size in A (in the positive direction)</p></td>
     </tr>
     <tr>
       <th>plot</th>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit the beta slope model: effect of A on B — fitSlope • mrlocus</title>
+<title>Fit the mediation slope model: effect of A on B — fitSlope • mrlocus</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,17 @@
 
 
 
-<meta property="og:title" content="Fit the beta slope model: effect of A on B — fitSlope" />
-<meta property="og:description" content="Fit the beta slope model: effect of A on B" />
+<meta property="og:title" content="Fit the mediation slope model: effect of A on B — fitSlope" />
+<meta property="og:description" content="Implements the MRLocus slope fitting step, in which the estimated
+coefficients and their original SE are used to determine
+the mediation slope (alpha), and the dispersion of individual
+signal clusters around the slope (sigma). This function
+follows the colocalization step fitBetaColoc
+and extractForSlope.
+The output fitSlope can be visualized with
+plotMrlocus. For details on the model,
+see Supplementary Methods of the MRLocus manuscript.
+See vignette for example of model interpretation." />
 
 
 
@@ -121,13 +130,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit the beta slope model: effect of A on B</h1>
+    <h1>Fit the mediation slope model: effect of A on B</h1>
     <small class="dont-index">Source: <a href='https://github.com/mikelove/mrlocus/blob/master/R/mrlocus.R'><code>R/mrlocus.R</code></a></small>
     <div class="hidden name"><code>fitSlope.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fit the beta slope model: effect of A on B</p>
+    <p>Implements the MRLocus slope fitting step, in which the estimated
+coefficients and their original SE are used to determine
+the mediation slope (<code>alpha</code>), and the dispersion of individual
+signal clusters around the slope (<code>sigma</code>). This function
+follows the colocalization step <code><a href='fitBetaColoc.html'>fitBetaColoc</a></code>
+and <code><a href='extractForSlope.html'>extractForSlope</a></code>.
+The output <code>fitSlope</code> can be visualized with
+<code><a href='plotMrlocus.html'>plotMrlocus</a></code>. For details on the model,
+see Supplementary Methods of the MRLocus manuscript.
+See vignette for example of model interpretation.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fitSlope</span>(
@@ -145,39 +163,52 @@
     <tr>
       <th>res</th>
       <td><p>list with the following named elements:</p><ul>
-<li><p>beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A</p></li>
-<li><p>beta_hat_b - " " for B</p></li>
-<li><p>sd_a - vector of length sum(nsnp), first step posterior SD for beta for A</p></li>
-<li><p>sd_b - " " for B</p></li>
+<li><p><code>beta_hat_a</code> - point estimates of coefficients for A from colocalization</p></li>
+<li><p><code>beta_hat_b</code> - " " for B</p></li>
+<li><p><code>sd_a</code> - sampling SD for <code>beta_hat_a</code> (in practice original
+SE are provided here)</p></li>
+<li><p><code>sd_b</code> - " " for <code>beta_hat_b</code> " "</p></li>
+<li><p>alleles (optional) data.frame with allele information</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>sd_beta</th>
-      <td><p>prior SD for beta A</p></td>
+      <td><p>prior SD for beta A (default value will be derived from data)</p></td>
     </tr>
     <tr>
       <th>mu_alpha</th>
-      <td><p>prior mean for alpha</p></td>
+      <td><p>prior mean for <code>alpha</code> (default value will be derived from data)</p></td>
     </tr>
     <tr>
       <th>sd_alpha</th>
-      <td><p>prior SD for alpha</p></td>
+      <td><p>prior SD for <code>alpha</code> (default value will be derived from data)</p></td>
     </tr>
     <tr>
       <th>sd_sigma</th>
-      <td><p>prior SD for sigma</p></td>
+      <td><p>prior SD for <code>sigma</code> (default value of 1)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>further arguments passed to rstan::sampling</p></td>
+      <td><p>further arguments passed to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list with the following elements: stanfit object,
+    <p>list with the following elements: <code>stanfit</code> object,
 original estimated coefficients and standard deviations,
-as well as the alleles data.frame (if it was provided)</p>
+as well as the <code>alleles</code> data.frame (if it was provided)</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Note that if summary statistics for only one SNP are provided
+a parametric simulation is used to estimate the slope.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
+MRLocus: identifying causal genes mediating a trait through
+Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
+<a href='https://doi.org/10.1101/2020.08.14.250720'>https://doi.org/10.1101/2020.08.14.250720</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

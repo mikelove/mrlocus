@@ -1,11 +1,19 @@
-#' Fit the beta colocalization per signal cluster
+#' Fit the colocalization model per signal cluster
 #'
-#' @param beta_hat_a vector of length nsnp, estimated coefficients for A
+#' Implements the MRLocus colocalization step, in which summary
+#' statistics from A and B studies are used in a generative
+#' model, with a horseshoe prior on the latent true effect sizes.
+#' Posterior effect sizes and posterior SD are returned,
+#' although in pratice we use the original SE in the subsequent
+#' \code{\link{fitSlope}} model.
+#' See Supplementary Methods of the MRLocus manuscript.
+#' 
+#' @param beta_hat_a vector of estimated coefficients for A
 #' @param beta_hat_b " " for B
-#' @param se_a vector of length nsnp, standard errors for beta_hat_a
+#' @param se_a vector of standard errors for beta_hat_a
 #' @param se_b " " for beta_hat_b
-#' @param Sigma_a correlation matrix of SNPs for A, dimension should be nsnp x nsnp
-#' @param Sigma_b " " for B (this could be different for different LD structures)
+#' @param Sigma_a correlation matrix of SNPs for A
+#' @param Sigma_b " " for B (this could be different for different LD matrix)
 #' @param ... further arguments passed to rstan::sampling
 #'
 #' @importFrom matrixStats colSds
@@ -13,16 +21,29 @@
 #' @importFrom graphics abline arrows par points polygon segments text
 #' @importFrom grDevices rgb
 #'
-#' @return a list with the following elements: stanfit object,
-#' posterior means for estimated coefficients,
-#' posterior standard deviations, and scaling factors.
+#' @return a list with the following elements:
+#' \itemize{
+#' \item \code{stanfit} object
+#' \item posterior means for estimated coefficients for A and B
+#' \item posterior standard deviations for A and B
+#' \item scaling factors for A and B
+#' }
 #' Two important notes: (1) in MRLocus manuscript, original
 #' SE are used instead of posterior SD in the slope fitting step,
 #' (2) the posterior means and SD for estimated coefficients 
 #' are appropriately scaled, while the results from the
-#' stanfit object are not scaled. In order to scale the
-#' results from the stanfit object, scale_a and scale_b
-#' should be divided out (see Supplementary Methods).
+#' \code{stanfit} object are not scaled. In order to scale the
+#' results from the stanfit object, \code{scale_a} and \code{scale_b}
+#' should be divided out from both coefficients and SDs
+#' (see Supplementary Methods).
+#'
+#' @references
+#'
+#' Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+#' Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
+#' MRLocus: identifying causal genes mediating a trait through
+#' Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
+#' \url{https://doi.org/10.1101/2020.08.14.250720}
 #' 
 #' @export
 fitBetaColoc <- function(beta_hat_a, beta_hat_b,
@@ -64,24 +85,48 @@ fitBetaColoc <- function(beta_hat_a, beta_hat_b,
        scale_a=scale_a, scale_b=scale_b)
 }
 
-#' Fit the beta slope model: effect of A on B
+#' Fit the mediation slope model: effect of A on B
 #'
+#' Implements the MRLocus slope fitting step, in which the estimated
+#' coefficients and their original SE are used to determine
+#' the mediation slope (\code{alpha}), and the dispersion of individual
+#' signal clusters around the slope (\code{sigma}). This function
+#' follows the colocalization step \code{\link{fitBetaColoc}}
+#' and \code{\link{extractForSlope}}.
+#' The output \code{fitSlope} can be visualized with
+#' \code{\link{plotMrlocus}}. For details on the model,
+#' see Supplementary Methods of the MRLocus manuscript.
+#' See vignette for example of model interpretation.
+#'
+#' Note that if summary statistics for only one SNP are provided
+#' a parametric simulation is used to estimate the slope.
+#' 
 #' @param res list with the following named elements:
 #' \itemize{
-#' \item beta_hat_a - vector of length sum(nsnp), first step point estimates of beta for A
-#' \item beta_hat_b - " " for B
-#' \item sd_a - vector of length sum(nsnp), first step posterior SD for beta for A
-#' \item sd_b - " " for B
+#' \item \code{beta_hat_a} - point estimates of coefficients for A from colocalization
+#' \item \code{beta_hat_b} - " " for B
+#' \item \code{sd_a} - sampling SD for \code{beta_hat_a} (in practice original
+#' SE are provided here)
+#' \item \code{sd_b} - " " for \code{beta_hat_b} " "
+#' \item {alleles} (optional) data.frame with allele information
 #' }
-#' @param sd_beta prior SD for beta A
-#' @param mu_alpha prior mean for alpha
-#' @param sd_alpha prior SD for alpha
-#' @param sd_sigma prior SD for sigma
-#' @param ... further arguments passed to rstan::sampling
+#' @param sd_beta prior SD for beta A (default value will be derived from data)
+#' @param mu_alpha prior mean for \code{alpha} (default value will be derived from data)
+#' @param sd_alpha prior SD for \code{alpha} (default value will be derived from data)
+#' @param sd_sigma prior SD for \code{sigma} (default value of 1)
+#' @param ... further arguments passed to \code{rstan::sampling}
 #'
-#' @return list with the following elements: stanfit object,
+#' @return list with the following elements: \code{stanfit} object,
 #' original estimated coefficients and standard deviations,
-#' as well as the alleles data.frame (if it was provided)
+#' as well as the \code{alleles} data.frame (if it was provided)
+#' 
+#' @references
+#'
+#' Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+#' Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
+#' MRLocus: identifying causal genes mediating a trait through
+#' Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
+#' \url{https://doi.org/10.1101/2020.08.14.250720}
 #' 
 #' @export
 fitSlope <- function(res,

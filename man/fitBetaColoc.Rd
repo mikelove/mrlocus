@@ -2,37 +2,55 @@
 % Please edit documentation in R/mrlocus.R
 \name{fitBetaColoc}
 \alias{fitBetaColoc}
-\title{Fit the beta colocalization per signal cluster}
+\title{Fit the colocalization model per signal cluster}
 \usage{
 fitBetaColoc(beta_hat_a, beta_hat_b, se_a, se_b, Sigma_a, Sigma_b, ...)
 }
 \arguments{
-\item{beta_hat_a}{vector of length nsnp, estimated coefficients for A}
+\item{beta_hat_a}{vector of estimated coefficients for A}
 
 \item{beta_hat_b}{" " for B}
 
-\item{se_a}{vector of length nsnp, standard errors for beta_hat_a}
+\item{se_a}{vector of standard errors for beta_hat_a}
 
 \item{se_b}{" " for beta_hat_b}
 
-\item{Sigma_a}{correlation matrix of SNPs for A, dimension should be nsnp x nsnp}
+\item{Sigma_a}{correlation matrix of SNPs for A}
 
-\item{Sigma_b}{" " for B (this could be different for different LD structures)}
+\item{Sigma_b}{" " for B (this could be different for different LD matrix)}
 
 \item{...}{further arguments passed to rstan::sampling}
 }
 \value{
-a list with the following elements: stanfit object,
-posterior means for estimated coefficients,
-posterior standard deviations, and scaling factors.
+a list with the following elements:
+\itemize{
+\item \code{stanfit} object
+\item posterior means for estimated coefficients for A and B
+\item posterior standard deviations for A and B
+\item scaling factors for A and B
+}
 Two important notes: (1) in MRLocus manuscript, original
 SE are used instead of posterior SD in the slope fitting step,
 (2) the posterior means and SD for estimated coefficients 
 are appropriately scaled, while the results from the
-stanfit object are not scaled. In order to scale the
-results from the stanfit object, scale_a and scale_b
-should be divided out (see Supplementary Methods).
+\code{stanfit} object are not scaled. In order to scale the
+results from the stanfit object, \code{scale_a} and \code{scale_b}
+should be divided out from both coefficients and SDs
+(see Supplementary Methods).
 }
 \description{
-Fit the beta colocalization per signal cluster
+Implements the MRLocus colocalization step, in which summary
+statistics from A and B studies are used in a generative
+model, with a horseshoe prior on the latent true effect sizes.
+Posterior effect sizes and posterior SD are returned,
+although in pratice we use the original SE in the subsequent
+\code{\link{fitSlope}} model.
+See Supplementary Methods of the MRLocus manuscript.
+}
+\references{
+Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
+MRLocus: identifying causal genes mediating a trait through
+Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
+\url{https://doi.org/10.1101/2020.08.14.250720}
 }

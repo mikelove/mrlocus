@@ -18,7 +18,7 @@ plotMrlocus(
 )
 }
 \arguments{
-\item{res}{the output from fitSlope}
+\item{res}{the output from \code{\link{fitSlope}}}
 
 \item{q}{the quantiles of the posterior
 to use for drawing the uncertainty on the slope.
@@ -42,7 +42,7 @@ the x- and y-axis labels}
 
 \item{digits}{number of digits to show in legend}
 
-\item{...}{arguments passed to plot()}
+\item{...}{arguments passed to \code{plot}}
 }
 \description{
 Plot estimates from MRLocus slope fitting step
