@@ -89,7 +89,7 @@ In the first function the arguments are:
 
 ```{r eval=FALSE}
 # (un-evaluated chunk)
-out1 <- collapseHighCorSNPs(sum_stat, ld_mat)
+data1 <- collapseHighCorSNPs(sum_stat, ld_mat)
 ```
 The second function takes the output of the first function, and
 additionally a number of column names. E.g. this function call 
@@ -99,12 +99,12 @@ details.
 
 ```{r eval=FALSE}
 # (un-evaluated chunk)
-out2 <- flipAllelesAndGather(out1$sum_stat, out1$ld_mat,
-                             a="eqtl", b="gwas",
-                             ref="ref", eff="effect",
-                             beta="beta", se="se",
-                             a2_plink="major_plink",
-                             snp_id="SNP", sep="_")
+data2 <- flipAllelesAndGather(data1$sum_stat, data1$ld_mat,
+                              a="eqtl", b="gwas",
+                              ref="ref", eff="effect",
+                              beta="beta", se="se",
+                              a2_plink="major_plink",
+                              snp_id="SNP", sep="_")
 ```
 
 In order to inspect whether allele flipping worked as expected, this
@@ -125,7 +125,7 @@ the [twas_sim](https://github.com/mancusolab/twas_sim) framework
 ```{r}
 library(mrlocus)
 set.seed(1)
-out <- makeSimDataForMrlocus()
+data <- makeSimDataForMrlocus()
 ```
 
 This simulated data consists of a list of lists. The elements are: 
@@ -143,7 +143,7 @@ from A and B. The coefficients are numbered by the SNP order within
 each signal cluster.
 
 ```{r initests, fig.height=7}
-plotInitEstimates(out)
+plotInitEstimates(data)
 ```
 
 **Evaluating this plot:** 
@@ -166,9 +166,9 @@ studies. To do so, we loop over the signal clusters, and store the
 fitted models in a list called `fit`.
 
 ```{r}
-fit <- list()
-nclust <- length(out$beta_hat_a)
-lengths(out$beta_hat_a)
+coloc_fit <- list()
+nclust <- length(data$beta_hat_a)
+lengths(data$beta_hat_a)
 ```
 
 The following code chunk loops over signal clusters:
@@ -176,15 +176,15 @@ The following code chunk loops over signal clusters:
 ```{r}
 options(mc.cores=2)
 for (j in 1:nclust) {
-  fit[[j]] <- with(out,
-                   fitBetaColoc(
-                     beta_hat_a = beta_hat_a[[j]],
-                     beta_hat_b = beta_hat_b[[j]],
-                     se_a = se_a[[j]],
-                     se_b = se_b[[j]],
-                     Sigma_a = Sigma_a[[j]],
-                     Sigma_b = Sigma_b[[j]]
-                   ))
+  coloc_fit[[j]] <- with(data,
+                         fitBetaColoc(
+                           beta_hat_a = beta_hat_a[[j]],
+                           beta_hat_b = beta_hat_b[[j]],
+                           se_a = se_a[[j]],
+                           se_b = se_b[[j]],
+                           Sigma_a = Sigma_a[[j]],
+                           Sigma_b = Sigma_b[[j]]
+                         ))
 }
 ```
 
@@ -194,11 +194,11 @@ are now referred to as `sd`. We can extract the list of
 e.g. `beta_hat_a` using `lapply` and the `[[` extractor as seen below: 
 
 ```{r}
-res <- list(beta_hat_a = lapply(fit, `[[`, "beta_hat_a"),
-            beta_hat_b = lapply(fit, `[[`, "beta_hat_b"),
-            sd_a = out$se_a,
-            sd_b = out$se_b,
-            alleles = out$alleles)
+res <- list(beta_hat_a = lapply(coloc_fit, `[[`, "beta_hat_a"),
+            beta_hat_b = lapply(coloc_fit, `[[`, "beta_hat_b"),
+            sd_a = data$se_a,
+            sd_b = data$se_b,
+            alleles = data$alleles)
 ```
 
 # Slope fitting step

@@ -23,3 +23,6 @@ reference:
 - title: "Simulation"
 - contents:
   - makeSimDataForMrlocus
+- title: "Package man page"
+- contents:
+  - mrlocus-package

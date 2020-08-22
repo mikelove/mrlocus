@@ -4,22 +4,22 @@ library(mrlocus)
 test_that("mrlocus works on simple sim data", {
 
   set.seed(1)
-  out <- makeSimDataForMrlocus(n_mult=10)
+  data <- makeSimDataForMrlocus(n_mult=10)
   #set.seed(2)
-  #out <- makeSimDataForMrlocus(n_mult=10,sigma=.5)
+  #data <- makeSimDataForMrlocus(n_mult=10,sigma=.5)
   #set.seed(2)
-  #out <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=.5)
-  plotInitEstimates(out)
+  #data <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=.5)
+  plotInitEstimates(data)
   dev.off()
 
   # step 1) colocalization:
-  fit <- list()
-  nsnp <- lengths(out$beta_hat_a)
+  coloc_fit <- list()
+  nsnp <- lengths(data$beta_hat_a)
   nclust <- length(nsnp)
   for (j in 1:nclust) {
     print(paste("----",j,"----"))
-    fit[[j]] <- suppressWarnings({
-      with(out, 
+    coloc_fit[[j]] <- suppressWarnings({
+      with(data, 
            fitBetaColoc(
              beta_hat_a=beta_hat_a[[j]], beta_hat_b=beta_hat_b[[j]],
              se_a=se_a[[j]], se_b=se_b[[j]],
@@ -33,10 +33,10 @@ test_that("mrlocus works on simple sim data", {
   #rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_a[",1:nsnp[j],"]"))
   #rstan::stan_plot(fit[[j]]$stanfit, pars=paste0("beta_b[",1:nsnp[j],"]"))
   # extract results from colocalization for slope fitting:
-  res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
-              beta_hat_b=lapply(fit, `[[`, "beta_hat_b"),
-              sd_a=out$se_a,
-              sd_b=out$se_b)
+  res <- list(beta_hat_a=lapply(coloc_fit, `[[`, "beta_hat_a"),
+              beta_hat_b=lapply(coloc_fit, `[[`, "beta_hat_b"),
+              sd_a=data$se_a,
+              sd_b=data$se_b)
 
   res0 <- res # for another experiment below
 
