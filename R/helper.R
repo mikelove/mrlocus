@@ -555,6 +555,7 @@ plotMrlocus <- function(res,
            col=rgb(0,0,1,c(1,.5,.15)),
            inset=.05,
            y.intersp=1.1,
+           bg="white",
            legend=c(slope.leg, slope.int.leg, sigma.leg))
   }
 }

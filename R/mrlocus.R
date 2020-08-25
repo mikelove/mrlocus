@@ -133,7 +133,7 @@ fitSlope <- function(res,
                      sd_beta=NULL,
                      mu_alpha=NULL,
                      sd_alpha=NULL,
-                     sd_sigma=1,
+                     sd_sigma=NULL,
                      ...) {
   
   n <- length(res$beta_hat_a)
@@ -153,10 +153,16 @@ fitSlope <- function(res,
   lmfit <- lm(res$beta_hat_b ~ res$beta_hat_a + 0)
   lmsum <- summary(lmfit)$coefficients
   if (is.null(mu_alpha)) {
-    mu_alpha=lmsum[1,1]
+    mu_alpha <- lmsum[1,1]
   }
   if (is.null(sd_alpha)) {
-    sd_alpha=2*abs(lmsum[1,1])
+    sd_alpha <- 2*abs(lmsum[1,1])
+  }
+
+  # specify SD for prior for sigma
+  if (is.null(sd_sigma)) {
+    # a wide prior based on average absolute of B coefs
+    sd_sigma <- 10 * mean(abs(res$beta_hat_b))
   }
 
   if (n > 1) {

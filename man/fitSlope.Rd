@@ -9,7 +9,7 @@ fitSlope(
   sd_beta = NULL,
   mu_alpha = NULL,
   sd_alpha = NULL,
-  sd_sigma = 1,
+  sd_sigma = NULL,
   ...
 )
 }
