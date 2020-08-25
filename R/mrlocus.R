@@ -162,7 +162,7 @@ fitSlope <- function(res,
   # specify SD for prior for sigma
   if (is.null(sd_sigma)) {
     # a wide prior based on average absolute of B coefs
-    sd_sigma <- 10 * mean(abs(res$beta_hat_b))
+    sd_sigma <- 2*sd(res$beta_hat_b)
   }
 
   if (n > 1) {
