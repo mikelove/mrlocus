@@ -176,7 +176,11 @@ fitSlope <- function(res,
                  sd_alpha=sd_alpha,
                  sd_sigma=sd_sigma)
     stanfit <- rstan::sampling(stanmodels$slope, data, ...)
-    out <- list(stanfit=stanfit)
+    priors <- list(sd_beta=sd_beta,
+                   mu_alpha=mu_alpha,
+                   sd_alpha=sd_alpha,
+                   sd_sigma=sd_sigma)
+    out <- list(stanfit=stanfit, priors=priors)
   } else {
     # parametric simulation if just one SNP
     message("  only one signal cluster provided.
@@ -195,5 +199,6 @@ fitSlope <- function(res,
   if ("alleles" %in% names(res)) {
     out$alleles <- res$alleles
   }
+  out$mrlocus_version <- packageVersion("mrlocus")
   return(out)
 }
