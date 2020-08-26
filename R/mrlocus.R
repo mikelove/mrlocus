@@ -17,9 +17,10 @@
 #' @param ... further arguments passed to rstan::sampling
 #'
 #' @importFrom matrixStats colSds
-#' @importFrom stats as.dist cutree hclust kmeans lm mad median rnorm runif
+#' @importFrom stats as.dist cutree hclust kmeans lm mad median rnorm runif sd
 #' @importFrom graphics abline arrows par points polygon segments text
 #' @importFrom grDevices rgb
+#' @importFrom utils packageVersion
 #'
 #' @return a list with the following elements:
 #' \itemize{
