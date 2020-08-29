@@ -11,11 +11,6 @@ estimation of gene-to-trait effect size and dispersion.
 See `Get started` tab for software vignette, and `Reference` tab for
 manual pages of the individual functions.
 
-### Issues
-
-For bug reports, feature requests, or questions, please post 
-[here](https://github.com/mikelove/mrlocus/issues/new/choose).
-
 ### Preprint
 
 Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
@@ -26,3 +21,20 @@ estimation of allelic heterogeneity"
 [doi: 10.1101/2020.08.14.250720](https://doi.org/10.1101/2020.08.14.250720)
 
 \* Both authors contributed equally to this work.
+
+### Installation
+
+The *mrlocus* R package can be installed using *devtools*. Note that
+*mrlocus* uses RStan, and so involves compilation of C++ code.
+Installation will take longer than with R packages not containing code
+to be compiled.
+
+```
+library(devtools)
+install_github("mikelove/mrlocus")
+```
+
+### Issues
+
+For bug reports, feature requests, or questions, please post 
+[here](https://github.com/mikelove/mrlocus/issues/new/choose).
