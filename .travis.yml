@@ -8,6 +8,8 @@ addons:
   apt:
     packages:
       - libv8-dev
+r_packages:
+  - mclust
 script:
   - |
     R CMD build .

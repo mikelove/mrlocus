@@ -84,16 +84,14 @@ test_that("mrlocus works on simple sim data", {
   res$est
 
   # extract potentially more than one SNP per cluster with Mclust
-  if (FALSE) { # for some reason travis is missing mclust pkg
-    res <- res0
-    res <- extractForSlope(res, niter=3, plot=TRUE)
-    dev.off()
-    
-    suppressWarnings({
-      res <- fitSlope(res, iter=10000)
-    })
-    
-    print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
-  }
+  res <- res0
+  res <- extractForSlope(res, niter=3, plot=TRUE)
+  dev.off()
+  
+  suppressWarnings({
+    res <- fitSlope(res, iter=10000)
+  })
+  
+  print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
   
 })
