@@ -14,7 +14,7 @@ priorCheck(res, n = 200)
 \value{
 a data.frame with information
 about prior and posterior SD for alpha and sigma,
-and two plots
+and two plots are generated (see Details)
 }
 \description{
 This function provides some basic checks on the
@@ -23,16 +23,16 @@ Bayesian model. It is not desired that the prior
 overly influences the posterior inference.
 }
 \details{
-The posterior-over-prior ratio is calculated
+The posterior-over-prior SD ratio is calculated
 and returned in a table, and two plots are made
 that show parameters drawn from the estimated
 priors (in MRLocus, priors are estimated from the data).
 
-If the posterior-over-prior ratio is close to 1
+If the posterior-over-prior SD ratio is close to 1
 for either alpha or sigma, this indicates
 undesirable influence of the prior on the
 posterior inference. For comparison,
-some consider a prior ratio of 0.1 or higher
+some consider a posterior-prior SD ratio of 0.1 or higher
 to be described as an 'informative prior'
 (from Stan wiki on prior choice recommendations). 
 We note that an 'informative prior' alone is not
