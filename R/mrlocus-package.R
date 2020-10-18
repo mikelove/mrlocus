@@ -13,6 +13,7 @@
 #' \item \code{\link{extractForSlope}} - extract one SNP per signal cluster for MR analysis
 #' \item \code{\link{fitSlope}} - perform MR analysis to estimate gene-to-trait effect
 #' \item \code{\link{plotMrlocus}} - plot estimates from MR analysis
+#' \item \code{\link{priorCheck}} - perform prior predictive checks
 #' }
 #'
 #' @docType package

@@ -16,6 +16,7 @@ reference:
 - title: "Visualization of model fit"
 - contents:
   - plotMrlocus
+  - priorCheck
 - title: "Simulation"
 - contents:
   - makeSimDataForMrlocus

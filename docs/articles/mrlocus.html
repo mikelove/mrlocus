@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.16</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">08/29/2020</h4>
+            <h4 class="date">10/18/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -86,7 +86,7 @@
     
         <div class="abstract">
       <p class="abstract">Abstract</p>
-      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.15
+      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.16
     </div>
     
 <div id="introduction" class="section level1">
@@ -192,7 +192,7 @@
 ## alpha 0.510   0.012 0.099 0.399 0.630    69 1.040
 ## sigma 0.262   0.024 0.287 0.029 0.599   139 1.025
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Aug 29 07:01:42 2020.
+## Samples were drawn using NUTS(diag_e) at Sun Oct 18 08:18:11 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -200,10 +200,21 @@
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMrlocus.html">plotMrlocus</a></span>(<span class="no">res</span>, <span class="kw">main</span><span class="kw">=</span><span class="st">"MRLocus gene-to-trait effect estimate"</span>)</pre></body></html></div>
 <p><img src="mrlocus_files/figure-html/mrlocus-1.png" width="700"></p>
 </div>
+<div id="prior-predictive-check" class="section level1">
+<h1 class="hasAnchor">
+<a href="#prior-predictive-check" class="anchor"></a>Prior predictive check</h1>
+<p>Finally, we have a function which helps to assess the strength of the prior for the slope (alpha) and the dispersion around the fitted line (sigma). We generate a table showing the prior SD for these two parameters and the posterior SD from the fitted model. We note that the prior for both of these parameters is informative by design (so ratios &gt; 0.1 are not a problem per se), but it is not desired that the ratio of posterior to prior SD approach 1.</p>
+<p>We additionally generate two plots, the first plot generates parameter from the prior and the model, showing the possible values for <code>alpha</code>, <code>beta_A</code> and <code>beta_b</code> (the true effect sizes from the two studies). In the second plot, <code>alpha</code> is fixed to the prior mean to better visually identify the simulated values for <code>sigma</code>. The blue X’s indicate the fitted estimates of <code>beta_A</code> and <code>beta_B</code> from the colocalization step, and the blue lines indicate the posterior for <code>alpha</code>.</p>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="../reference/priorCheck.html">priorCheck</a></span>(<span class="no">res</span>)</pre></body></html></div>
+<p><img src="mrlocus_files/figure-html/priorCheck-1.png" width="700"></p>
+<pre><code>##   parameter  prior_sd    post_sd po_pr_ratio
+## 1     alpha 0.9867857 0.09949525   0.1008276
+## 2     sigma 1.5436631 0.28711086   0.1859932</code></pre>
+</div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
 <pre><code>## R version 4.0.2 (2020-06-22)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.6
@@ -220,7 +231,7 @@
 ## 
 ## other attached packages:
 ## [1] rstan_2.21.2         ggplot2_3.3.2        StanHeaders_2.21.0-6
-## [4] mrlocus_0.0.15      
+## [4] mrlocus_0.0.16      
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] tidyselect_1.1.0   xfun_0.16          purrr_0.3.4        V8_3.2.0          
