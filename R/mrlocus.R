@@ -21,6 +21,7 @@
 #' @importFrom graphics abline arrows par points polygon segments text
 #' @importFrom grDevices rgb
 #' @importFrom utils packageVersion
+#' @importFrom rstan summary
 #'
 #' @return a list with the following elements:
 #' \itemize{

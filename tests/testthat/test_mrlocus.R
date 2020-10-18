@@ -52,6 +52,10 @@ test_that("mrlocus works on simple sim data", {
   library(rstan)
   print(res$stanfit, pars=c("alpha","sigma"), probs=c(.1,.9), digits=3)
 
+  # basic prior check
+  priorCheck(res)
+  dev.off()
+  
   # plot
   plotMrlocus(res)
   dev.off()

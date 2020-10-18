@@ -560,6 +560,106 @@ plotMrlocus <- function(res,
   }
 }
 
+#' Basic prior checks on MRLocus slope fit
+#'
+#' This function provides some basic checks on the
+#' strength of the prior in the MRLocus slope fitting
+#' Bayesian model. It is not desired that the prior
+#' overly influences the posterior inference.
+#'
+#' The posterior-over-prior ratio is calculated
+#' and returned in a table, and two plots are made
+#' that show parameters drawn from the estimated
+#' priors (in MRLocus, priors are estimated from the data).
+#' 
+#' If the posterior-over-prior ratio is close to 1
+#' for either alpha or sigma, this indicates
+#' undesirable influence of the prior on the
+#' posterior inference. For comparison,
+#' some consider a prior ratio of 0.1 or higher
+#' to be described as an 'informative prior'
+#' (from Stan wiki on prior choice recommendations). 
+#' We note that an 'informative prior' alone is not
+#' problematic for MRLocus, and the prior estimation steps
+#' have been designed to be informative as
+#' to reasonable values for the parameters alpha
+#' and sigma.
+#'
+#' The plots show parameters generated
+#' from the prior and the model. The simulated true values of
+#' \code{beta_A} and \code{beta_B} are drawn as black
+#' circles (summary statistics would then be drawn from
+#' these according to the reported SEs, but this step
+#' of the model is omitted in this plot).
+#' The two plots differ in that the second plot fixed
+#' alpha instead of drawing it from the model
+#' (so that the prior for sigma can better be visualized).
+#' The fitted estimates of \code{beta_A} and \code{beta_B}
+#' from the colocalization step are shown as blue X's.
+#' One exception where parameters are not drawn from the prior is:
+#' \code{beta_A} values are instead drawn as uniform
+#' between 0 and 1.1x the maximum value of \code{beta_hat_a}
+#' from the colocalization step (for ease of visualization).
+#' 
+#' @param res output of \code{\link{fitSlope}}
+#' @param n integer, for the plot how many data points to simulate
+#'
+#' @return a data.frame with information
+#' about prior and posterior SD for alpha and sigma,
+#' and two plots
+#'
+#' @export
+priorCheck <- function(res, n=200) {
+  stopifnot("stanfit" %in% names(res))
+  stopifnot("priors" %in% names(res))
+
+  # just to clean code a bit
+  z <- res$priors
+  # extract fitted slope
+  stansum <- rstan::summary(res$stanfit, pars=c("alpha"), probs=c(.1,.9))$summary
+  alpha.hat <- stansum["alpha","mean"]
+  alpha.ci <- stansum["alpha",c("10%","90%")]
+  # sample data from prior and model
+  alpha <- rnorm(n, z$mu_alpha, z$sd_alpha)
+  sigma <- abs(rnorm(n, 0, z$sd_sigma))
+  max_a <- 1.1 * max(res$beta_hat_a)
+  beta_A <- runif(n, 0, max_a)
+  beta_B <- rnorm(n, alpha * beta_A, sigma)
+
+  # plots:
+  
+  par(mfrow=c(1,2))
+  plot(beta_A, beta_B, main="Prior predictive",
+       cex=.75, col=rgb(0,0,0,.5))
+  points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
+  segments(0, 0, max_a, alpha*max_a, col=rgb(0,0,0,.1))
+  abline(0, alpha.hat, col="blue", lwd=2)
+  abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
+  abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
+  abline(h=0, lwd=2)
+
+  beta_B_fix_alpha <- rnorm(n, z$mu_alpha * beta_A, sigma)
+  plot(beta_A, beta_B_fix_alpha, main="Prior predictive (fixed alpha)",
+       cex=.75, col=rgb(0,0,0,.5), ylab="beta_B")
+  points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
+  abline(0, alpha.hat, col="blue", lwd=2)
+  abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
+  abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
+  abline(h=0, lwd=2)
+  
+  # table:
+  
+  alpha_post_sd <- rstan::summary(res$stanfit, pars="alpha")$summary[,"sd"]
+  sigma_post_sd <- rstan::summary(res$stanfit, pars="sigma")$summary[,"sd"]
+  out <- data.frame(
+    parameter=c("alpha","sigma"),
+    prior_sd=c(res$priors$sd_alpha, res$priors$sd_sigma),
+    post_sd=c(alpha_post_sd, sigma_post_sd))
+  out$po_pr_ratio <- out[,"post_sd"]/out[,"prior_sd"]
+  out
+  
+}
+
 ## addPointers <- function(res, ylim, alpha.hat) {
 ##   # only works for a pos slope example
 ##   xr <- 1.5 * max(res$beta_hat_a)

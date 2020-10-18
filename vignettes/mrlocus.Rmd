@@ -255,6 +255,28 @@ indicates a high degree of heterogeneity.
 plotMrlocus(res, main="MRLocus gene-to-trait effect estimate")
 ```
 
+# Prior predictive check
+
+Finally, we have a function which helps to assess the strength of the
+prior for the slope (alpha) and the dispersion around the fitted line
+(sigma). We generate a table showing the prior SD for these two
+parameters and the posterior SD from the fitted model. We note that
+the prior for both of these parameters is informative by design (so
+ratios > 0.1 are not a problem per se), but it is not desired that the
+ratio of posterior to prior SD approach 1.
+
+We additionally generate two plots, the first plot generates parameter
+from the prior and the model, showing the possible values for `alpha`,
+`beta_A` and `beta_b` (the true effect sizes from the two studies). In
+the second plot, `alpha` is fixed to the prior mean to better visually
+identify the simulated values for `sigma`. The blue X's indicate the
+fitted estimates of `beta_A` and `beta_B` from the colocalization
+step, and the blue lines indicate the posterior for `alpha`.
+
+```{r priorCheck}
+priorCheck(res)
+```
+
 # Session info
 
 ```{r}

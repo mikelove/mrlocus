@@ -1,3 +1,7 @@
+# mrlocus 0.0.16
+
+* Adding prior predictive checks at the suggestion of Rob Moccia.
+
 # mrlocus 0.0.15
 
 * Adapting `sd_sigma` argument in `fitSlope` based on scale of the
