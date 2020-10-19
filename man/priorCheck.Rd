@@ -4,12 +4,20 @@
 \alias{priorCheck}
 \title{Basic prior checks on MRLocus slope fit}
 \usage{
-priorCheck(res, n = 200)
+priorCheck(res, n = 200, plot = TRUE, type = 1)
 }
 \arguments{
 \item{res}{output of \code{\link{fitSlope}}}
 
 \item{n}{integer, for the plot how many data points to simulate}
+
+\item{plot}{logical, whether to draw the plots}
+
+\item{type}{integer, return type. by default (\code{type=1})
+the function returns a table. By setting \code{type=2},
+the prior predictive draws for alpha, sigma, \code{beta_a},
+and \code{beta_b} are returned. See Details regarding the
+simulated draws for \code{beta_a}}
 }
 \value{
 a data.frame with information
@@ -27,6 +35,8 @@ The posterior-over-prior SD ratio is calculated
 and returned in a table, and two plots are made
 that show parameters drawn from the estimated
 priors (in MRLocus, priors are estimated from the data).
+Alternatively, the prior predictive draws themselves can
+be returned instead of the table (by setting \code{type=2}).
 
 If the posterior-over-prior SD ratio is close to 1
 for either alpha or sigma, this indicates
@@ -43,17 +53,17 @@ and sigma.
 
 The plots show parameters generated
 from the prior and the model. The simulated true values of
-\code{beta_A} and \code{beta_B} are drawn as black
+\code{beta_a} and \code{beta_b} are drawn as black
 circles (summary statistics would then be drawn from
 these according to the reported SEs, but this step
 of the model is omitted in this plot).
 The two plots differ in that the second plot fixed
 alpha instead of drawing it from the model
 (so that the prior for sigma can better be visualized).
-The fitted estimates of \code{beta_A} and \code{beta_B}
+The fitted estimates of \code{beta_a} and \code{beta_b}
 from the colocalization step are shown as blue X's.
 One exception where parameters are not drawn from the prior is:
-\code{beta_A} values are instead drawn as uniform
+\code{beta_a} values are instead drawn as uniform
 between 0 and 1.1x the maximum value of \code{beta_hat_a}
 from the colocalization step (for ease of visualization).
 }

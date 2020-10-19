@@ -55,6 +55,8 @@ test_that("mrlocus works on simple sim data", {
   # basic prior check
   priorCheck(res)
   dev.off()
+
+  chk <- priorCheck(res, plot=FALSE, type=2)
   
   # plot
   plotMrlocus(res)

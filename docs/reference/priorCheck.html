@@ -129,7 +129,7 @@ Bayesian model. It is not desired that the prior
 overly influences the posterior inference.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>priorCheck</span>(<span class='no'>res</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>200</span>)</pre>
+    <pre class="usage"><span class='fu'>priorCheck</span>(<span class='no'>res</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,6 +141,18 @@ overly influences the posterior inference.</p>
     <tr>
       <th>n</th>
       <td><p>integer, for the plot how many data points to simulate</p></td>
+    </tr>
+    <tr>
+      <th>plot</th>
+      <td><p>logical, whether to draw the plots</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>integer, return type. by default (<code>type=1</code>)
+the function returns a table. By setting <code>type=2</code>,
+the prior predictive draws for alpha, sigma, <code>beta_a</code>,
+and <code>beta_b</code> are returned. See Details regarding the
+simulated draws for <code>beta_a</code></p></td>
     </tr>
     </table>
 
@@ -154,7 +166,9 @@ and two plots are generated (see Details)</p>
     <p>The posterior-over-prior SD ratio is calculated
 and returned in a table, and two plots are made
 that show parameters drawn from the estimated
-priors (in MRLocus, priors are estimated from the data).</p>
+priors (in MRLocus, priors are estimated from the data).
+Alternatively, the prior predictive draws themselves can
+be returned instead of the table (by setting <code>type=2</code>).</p>
 <p>If the posterior-over-prior SD ratio is close to 1
 for either alpha or sigma, this indicates
 undesirable influence of the prior on the
@@ -169,17 +183,17 @@ to reasonable values for the parameters alpha
 and sigma.</p>
 <p>The plots show parameters generated
 from the prior and the model. The simulated true values of
-<code>beta_A</code> and <code>beta_B</code> are drawn as black
+<code>beta_a</code> and <code>beta_b</code> are drawn as black
 circles (summary statistics would then be drawn from
 these according to the reported SEs, but this step
 of the model is omitted in this plot).
 The two plots differ in that the second plot fixed
 alpha instead of drawing it from the model
 (so that the prior for sigma can better be visualized).
-The fitted estimates of <code>beta_A</code> and <code>beta_B</code>
+The fitted estimates of <code>beta_a</code> and <code>beta_b</code>
 from the colocalization step are shown as blue X's.
 One exception where parameters are not drawn from the prior is:
-<code>beta_A</code> values are instead drawn as uniform
+<code>beta_a</code> values are instead drawn as uniform
 between 0 and 1.1x the maximum value of <code>beta_hat_a</code>
 from the colocalization step (for ease of visualization).</p>
 

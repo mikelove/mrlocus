@@ -571,6 +571,8 @@ plotMrlocus <- function(res,
 #' and returned in a table, and two plots are made
 #' that show parameters drawn from the estimated
 #' priors (in MRLocus, priors are estimated from the data).
+#' Alternatively, the prior predictive draws themselves can
+#' be returned instead of the table (by setting \code{type=2}).
 #' 
 #' If the posterior-over-prior SD ratio is close to 1
 #' for either alpha or sigma, this indicates
@@ -587,29 +589,35 @@ plotMrlocus <- function(res,
 #'
 #' The plots show parameters generated
 #' from the prior and the model. The simulated true values of
-#' \code{beta_A} and \code{beta_B} are drawn as black
+#' \code{beta_a} and \code{beta_b} are drawn as black
 #' circles (summary statistics would then be drawn from
 #' these according to the reported SEs, but this step
 #' of the model is omitted in this plot).
 #' The two plots differ in that the second plot fixed
 #' alpha instead of drawing it from the model
 #' (so that the prior for sigma can better be visualized).
-#' The fitted estimates of \code{beta_A} and \code{beta_B}
+#' The fitted estimates of \code{beta_a} and \code{beta_b}
 #' from the colocalization step are shown as blue X's.
 #' One exception where parameters are not drawn from the prior is:
-#' \code{beta_A} values are instead drawn as uniform
+#' \code{beta_a} values are instead drawn as uniform
 #' between 0 and 1.1x the maximum value of \code{beta_hat_a}
 #' from the colocalization step (for ease of visualization).
 #' 
 #' @param res output of \code{\link{fitSlope}}
 #' @param n integer, for the plot how many data points to simulate
+#' @param plot logical, whether to draw the plots
+#' @param type integer, return type. by default (\code{type=1})
+#' the function returns a table. By setting \code{type=2},
+#' the prior predictive draws for alpha, sigma, \code{beta_a},
+#' and \code{beta_b} are returned. See Details regarding the
+#' simulated draws for \code{beta_a}
 #'
 #' @return a data.frame with information
 #' about prior and posterior SD for alpha and sigma,
 #' and two plots are generated (see Details)
 #'
 #' @export
-priorCheck <- function(res, n=200) {
+priorCheck <- function(res, n=200, plot=TRUE, type=1) {
   stopifnot("stanfit" %in% names(res))
   stopifnot("priors" %in% names(res))
 
@@ -623,39 +631,45 @@ priorCheck <- function(res, n=200) {
   alpha <- rnorm(n, z$mu_alpha, z$sd_alpha)
   sigma <- abs(rnorm(n, 0, z$sd_sigma))
   max_a <- 1.1 * max(res$beta_hat_a)
-  beta_A <- runif(n, 0, max_a)
-  beta_B <- rnorm(n, alpha * beta_A, sigma)
+  beta_a <- runif(n, 0, max_a)
+  beta_b <- rnorm(n, alpha * beta_a, sigma)
 
   # plots:
-  
-  par(mfrow=c(1,2))
-  plot(beta_A, beta_B, main="Prior predictive",
-       cex=.75, col=rgb(0,0,0,.5))
-  points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
-  segments(0, 0, max_a, alpha*max_a, col=rgb(0,0,0,.1))
-  abline(0, alpha.hat, col="blue", lwd=2)
-  abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
-  abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
-  abline(h=0, lwd=2)
 
-  beta_B_fix_alpha <- rnorm(n, z$mu_alpha * beta_A, sigma)
-  plot(beta_A, beta_B_fix_alpha, main="Prior predictive (fixed alpha)",
-       cex=.75, col=rgb(0,0,0,.5), ylab="beta_B")
-  points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
-  abline(0, alpha.hat, col="blue", lwd=2)
-  abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
-  abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
-  abline(h=0, lwd=2)
+  if (plot) {
+    par(mfrow=c(1,2))
+    plot(beta_a, beta_b, main="Prior predictive",
+         cex=.75, col=rgb(0,0,0,.5))
+    points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
+    segments(0, 0, max_a, alpha*max_a, col=rgb(0,0,0,.1))
+    abline(0, alpha.hat, col="blue", lwd=2)
+    abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
+    abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
+    abline(h=0, lwd=2)
+    
+    beta_b_fix_alpha <- rnorm(n, z$mu_alpha * beta_a, sigma)
+    plot(beta_a, beta_b_fix_alpha, main="Prior predictive (fixed alpha)",
+         cex=.75, col=rgb(0,0,0,.5), ylab="beta_b")
+    points(res$beta_hat_a, res$beta_hat_b, col="blue", pch=4, lwd=2, cex=2)
+    abline(0, alpha.hat, col="blue", lwd=2)
+    abline(0, alpha.ci[1], col=rgb(0,0,1,.5), lwd=2, lty=2)
+    abline(0, alpha.ci[2], col=rgb(0,0,1,.5), lwd=2, lty=2)
+    abline(h=0, lwd=2)
+  }
   
-  # table:
-  
-  alpha_post_sd <- rstan::summary(res$stanfit, pars="alpha")$summary[,"sd"]
-  sigma_post_sd <- rstan::summary(res$stanfit, pars="sigma")$summary[,"sd"]
-  out <- data.frame(
-    parameter=c("alpha","sigma"),
-    prior_sd=c(res$priors$sd_alpha, res$priors$sd_sigma),
-    post_sd=c(alpha_post_sd, sigma_post_sd))
-  out$po_pr_ratio <- out[,"post_sd"]/out[,"prior_sd"]
+  # table / data.frame with prior draws
+
+  if (type == 1) {
+    alpha_post_sd <- rstan::summary(res$stanfit, pars="alpha")$summary[,"sd"]
+    sigma_post_sd <- rstan::summary(res$stanfit, pars="sigma")$summary[,"sd"]
+    out <- data.frame(
+      parameter=c("alpha","sigma"),
+      prior_sd=c(res$priors$sd_alpha, res$priors$sd_sigma),
+      post_sd=c(alpha_post_sd, sigma_post_sd))
+    out$po_pr_ratio <- out[,"post_sd"]/out[,"prior_sd"]
+  } else {
+    out <- data.frame(alpha=alpha, sigma=sigma, beta_a=beta_a, beta_b=beta_b)
+  }
   out
   
 }

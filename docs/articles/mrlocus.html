@@ -76,7 +76,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">10/18/2020</h4>
+            <h4 class="date">10/19/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -192,7 +192,7 @@
 ## alpha 0.510   0.012 0.099 0.399 0.630    69 1.040
 ## sigma 0.262   0.024 0.287 0.029 0.599   139 1.025
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Oct 18 14:17:34 2020.
+## Samples were drawn using NUTS(diag_e) at Mon Oct 19 13:05:20 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -204,12 +204,13 @@
 <h1 class="hasAnchor">
 <a href="#prior-predictive-check" class="anchor"></a>Prior predictive check</h1>
 <p>Finally, we have a function which helps to assess the strength of the prior for the slope (alpha) and the dispersion around the fitted line (sigma). We generate a table showing the prior SD for these two parameters and the posterior SD from the fitted model. We note that the prior for both of these parameters is informative by design (so ratios &gt; 0.1 are not a problem per se), but it is not desired that the ratio of posterior to prior SD approach 1.</p>
-<p>We additionally generate two plots, the first plot generates parameter from the prior and the model, showing the possible values for <code>alpha</code>, <code>beta_A</code> and <code>beta_b</code> (the true effect sizes from the two studies). In the second plot, <code>alpha</code> is fixed to the prior mean to better visually identify the simulated values for <code>sigma</code>. The blue X’s indicate the fitted estimates of <code>beta_A</code> and <code>beta_B</code> from the colocalization step, and the blue lines indicate the posterior for <code>alpha</code>.</p>
+<p>We additionally generate two plots, the first plot generates parameters from the prior and the model, showing the possible values for <code>alpha</code>, <code>beta_a</code> and <code>beta_b</code> (the true effect sizes from the two studies). In the second plot, <code>alpha</code> is fixed to the prior mean to better visually identify the simulated values for <code>sigma</code>. The blue X’s indicate the fitted estimates of <code>beta_a</code> and <code>beta_b</code> from the colocalization step, and the blue lines indicate the posterior for <code>alpha</code>.</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="../reference/priorCheck.html">priorCheck</a></span>(<span class="no">res</span>)</pre></body></html></div>
 <p><img src="mrlocus_files/figure-html/priorCheck-1.png" width="700"></p>
 <pre><code>##   parameter  prior_sd    post_sd po_pr_ratio
 ## 1     alpha 0.9867857 0.09949525   0.1008276
 ## 2     sigma 1.5436631 0.28711086   0.1859932</code></pre>
+<p>The default is for the function to return the small summary table, but by setting <code>type=2</code>, it will alternatively return the prior predictive draws themselves, with the number of draws specified by <code>n</code> (default is 200).</p>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
