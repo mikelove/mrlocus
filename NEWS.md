@@ -1,3 +1,7 @@
+# mrlocus 0.0.17
+
+* `collapseHighCorSNPs` now outputs the SNP ids that were collapsed.
+
 # mrlocus 0.0.16
 
 * Adding prior predictive checks at the suggestion of Rob Moccia.

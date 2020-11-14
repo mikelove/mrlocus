@@ -28,7 +28,10 @@
 #' highest score SNP per collapsed cluster. Otherwise,
 #' if set to NULL, the first SNP will be used
 #' @param plot logical, draw a before/after grid of plots
-#' @param snp_id name of SNP id column in \code{sum_stat}
+#' @param snp_id name of SNP id column in \code{sum_stat},
+#' if specified will output a column \code{collapsed}
+#' that lists which SNP ids are represented in the output
+#' (i.e. which highly correlated SNPs were collapsed).
 #'
 #' @return list with subset \code{ld_mat} and \code{sum_stat}
 #' lists (and \code{ld_mat2} if provided)

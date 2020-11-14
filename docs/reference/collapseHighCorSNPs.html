@@ -129,14 +129,15 @@ before <code><a href='flipAllelesAndGather.html'>flipAllelesAndGather</a></code>
 <code><a href='fitBetaColoc.html'>fitBetaColoc</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span>(
-  <span class='no'>sum_stat</span>,
-  <span class='no'>ld_mat</span>,
-  <span class='kw'>ld_mat2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>score</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>collapseHighCorSNPs</span><span class='op'>(</span>
+  <span class='va'>sum_stat</span>,
+  <span class='va'>ld_mat</span>,
+  ld_mat2 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  threshold <span class='op'>=</span> <span class='fl'>0.95</span>,
+  score <span class='op'>=</span> <span class='cn'>NULL</span>,
+  plot <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  snp_id <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,6 +183,13 @@ if set to NULL, the first SNP will be used</p></td>
       <th>plot</th>
       <td><p>logical, draw a before/after grid of plots</p></td>
     </tr>
+    <tr>
+      <th>snp_id</th>
+      <td><p>name of SNP id column in <code>sum_stat</code>,
+if specified will output a column <code>collapsed</code>
+that lists which SNP ids are represented in the output
+(i.e. which highly correlated SNPs were collapsed).</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -204,7 +212,7 @@ lists (and <code>ld_mat2</code> if provided)</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

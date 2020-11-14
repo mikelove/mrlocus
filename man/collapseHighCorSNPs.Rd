@@ -10,7 +10,8 @@ collapseHighCorSNPs(
   ld_mat2 = NULL,
   threshold = 0.95,
   score = NULL,
-  plot = TRUE
+  plot = TRUE,
+  snp_id = NULL
 )
 }
 \arguments{
@@ -42,6 +43,11 @@ highest score SNP per collapsed cluster. Otherwise,
 if set to NULL, the first SNP will be used}
 
 \item{plot}{logical, draw a before/after grid of plots}
+
+\item{snp_id}{name of SNP id column in \code{sum_stat},
+if specified will output a column \code{collapsed}
+that lists which SNP ids are represented in the output
+(i.e. which highly correlated SNPs were collapsed).}
 }
 \value{
 list with subset \code{ld_mat} and \code{sum_stat}
