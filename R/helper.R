@@ -28,13 +28,15 @@
 #' highest score SNP per collapsed cluster. Otherwise,
 #' if set to NULL, the first SNP will be used
 #' @param plot logical, draw a before/after grid of plots
+#' @param snp_id name of SNP id column in \code{sum_stat}
 #'
 #' @return list with subset \code{ld_mat} and \code{sum_stat}
 #' lists (and \code{ld_mat2} if provided)
 #' 
 #' @export
 collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
-                                threshold=.95, score=NULL, plot=TRUE) {
+                                threshold=.95, score=NULL, plot=TRUE,
+                                snp_id=NULL) {
   stopifnot(length(sum_stat) == length(ld_mat))
   stopifnot(all(sapply(ld_mat, is, "matrix")))
   stopifnot(nrow(ld_mat[[1]]) == ncol(ld_mat[[1]]))
@@ -77,6 +79,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
     # greedy reduction:
     # just take the first SNP for each hierarchical cluster,
     # unless score is specified, then use the SNP with largest score
+    if (!is.null(snp_id)) {
+      collapsed <- sapply(split(sum_stat[[j]][[snp_id]], hclusters), paste, collapse=",")
+    }
     if (!is.null(score)) {
       z <- sum_stat[[j]][[score]]
       tmp <- hclusters
@@ -89,6 +94,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
     idx <- match(seq_len(nhclust), hclusters)
     ld_mat[[j]] <- ld_mat[[j]][idx,idx,drop=FALSE]
     sum_stat[[j]] <- sum_stat[[j]][idx,]
+    if (!is.null(snp_id)) {
+      sum_stat[[j]]$collapsed <- collapsed
+    }
     if (two.ld) {
       ld_mat2[[j]] <- ld_mat2[[j]][idx,idx,drop=FALSE]
     }
