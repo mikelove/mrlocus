@@ -67,7 +67,13 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
     stopifnot(score %in% colnames(sum_stat[[1]]))
   }
   for (j in seq_along(sum_stat)) {
-    if (nrow(sum_stat[[j]]) == 1) next
+    if (nrow(sum_stat[[j]]) == 1) {
+      # need to add the 'collapsed' column anyway
+      if (!is.null(snp_id)) {
+        sum_stat[[j]]$collapsed <- sum_stat[[j]][[snp_id]]
+      }      
+      next
+    }
     if (plot) {
       gs[[2*j-1]] <- pheatmap::pheatmap(ld_mat[[j]], breaks=seq(-1,1,length=101),
                                         cluster_rows=FALSE, cluster_cols=FALSE,
@@ -83,7 +89,8 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
     # just take the first SNP for each hierarchical cluster,
     # unless score is specified, then use the SNP with largest score
     if (!is.null(snp_id)) {
-      collapsed <- sapply(split(sum_stat[[j]][[snp_id]], hclusters), paste, collapse=",")
+      collapsed <- sapply(split(sum_stat[[j]][[snp_id]], hclusters),
+                          paste, collapse=",")
     }
     if (!is.null(score)) {
       z <- sum_stat[[j]][[score]]
