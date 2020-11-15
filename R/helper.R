@@ -261,6 +261,10 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
       ref=sum_stat[[j]][[ref_a_nm]],
       eff=sum_stat[[j]][[eff_a_nm]],
       stringsAsFactors=FALSE)
+    # carry over collapsed SNPs if column is present
+    if ("collapsed" %in% colnames(sum_stat[[j]])) {
+      alleles[[j]]$collapsed <- sum_stat[[j]]$collapsed
+    }
     idx2 <- ld.sign * plink.agree == -1
     tmp.ref <- alleles[[j]]$ref[idx2]
     tmp.eff <- alleles[[j]]$eff[idx2]
