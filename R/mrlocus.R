@@ -163,8 +163,9 @@ fitSlope <- function(res,
 
   # specify SD for prior for sigma
   if (is.null(sd_sigma)) {
-    # a wide prior based on SD of B coefs
-    sd_sigma <- 2*sd(res$beta_hat_b)
+    # a wide prior based on SD of B coefs,
+    # or max B coef, whichever is larger
+    sd_sigma <- max( 2*sd(res$beta_hat_b), max(res$beta_hat_b) )
   }
 
   if (n > 1) {
