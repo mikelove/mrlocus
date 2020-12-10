@@ -526,9 +526,11 @@ plotMrlocus <- function(res,
   qs <- paste0(q * 100,"%")
   alpha.qs <- stansum["alpha",qs]
   sigma.hat <- stansum["sigma","mean"]
-  xx <- max(res$beta_hat_a)
   if (is.null(xlim)) {
+    xx <- max(res$beta_hat_a)
     xlim <- c(0, 1.5*xx)
+  } else {
+    xx <- 1.33*xlim[2]
   }
   yy <- 1.5*max(abs(res$beta_hat_b))
   if (is.null(ylim)) {
