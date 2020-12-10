@@ -503,6 +503,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' the x- and y-axis labels
 #' @param a name of A experiment
 #' @param b name of B experiment
+#' @param xlim ylim (if NULL will be set automatically)
 #' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
@@ -514,6 +515,7 @@ plotMrlocus <- function(res,
                         sigma_mult=1.28,
                         label="Effect size of",
                         a="eQTL", b="GWAS",
+                        xlim=NULL,
                         ylim=NULL,
                         legend=TRUE,
                         digits=3,
@@ -525,7 +527,9 @@ plotMrlocus <- function(res,
   alpha.qs <- stansum["alpha",qs]
   sigma.hat <- stansum["sigma","mean"]
   xx <- max(res$beta_hat_a)
-  xlim <- c(0, 1.5*xx)
+  if (is.null(xlim)) {
+    xlim <- c(0, 1.5*xx)
+  }
   yy <- 1.5*max(abs(res$beta_hat_b))
   if (is.null(ylim)) {
     ylim <- c(-yy, yy)
