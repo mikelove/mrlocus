@@ -11,6 +11,7 @@ plotMrlocus(
   label = "Effect size of",
   a = "eQTL",
   b = "GWAS",
+  xlim = NULL,
   ylim = NULL,
   legend = TRUE,
   digits = 3,
@@ -35,6 +36,8 @@ the x- and y-axis labels}
 \item{a}{name of A experiment}
 
 \item{b}{name of B experiment}
+
+\item{xlim}{xlim (if NULL will be set automatically)}
 
 \item{ylim}{ylim (if NULL will be set automatically)}
 

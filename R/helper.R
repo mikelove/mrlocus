@@ -503,7 +503,7 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' the x- and y-axis labels
 #' @param a name of A experiment
 #' @param b name of B experiment
-#' @param xlim ylim (if NULL will be set automatically)
+#' @param xlim xlim (if NULL will be set automatically)
 #' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
