@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.19</span>
       </span>
     </div>
 
@@ -77,7 +77,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">11/14/2020</h4>
+            <h4 class="date">11/20/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -87,7 +87,7 @@
     
         <div class="abstract">
       <p class="abstract">Abstract</p>
-      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.17
+      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.19
     </div>
     
 <div id="introduction" class="section level1">
@@ -200,10 +200,10 @@
 ## post-warmup draws per chain=5000, total post-warmup draws=20000.
 ## 
 ##        mean se_mean    sd   10%   90% n_eff  Rhat
-## alpha 0.510   0.012 0.099 0.399 0.630    69 1.040
-## sigma 0.262   0.024 0.287 0.029 0.599   139 1.025
+## alpha 0.494   0.001 0.093 0.396 0.599  7130 1.000
+## sigma 0.301   0.006 0.296 0.059 0.633  2625 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Nov 14 20:40:24 2020.
+## Samples were drawn using NUTS(diag_e) at Fri Nov 20 14:27:51 2020.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -221,8 +221,8 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/priorCheck.html">priorCheck</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/priorCheck-1.png" width="700"></p>
 <pre><code>##   parameter  prior_sd    post_sd po_pr_ratio
-## 1     alpha 0.9867857 0.09949525   0.1008276
-## 2     sigma 1.5436631 0.28711086   0.1859932</code></pre>
+## 1     alpha 0.9867857 0.09311562  0.09436256
+## 2     sigma 1.7612540 0.29598510  0.16805361</code></pre>
 <p>The default is for the function to return the small summary table, but by setting <code>type=2</code>, it will alternatively return the prior predictive draws themselves, with the number of draws specified by <code>n</code> (default is 200).</p>
 </div>
 <div id="session-info" class="section level1">
@@ -246,7 +246,7 @@
 ## 
 ## other attached packages:
 ## [1] rstan_2.21.2         ggplot2_3.3.2        StanHeaders_2.21.0-6
-## [4] mrlocus_0.0.17      
+## [4] mrlocus_0.0.19      
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] tidyselect_1.1.0   xfun_0.19          purrr_0.3.4        V8_3.4.0          
