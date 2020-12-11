@@ -7,8 +7,9 @@ test_that("benchmark sigma estimation", {
 
     library(pbapply)
     library(ggplot2)
+
     n <- 10
-    sigmas <- rep(1:4 * .25, each=3 * 10)
+    sigmas <- rep(1:4 * .25, each=3 * n)
     nclusts <- rep(rep(c(4,6,8), each=n), times=4)
 
     ests <- pblapply(seq_along(sigmas), function(i) {
@@ -24,14 +25,15 @@ test_that("benchmark sigma estimation", {
       fit <- list()
       for (j in 1:nclust) {
         cap.out <- capture.output({
-          fit[[j]] <- with(out, 
-                           fitBetaColoc(nsnp=nsnp[j],
-                                        beta_hat_a=beta_hat_a[[j]],
-                                        beta_hat_b=beta_hat_b[[j]],
-                                        se_a=se_a[[j]], se_b=se_b[[j]],
-                                        Sigma_a=Sigma_a[[j]], Sigma_b=Sigma_b[[j]],
-                                        verbose=FALSE, open_progress=FALSE,
-                                        show_messages=FALSE, refresh=-1))
+          suppressWarnings({
+            fit[[j]] <- with(out, 
+                             fitBetaColoc(beta_hat_a=beta_hat_a[[j]],
+                                          beta_hat_b=beta_hat_b[[j]],
+                                          se_a=se_a[[j]], se_b=se_b[[j]],
+                                          Sigma_a=Sigma_a[[j]], Sigma_b=Sigma_b[[j]],
+                                          verbose=FALSE, open_progress=FALSE,
+                                          show_messages=FALSE, refresh=-1))
+          })
         })
       }
       res <- list(beta_hat_a=lapply(fit, `[[`, "beta_hat_a"),
