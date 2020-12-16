@@ -48,15 +48,15 @@ for analysis of the
 [public datasets](https://github.com/mikelove/mrlocusPaper/blob/master/public/analysis.R)
 in the manuscript. 
 
-Briefly, two important helper functions for import and preprocessing
-that are provided in this package are `collapseHighCorSNPs` and
-`flipAllelesAndGather`, for importing summary statistics across
-LD-independent signal clusters (sets of SNPs that are non-overlapping
-and have low correlation in a reference population). We use the phrase
-"LD-independent signal cluster" as in the PTWAS software and paper
-[@ptwas].
+Briefly, three important helper functions for import and preprocessing
+that are provided in this package are `collapseHighCorSNPs`,
+`flipAllelesAndGather`, and `clusterTrimmer`, for importing summary
+statistics across nearly-LD-independent signal clusters (sets of SNPs
+that are non-overlapping and have low correlation in a reference
+population). We use the phrase "LD-independent signal cluster" as in
+the PTWAS software and paper [@ptwas]. 
 
-It is strongly recommended to use these two functions for data import,
+It is strongly recommended to use these three functions for data import,
 in particular as the first function will reduce the number of SNPs per
 cluster and help deal with identifiability issues during the Bayesian
 colocalization step. As described in the manuscript, MRLocus does not
@@ -69,6 +69,9 @@ alleles are coded in such a way that the downstream statistical
 modeling functions will expect. The second function ensures that both
 studies refer to the same allele, which is the expression-increasing
 allele for an index SNP within each LD-independent signal cluster.
+Finally, the last function is used to ensure that the candidate
+instruments have $r^2$ values below a specified threshold (so that
+they are satisfying the "nearly-LD-independent" description).
 
 We recommend using PLINK [@plink] for generation of signal clusters
 (see Methods section of MRLocus manuscript). We have used raw p-value
@@ -112,6 +115,9 @@ function will by default make a plot of the initial estimates, or you
 can manually run `plotInitEstimates` on the output of this
 function. In the next section an evaluation of this plot is
 discussed.
+
+The third helper function, `clusterTrimmer`, can be run after
+`extractForSlope` (this occurs after colocalization).
 
 # QC of input pre-colocalization
 
@@ -214,6 +220,11 @@ was not evaluated in the MRLocus manuscript.
 ```{r extract}
 res <- extractForSlope(res)
 ```
+
+After running `extractForSlope`, we recommend to use the helper
+function `clusterTrimmer` to ensure that the instruments chosen for
+slope modeling are nearly LD independent, by specifying an
+`r2_threshold`.
 
 Now we are ready to fit the slope. In our testing we have used 10,000
 iterations, though fewer may be sufficient. This step is typically

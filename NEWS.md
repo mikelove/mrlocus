@@ -1,3 +1,7 @@
+# mrlocus 0.0.20
+
+* Added `clusterTrimmer` helper function.
+
 # mrlocus 0.0.17
 
 * `collapseHighCorSNPs` now outputs the SNP ids that were collapsed.

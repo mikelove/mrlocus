@@ -313,6 +313,8 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #' reverse order (starting with the last cluster
 #' represented in the r2 matrix), and stops once
 #' the pairwise r2 are all below the threshold.
+#' It is recommended to run this function after
+#' \code{\link{extractForSlope}}.
 #'
 #' @param r2 the matrix of r2 values
 #' @param r2_threshold the threshold on r2
@@ -321,7 +323,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #' of the signal clusters that should be trimmed/removed
 #' 
 #' @export
-clusterTrimmer <- function(r2, r2_threshold=.01) {
+clusterTrimmer <- function(r2, r2_threshold) {
   stopifnot(all(r2 >= 0))
   stopifnot(ncol(r2) == nrow(r2))
   nclusters <- ncol(r2)
@@ -369,6 +371,9 @@ plotInitEstimates <- function(x, label="Effect size of", a="eQTL", b="GWAS") {
 #' Extracts one or more SNPs from each signal cluster
 #' based on the posterior estimate of the effect size
 #' for A (largest effect size in the positive direction).
+#' After running this function, it is recommended to use
+#' \code{\link{clusterTrimmer}} to remove signal clusters
+#' that are too highly correlated.
 #' 
 #' @param res list with the following named elements:
 #' \itemize{

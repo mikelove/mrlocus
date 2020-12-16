@@ -42,7 +42,10 @@
 <meta property="og:title" content="Extract SNPs from colocalization for slope fitting — extractForSlope" />
 <meta property="og:description" content="Extracts one or more SNPs from each signal cluster
 based on the posterior estimate of the effect size
-for A (largest effect size in the positive direction)." />
+for A (largest effect size in the positive direction).
+After running this function, it is recommended to use
+clusterTrimmer to remove signal clusters
+that are too highly correlated." />
 
 
 
@@ -74,7 +77,7 @@ for A (largest effect size in the positive direction)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.20</span>
       </span>
     </div>
 
@@ -124,7 +127,10 @@ for A (largest effect size in the positive direction)." />
     <div class="ref-description">
     <p>Extracts one or more SNPs from each signal cluster
 based on the posterior estimate of the effect size
-for A (largest effect size in the positive direction).</p>
+for A (largest effect size in the positive direction).
+After running this function, it is recommended to use
+<code><a href='clusterTrimmer.html'>clusterTrimmer</a></code> to remove signal clusters
+that are too highly correlated.</p>
     </div>
 
     <pre class="usage"><span class='fu'>extractForSlope</span><span class='op'>(</span>

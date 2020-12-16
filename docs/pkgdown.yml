@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   mrlocus: mrlocus.html
-last_built: 2020-12-10T17:11Z
+last_built: 2020-12-16T20:18Z
 urls:
   reference: https://mikelove.github.io/mrlocus/reference
   article: https://mikelove.github.io/mrlocus/articles
