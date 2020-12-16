@@ -305,6 +305,42 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   return(out)
 }
 
+#' Trim signal cluster based on pairwise r2
+#'
+#' This function identifies the clusters to remove
+#' such that all remaining clusters have pairwise
+#' r2 below a given threshold. It removes in
+#' reverse order (starting with the last cluster
+#' represented in the r2 matrix), and stops once
+#' the pairwise r2 are all below the threshold.
+#'
+#' @param r2 the matrix of r2 values
+#' @param r2_threshold the threshold on r2
+#'
+#' @return a numeric vector (possibly length 0)
+#' of the signal clusters that should be trimmed/removed
+#' 
+#' @export
+clusterTrimmer <- function(r2, r2_threshold=.01) {
+  stopifnot(all(r2 >= 0))
+  stopifnot(ncol(r2) == nrow(r2))
+  nclusters <- ncol(r2)
+  # find clusters that have pairwise correlation with other clusters above a threshold
+  trim_clusters <- c()
+  if (nclusters > 1) {
+    diag(r2) <- 0 # useful for logic below
+    if (nclusters > 1 & any(r2 > r2_threshold)) {
+      for (j in nclusters:2) {
+        if (any( (r2[j,] > r2_threshold)[!1:nclusters %in% trim_clusters] )) {
+          trim_clusters <- c(trim_clusters, j)
+        }
+      }
+    }
+    trim_clusters <- rev(trim_clusters)
+  }
+  trim_clusters
+}
+
 #' Plot initial estimates over signal clusters
 #'
 #' @param x list of signal clusters data with \code{beta_hat_a}
