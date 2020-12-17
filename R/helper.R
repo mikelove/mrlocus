@@ -305,7 +305,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
   return(out)
 }
 
-#' Trim signal cluster based on pairwise r2
+#' Trim signal clusters based on pairwise r2
 #'
 #' This function identifies the clusters to remove
 #' such that all remaining clusters have pairwise
@@ -323,7 +323,7 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #' of the signal clusters that should be trimmed/removed
 #' 
 #' @export
-clusterTrimmer <- function(r2, r2_threshold) {
+trimClusters <- function(r2, r2_threshold) {
   stopifnot(all(r2 >= 0))
   stopifnot(ncol(r2) == nrow(r2))
   nclusters <- ncol(r2)
@@ -372,7 +372,7 @@ plotInitEstimates <- function(x, label="Effect size of", a="eQTL", b="GWAS") {
 #' based on the posterior estimate of the effect size
 #' for A (largest effect size in the positive direction).
 #' After running this function, it is recommended to use
-#' \code{\link{clusterTrimmer}} to remove signal clusters
+#' \code{\link{trimClusters}} to remove signal clusters
 #' that are too highly correlated.
 #' 
 #' @param res list with the following named elements:

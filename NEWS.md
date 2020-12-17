@@ -1,6 +1,6 @@
 # mrlocus 0.0.20
 
-* Added `clusterTrimmer` helper function.
+* Added `trimClusters` helper function.
 
 # mrlocus 0.0.17
 

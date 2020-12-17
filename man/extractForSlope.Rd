@@ -56,6 +56,6 @@ Extracts one or more SNPs from each signal cluster
 based on the posterior estimate of the effect size
 for A (largest effect size in the positive direction).
 After running this function, it is recommended to use
-\code{\link{clusterTrimmer}} to remove signal clusters
+\code{\link{trimClusters}} to remove signal clusters
 that are too highly correlated.
 }

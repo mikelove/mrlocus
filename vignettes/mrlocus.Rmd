@@ -50,7 +50,7 @@ in the manuscript.
 
 Briefly, three important helper functions for import and preprocessing
 that are provided in this package are `collapseHighCorSNPs`,
-`flipAllelesAndGather`, and `clusterTrimmer`, for importing summary
+`flipAllelesAndGather`, and `trimClusters`, for importing summary
 statistics across nearly-LD-independent signal clusters (sets of SNPs
 that are non-overlapping and have low correlation in a reference
 population). We use the phrase "LD-independent signal cluster" as in
@@ -116,7 +116,7 @@ can manually run `plotInitEstimates` on the output of this
 function. In the next section an evaluation of this plot is
 discussed.
 
-The third helper function, `clusterTrimmer`, can be run after
+The third helper function, `trimClusters`, can be run after
 `extractForSlope` (this occurs after colocalization).
 
 # QC of input pre-colocalization
@@ -222,7 +222,7 @@ res <- extractForSlope(res)
 ```
 
 After running `extractForSlope`, we recommend to use the helper
-function `clusterTrimmer` to ensure that the instruments chosen for
+function `trimClusters` to ensure that the instruments chosen for
 slope modeling are nearly LD independent, by specifying an
 `r2_threshold`.
 

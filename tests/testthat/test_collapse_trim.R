@@ -31,3 +31,15 @@ test_that("collapsing high cor SNPs", {
   out$sum_stat[[1]]
   
 })
+
+
+test_that("trimming clusters works", {
+
+
+  r2 <- matrix(0, ncol=3, nrow=3)
+  r2[1,2] <- r2[2,1] <- .2
+  diag(r2) <- 1
+  trim_clusters <- trimClusters(r2, r2_threshold=0.05) # should tell us to trim #2
+  expect_equal(trim_clusters, 2)
+
+})

@@ -7,7 +7,7 @@ reference:
   - collapseHighCorSNPs
   - flipAllelesAndGather
   - plotInitEstimates
-  - clusterTrimmer
+  - trimClusters
 - title: "Fitting the MRLocus model"
   desc: "Two step Bayesian model and convenience function"
 - contents:
