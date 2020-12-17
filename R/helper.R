@@ -328,7 +328,7 @@ clusterTrimmer <- function(r2, r2_threshold) {
   stopifnot(ncol(r2) == nrow(r2))
   nclusters <- ncol(r2)
   # find clusters that have pairwise correlation with other clusters above a threshold
-  trim_clusters <- c()
+  trim_clusters <- numeric()
   if (nclusters > 1) {
     diag(r2) <- 0 # useful for logic below
     if (nclusters > 1 & any(r2 > r2_threshold)) {
