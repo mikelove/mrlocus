@@ -333,13 +333,16 @@ trimClusters <- function(r2, r2_threshold, direction="down") {
   stopifnot(all(r2 >= 0))
   stopifnot(ncol(r2) == nrow(r2))
   stopifnot(direction %in% c("down","up"))
-  nclusters <- ncol(r2)
-  # find clusters that have pairwise correlation with other clusters above a threshold
   trim_clusters <- numeric()
+  if (!is.matrix(r2)) {
+    return(trim_clusters)
+  }
+  nclusters <- ncol(r2)
   if (nclusters == 1) {
     return(trim_clusters)
   }
   diag(r2) <- 0 # useful for logic below
+  # find clusters that have pairwise correlation with other clusters above a threshold
   if (any(r2 > r2_threshold)) {
     if (direction == "down") {
       r2.tmp <- unname(r2)
