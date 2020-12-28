@@ -309,36 +309,54 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #'
 #' This function identifies the clusters to remove
 #' such that all remaining clusters have pairwise
-#' r2 below a given threshold. It removes in
-#' reverse order (starting with the last cluster
-#' represented in the r2 matrix), and stops once
+#' r2 below a given threshold. It either removes
+#' clusters correlated with the most significant
+#' cluster and proceeds downwards (in the list),
+#' or removes clusters with correlation to more
+#' significant clusters and proceeds upwards.
+#' The function  stops once
 #' the pairwise r2 are all below the threshold.
 #' It is recommended to run this function after
 #' \code{\link{extractForSlope}}.
 #'
 #' @param r2 the matrix of r2 values
 #' @param r2_threshold the threshold on r2
+#' @param direction to proceed from the first
+#' cluster down (\code{"down"}) or from the last
+#' cluster up (\code{"up"})
 #'
 #' @return a numeric vector (possibly length 0)
 #' of the signal clusters that should be trimmed/removed
 #' 
 #' @export
-trimClusters <- function(r2, r2_threshold) {
+trimClusters <- function(r2, r2_threshold, direction="down") {
   stopifnot(all(r2 >= 0))
   stopifnot(ncol(r2) == nrow(r2))
+  stopifnot(direction %in% c("down","up"))
   nclusters <- ncol(r2)
   # find clusters that have pairwise correlation with other clusters above a threshold
   trim_clusters <- numeric()
-  if (nclusters > 1) {
-    diag(r2) <- 0 # useful for logic below
-    if (nclusters > 1 & any(r2 > r2_threshold)) {
+  diag(r2) <- 0 # useful for logic below
+  if (nclusters > 1 & any(r2 > r2_threshold)) {
+    if (direction == "down") {
+      r2.tmp <- unname(r2)
+      for (j in 1:(nclusters-1)) {
+        above_thr <- which(r2.tmp[j,] > r2_threshold)
+        if (length(above_thr) > 0) {
+          r2.tmp[above_thr,] <- 0
+          r2.tmp[,above_thr] <- 0
+          trim_clusters <- c(trim_clusters, above_thr)
+        }
+      }
+      trim_clusters <- sort(trim_clusters)
+    } else if (direction == "up") {
       for (j in nclusters:2) {
         if (any( (r2[j,] > r2_threshold)[!1:nclusters %in% trim_clusters] )) {
           trim_clusters <- c(trim_clusters, j)
         }
       }
+      trim_clusters <- rev(trim_clusters)
     }
-    trim_clusters <- rev(trim_clusters)
   }
   trim_clusters
 }

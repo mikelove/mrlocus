@@ -4,12 +4,16 @@
 \alias{trimClusters}
 \title{Trim signal clusters based on pairwise r2}
 \usage{
-trimClusters(r2, r2_threshold)
+trimClusters(r2, r2_threshold, direction = "down")
 }
 \arguments{
 \item{r2}{the matrix of r2 values}
 
 \item{r2_threshold}{the threshold on r2}
+
+\item{direction}{to proceed from the first
+cluster down (\code{"down"}) or from the last
+cluster up (\code{"up"})}
 }
 \value{
 a numeric vector (possibly length 0)
@@ -18,9 +22,12 @@ of the signal clusters that should be trimmed/removed
 \description{
 This function identifies the clusters to remove
 such that all remaining clusters have pairwise
-r2 below a given threshold. It removes in
-reverse order (starting with the last cluster
-represented in the r2 matrix), and stops once
+r2 below a given threshold. It either removes
+clusters correlated with the most significant
+cluster and proceeds downwards (in the list),
+or removes clusters with correlation to more
+significant clusters and proceeds upwards.
+The function  stops once
 the pairwise r2 are all below the threshold.
 It is recommended to run this function after
 \code{\link{extractForSlope}}.
