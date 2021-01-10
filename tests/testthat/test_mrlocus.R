@@ -76,18 +76,17 @@ test_that("mrlocus works on simple sim data", {
   ## plotMrlocus(res, main="SNPs → gene → trait\n(mediation with high dispersion)",
   ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
   ## load("sim_alpha0_highdisp.rda")
+  ## # don't forget second arrow needs slash: -/->
   ## plotMrlocus(res, main="SNPs → gene → trait\n(no mediation)",
   ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
   ## dev.off()
-
   
   # test slope estimation with just a single cluster
   res <- res0
   res <- extractForSlope(res, plot=FALSE)
   res <- lapply(res, `[[`, 4) # just the last
-  res <- fitSlope(res, iter=10000)
-  names(res)
-  res$est
+  expect_warning({res <- fitSlope(res, iter=10000)}, "more than one signal")
+  expect_true("est" %in% names(res))
 
   # extract potentially more than one SNP per cluster with Mclust
   res <- res0

@@ -101,7 +101,9 @@ fitBetaColoc <- function(beta_hat_a, beta_hat_b,
 #' See vignette for example of model interpretation.
 #'
 #' Note that if summary statistics for only one SNP are provided
-#' a parametric simulation is used to estimate the slope.
+#' a warning will be printed (this is not a recommended use
+#' of MRLocus) and a parametric simulation is used to estimate the
+#' slope, instead of the Bayesian model.
 #' 
 #' @param res list with the following named elements:
 #' \itemize{
@@ -186,8 +188,9 @@ fitSlope <- function(res,
     out <- list(stanfit=stanfit, priors=priors)
   } else {
     # parametric simulation if just one SNP
-    message("  only one signal cluster provided.
-  parametric simulation used to estimate slope")
+    warning("It is recommended to input more than one signal cluster to MRLocus,
+  but only one signal cluster was provided to `fitSlope`.
+  Parametric simulation will be used to estimate slope")
     m <- 1e5
     slope <- rnorm(m, res$beta_hat_b, res$sd_b) /
       rnorm(m, res$beta_hat_a, res$sd_a)

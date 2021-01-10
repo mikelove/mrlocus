@@ -53,7 +53,9 @@ See vignette for example of model interpretation.
 }
 \details{
 Note that if summary statistics for only one SNP are provided
-a parametric simulation is used to estimate the slope.
+a warning will be printed (this is not a recommended use
+of MRLocus) and a parametric simulation is used to estimate the
+slope, instead of the Bayesian model.
 }
 \references{
 Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
