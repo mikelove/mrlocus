@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.21</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.22</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -56,7 +56,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/mikelove/mrlocus/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -70,14 +70,13 @@
 
       
 
-      </header><link href="mrlocus_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="mrlocus_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">12/28/2020</h4>
+            <h4 class="date">01/10/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -87,7 +86,7 @@
     
         <div class="abstract">
       <p class="abstract">Abstract</p>
-      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.21
+      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.22
     </div>
     
 <div id="introduction" class="section level1">
@@ -205,7 +204,7 @@
 ## alpha 0.494   0.001 0.093 0.396 0.599  7130 1.000
 ## sigma 0.301   0.006 0.296 0.059 0.633  2625 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Mon Dec 28 07:24:55 2020.
+## Samples were drawn using NUTS(diag_e) at Sun Jan 10 10:09:24 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
@@ -232,7 +231,7 @@
 <a href="#session-info" class="anchor"></a>Session info</h1>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.2 (2020-06-22)
+<pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.6
 ## 
@@ -247,26 +246,26 @@
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] rstan_2.21.2         ggplot2_3.3.2        StanHeaders_2.21.0-6
-## [4] mrlocus_0.0.21      
+## [1] rstan_2.21.2         ggplot2_3.3.3        StanHeaders_2.21.0-7
+## [4] mrlocus_0.0.22      
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] tidyselect_1.1.0   xfun_0.19          purrr_0.3.4        V8_3.4.0          
-##  [5] colorspace_1.4-1   vctrs_0.3.4        generics_0.1.0     htmltools_0.5.0   
-##  [9] stats4_4.0.2       loo_2.3.1          yaml_2.2.1         rlang_0.4.8       
-## [13] pkgbuild_1.1.0     pkgdown_1.6.1      pillar_1.4.6       glue_1.4.2        
+##  [5] colorspace_2.0-0   vctrs_0.3.6        generics_0.1.0     htmltools_0.5.0   
+##  [9] stats4_4.0.3       loo_2.4.1          yaml_2.2.1         rlang_0.4.9       
+## [13] pkgbuild_1.2.0     pkgdown_1.6.1      pillar_1.4.7       glue_1.4.2        
 ## [17] withr_2.3.0        matrixStats_0.57.0 lifecycle_0.2.0    stringr_1.4.0     
 ## [21] munsell_0.5.0      gtable_0.3.0       ragg_0.4.0         codetools_0.2-18  
-## [25] memoise_1.1.0      evaluate_0.14      inline_0.3.16      knitr_1.30        
-## [29] callr_3.5.1        ps_1.4.0           parallel_4.0.2     curl_4.3          
-## [33] fansi_0.4.1        Rcpp_1.0.5         backports_1.2.0    scales_1.1.1      
-## [37] desc_1.2.0         RcppParallel_5.0.2 jsonlite_1.7.1     systemfonts_0.3.2 
-## [41] fs_1.5.0           textshaping_0.1.2  gridExtra_2.3      digest_0.6.27     
-## [45] stringi_1.5.3      processx_3.4.4     dplyr_1.0.2        rprojroot_1.3-2   
-## [49] grid_4.0.2         cli_2.1.0          tools_4.0.2        magrittr_1.5      
-## [53] tibble_3.0.4       crayon_1.3.4       pkgconfig_2.0.3    MASS_7.3-53       
-## [57] ellipsis_0.3.1     prettyunits_1.1.1  assertthat_0.2.1   rmarkdown_2.5     
-## [61] R6_2.5.0           compiler_4.0.2</code></pre>
+## [25] memoise_1.1.0      evaluate_0.14      inline_0.3.17      knitr_1.30        
+## [29] callr_3.5.1        ps_1.5.0           parallel_4.0.3     curl_4.3          
+## [33] fansi_0.4.1        Rcpp_1.0.5         scales_1.1.1       desc_1.2.0        
+## [37] RcppParallel_5.0.2 jsonlite_1.7.2     systemfonts_0.3.2  fs_1.5.0          
+## [41] textshaping_0.2.1  gridExtra_2.3      digest_0.6.27      stringi_1.5.3     
+## [45] processx_3.4.5     dplyr_1.0.2        rprojroot_2.0.2    grid_4.0.3        
+## [49] cli_2.2.0          tools_4.0.3        magrittr_2.0.1     tibble_3.0.4      
+## [53] crayon_1.3.4       pkgconfig_2.0.3    MASS_7.3-53        ellipsis_0.3.1    
+## [57] prettyunits_1.1.1  assertthat_0.2.1   rmarkdown_2.6      R6_2.5.0          
+## [61] compiler_4.0.3</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
