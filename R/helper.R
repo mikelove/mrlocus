@@ -767,7 +767,9 @@ priorCheck <- function(res, n=200, plot=TRUE, type=1) {
   
 }
 
-## addPointers <- function(res, ylim, alpha.hat) {
+## addPointers <- function(res, ylim) {
+##   stansum <- rstan::summary(res$stanfit, pars=c("alpha"), probs=c(.1,.9))$summary
+##   alpha.hat <- stansum["alpha","mean"]
 ##   # only works for a pos slope example
 ##   xr <- 1.5 * max(res$beta_hat_a)
 ##   yr <- diff(ylim)

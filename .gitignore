@@ -5,3 +5,4 @@
 docs
 mrlocus_files
 vignettes/mrlocus.html
+*.rda

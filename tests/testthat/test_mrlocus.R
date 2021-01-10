@@ -65,19 +65,19 @@ test_that("mrlocus works on simple sim data", {
   plotMrlocus(res, sigma_mult=1)
   dev.off()
 
-  ### FIGURE 1 ###
+  ## ### FIGURE 1 ###
 
-  ## png(file="fig1_sim.png", width=1500, height=500, res=150)
+  ## pdf(file="fig1_sim.pdf", width=8.25, height=3)
   ## par(mfrow=c(1,3))
   ## load("sim_lowdisp.rda")
-  ## plotMrlocus(res, main="SNPs → gene → trait\n(mediation with low dispersion)",
-  ##             label="Effect size of", legend=FALSE, pointers=TRUE, ylim=c(-2.5,2.5))
+  ## plotMrlocus(res, main=bquote(atop(SNPs %->% gene %->% trait, "(mediation with low dispersion)")),
+  ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
+  ## suppressWarnings(addPointers(res, ylim=c(-2.5,2.5)))
   ## load("sim_highdisp.rda")
-  ## plotMrlocus(res, main="SNPs → gene → trait\n(mediation with high dispersion)",
+  ## plotMrlocus(res, main=bquote(atop(SNPs %->% gene %->% trait, "(mediation with high dispersion)")),
   ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
   ## load("sim_alpha0_highdisp.rda")
-  ## # don't forget second arrow needs slash: -/->
-  ## plotMrlocus(res, main="SNPs → gene → trait\n(no mediation)",
+  ## plotMrlocus(res, main=bquote(atop(list(SNPs %->% gene, SNPs %->% trait), "(no mediation or horiz. pleiotropy)")),
   ##             label="Effect size of", legend=FALSE, ylim=c(-2.5,2.5))
   ## dev.off()
   
