@@ -76,7 +76,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">01/10/2021</h4>
+            <h4 class="date">01/13/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -86,7 +86,7 @@
     
         <div class="abstract">
       <p class="abstract">Abstract</p>
-      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.22
+      MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple nearly-LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.22
     </div>
     
 <div id="introduction" class="section level1">
@@ -102,10 +102,10 @@
 <div id="data-input-and-preprocessing" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-input-and-preprocessing" class="anchor"></a>Data input and preprocessing</h1>
-<p>In this vignette we demonstrate use of MRLocus on simulated summary statistics. The simulated data in this vignette does not include the steps of importing summary statistics and LD matrices from external files. For that, we recommend looking at the R code we used for analysis of the <a href="https://github.com/mikelove/mrlocusPaper/blob/master/public/analysis.R">public datasets</a> in the manuscript.</p>
+<p>In this vignette we demonstrate use of MRLocus on simulated summary statistics. The simulated data in this vignette does not include the steps of importing summary statistics and LD matrices from external files. For that, we recommend looking at the R code we used for analysis of the <a href="https://github.com/mikelove/mrlocusPaper/blob/master/public/mrlocus.R">public datasets</a> in the manuscript.</p>
 <p>Briefly, three important helper functions for import and preprocessing that are provided in this package are <code>collapseHighCorSNPs</code>, <code>flipAllelesAndGather</code>, and <code>trimClusters</code>, for importing summary statistics across nearly-LD-independent signal clusters (sets of SNPs that are non-overlapping and have low correlation in a reference population). We use the phrase “LD-independent signal cluster” as in the PTWAS software and paper <span class="citation">(Zhang et al. 2019)</span>.</p>
-<p>It is strongly recommended to use these three functions for data import, in particular as the first function will reduce the number of SNPs per cluster and help deal with identifiability issues during the Bayesian colocalization step. As described in the manuscript, MRLocus does not attempt to resolve putative causal SNPs among sets of SNPs with correlation <span class="math inline">\(&gt; 0.95\)</span>, but instead it collapses this redundancy using <code>collapseHighCorSNPs</code>. The second function ensures that the alleles are flipped properly across eQTL and GWAS datasets (the function will handle this to avoid manual processing by the user), such that the alleles are coded in such a way that the downstream statistical modeling functions will expect. The second function ensures that both studies refer to the same allele, which is the expression-increasing allele for an index SNP within each LD-independent signal cluster. Finally, the last function is used to ensure that the candidate instruments have <span class="math inline">\(r^2\)</span> values below a specified threshold (so that they are satisfying the “nearly-LD-independent” description).</p>
-<p>We recommend using PLINK <span class="citation">(Purcell et al. 2007)</span> for generation of signal clusters (see Methods section of MRLocus manuscript). We have used raw p-value thresholds from eQTL in order to cull lists of signal clusters (instruments) which have an effect on the putative mediator (gene expression).</p>
+<p>It is strongly recommended to use these three functions for data import, in particular as the first function will reduce the number of SNPs per cluster and help deal with identifiability issues during the Bayesian colocalization step. As described in the manuscript, MRLocus does not attempt to resolve putative causal SNPs among sets of SNPs with correlation <span class="math inline">\(&gt; 0.95\)</span>, but instead it collapses this redundancy using <code>collapseHighCorSNPs</code>. The second function ensures that the alleles are flipped properly across eQTL and GWAS datasets (the function will handle this to avoid manual processing by the user), such that the alleles are coded in such a way that the downstream statistical modeling functions will expect. The second function ensures that both studies refer to the same allele, which is the expression-increasing allele for an index SNP within each nearly-LD-independent signal cluster. Finally, the last function is used to ensure that the candidate instruments have <span class="math inline">\(r^2\)</span> values below a specified threshold (so that they are satisfying the “nearly-LD-independent” description).</p>
+<p>We recommend using PLINK <span class="citation">(Purcell et al. 2007)</span> for generation of signal clusters (see Methods section of MRLocus manuscript). We have used raw p-value thresholds from eQTL in order to cull lists of signal clusters (instruments) which have an effect on the putative mediator (gene expression). Note that we do not recommend running MRLocus on loci with only one signal cluster, i.e. loci lacking allelic heterogeneity. The <code>fitSlope</code> function will provide a warning if such input data is provided. The estimation of the slope is impaired with a single signal cluster, and estimation of the dispersion across signal clusters is not possible.</p>
 <p>We have not yet implemented, but plan on providing an import function from the <a href="https://github.com/MRCIEU/TwoSampleMR">TwoSampleMR</a> package.</p>
 <p>Un-evaluated example code for the two preprocessing functions follows. In the first function the arguments are:</p>
 <ul>
@@ -138,16 +138,16 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/mrlocus">mrlocus</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeSimDataForMrlocus.html">makeSimDataForMrlocus</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This simulated data consists of a list of lists. The elements are: <code>beta_hat_a</code>, <code>beta_hat_b</code>, <code>se_a</code>, <code>se_b</code>, <code>Sigma_a</code>, <code>Sigma_b</code>, and <code>alleles</code>, which provide the estimated coefficients, standard errors (SE), and LD matrices for the two studies, A and B (typically, eQTL and GWAS), as well as a data.frame with allele information (SNP ID, reference allele, and effect allele). The LD matrices can be identical if distinct matrices for each study are not available. Each element itself should be a list of vectors/matrices/data.frames across LD-independent signal clusters.</p>
+<p>This simulated data consists of a list of lists. The elements are: <code>beta_hat_a</code>, <code>beta_hat_b</code>, <code>se_a</code>, <code>se_b</code>, <code>Sigma_a</code>, <code>Sigma_b</code>, and <code>alleles</code>, which provide the estimated coefficients, standard errors (SE), and LD matrices for the two studies, A and B (typically, eQTL and GWAS), as well as a data.frame with allele information (SNP ID, reference allele, and effect allele). The LD matrices can be identical if distinct matrices for each study are not available. Each element itself should be a list of vectors/matrices/data.frames across nearly-LD-independent signal clusters.</p>
 <p>We can make a simple plot of the <code>beta_hat</code>’s, estimated coefficients from A and B. The coefficients are numbered by the SNP order within each signal cluster.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotInitEstimates.html">plotInitEstimates</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/initests-1.png" width="700"></p>
 <p><strong>Evaluating this plot:</strong> The input data for colocalization, e.g. after running <code>collapseHighCorSNPs</code> and <code>flipAllelesAndGather</code> on real eQTL and GWAS summary statistics within PLINK clumps, is typically not more than 20-30 SNPs per clusters, and with a certain pattern of effect sizes within each cluster. You would not expect to have SNPs <em>within a cluster</em> having very discordant effects size in the x- or y-direction, and quality control of the allele coding is important for the colocalization step to give reasonable results. It is fine however for their to be discordant effect sizes in the y-direction <em>across clusters</em>, this is important evidence against a consistent mediation effect.</p>
 </div>
-<div id="colocalization-step" class="section level1">
+<div id="colocalization-step-with-mrlocus" class="section level1">
 <h1 class="hasAnchor">
-<a href="#colocalization-step" class="anchor"></a>Colocalization step</h1>
+<a href="#colocalization-step-with-mrlocus" class="anchor"></a>Colocalization step with MRLocus</h1>
 <p>The first step in MRLocus is to perform colocalization of the studies. To do so, we loop over the signal clusters, and store the fitted models in a list called <code>fit</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coloc_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
@@ -176,16 +176,34 @@
             sd_b <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">se_b</span>,
             alleles <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">alleles</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="colocalization-with-ecaviar-optional-alternative" class="section level1">
+<h1 class="hasAnchor">
+<a href="#colocalization-with-ecaviar-optional-alternative" class="anchor"></a>Colocalization with eCAVIAR (optional alternative)</h1>
+<p>Alternatively, MRLocus can accept colocalization results from eCAVIAR <span class="citation">(Hormozdiari et al. 2016)</span> as input to the slope fitting step. eCAVIAR is run with default options on each nearly-LD-independent signal cluster separately, supplying the LD matrix, and z-scores for study A and B, and <code>-c 1</code>, i.e. setting the maximum number of causal SNPs to 1.</p>
+<p>For eCAVIAR colocalization, the SNP with the largest colocalization posterior probability (CLPP) is selected from each signal cluster, among those SNPs which are valid instruments, i.e. with an absolute value of z-score as large as the value used for PLINK clumping <span class="citation">(Purcell et al. 2007)</span>. eCAVIAR alleles are flipped such that the alternate allele is the one corresponding to an increase in the measured phenotype in A (e.g. gene expression).</p>
+</div>
 <div id="slope-fitting-step" class="section level1">
 <h1 class="hasAnchor">
 <a href="#slope-fitting-step" class="anchor"></a>Slope fitting step</h1>
-<p>The following function extracts one SNP per signal cluster with the largest posterior mean for the coefficient for study A (e.g. eQTL). The selected SNPs and their posterior mean values are plotted on the right panel in blue. We note that it is also possible to perform EM-based clustering <span class="citation">(Scrucca et al. 2016)</span> to extract more than one SNP per signal cluster, through use of the <code>niter</code> argument, although this was not evaluated in the MRLocus manuscript.</p>
+<p>Following MRLocus colocalization, the following function, <code>extractForSlope</code>, extracts one SNP per signal cluster with the largest posterior mean for the coefficient for study A (e.g. eQTL). For eCAVIAR colocalization, a simple R script can be used to select the SNP with largest CLPP per nearly-LD-independent signal cluster, and to pass the estimated coefficients and SEs for A and B as vectors in a named list to <code>fitSlope</code> (see man page for details on data input, and the below code chunk for an example of the structure of the input).</p>
+<p>The selected SNPs and their posterior mean values are plotted on the right panel in blue. We note that it is also possible to perform EM-based clustering <span class="citation">(Scrucca et al. 2016)</span> to extract more than one SNP per signal cluster, through use of the <code>niter</code> argument, although this was not evaluated in the MRLocus manuscript.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractForSlope.html">extractForSlope</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/extract-1.png" width="700"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># input to fitSlope()</span></code></pre></div>
+<pre><code>## List of 5
+##  $ beta_hat_a: num [1:4] 0.661 1.867 2.977 3.803
+##  $ beta_hat_b: num [1:4] 0.0673 0.9998 1.6235 1.7613
+##  $ sd_a      : num [1:4] 0.25 0.25 0.25 0.25
+##  $ sd_b      : num [1:4] 0.25 0.25 0.25 0.25
+##  $ alleles   :'data.frame':  4 obs. of  3 variables:
+##   ..$ id : chr [1:4] "rs256368" "rs308293" "rs510126" "rs374487"
+##   ..$ ref: chr [1:4] "A" "A" "A" "A"
+##   ..$ eff: chr [1:4] "T" "T" "T" "T"</code></pre>
 <p>After running <code>extractForSlope</code>, we recommend to use the helper function <code>trimClusters</code> to ensure that the instruments chosen for slope modeling are nearly LD independent, by specifying an <code>r2_threshold</code>.</p>
 <p>Now we are ready to fit the slope. In our testing we have used 10,000 iterations, though fewer may be sufficient. This step is typically much faster than the colocalization step.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSlope.html">fitSlope</a></span><span class="op">(</span><span class="va">res</span>, iter<span class="op">=</span><span class="fl">10000</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="examine-mrlocus-estimates" class="section level1">
@@ -193,7 +211,7 @@
 <a href="#examine-mrlocus-estimates" class="anchor"></a>Examine MRLocus estimates</h1>
 <p>One of the elements in the results list <code>res</code> is the <code>stanfit</code> object, which can be explored with functions from the <code>rstan</code> package.</p>
 <p>The posterior mean for the gene-to-trait slope, alpha, is near the simulated value of 0.5. The posterior mean for the dispersion around the slope, sigma, is also estimated. Note that the estimate for sigma has a large 80% credible interval, as we only have 4 signal clusters over which to estimate dispersion.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan">rstan</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">stanfit</span>, pars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"alpha"</span>,<span class="st">"sigma"</span><span class="op">)</span>, probs<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.1</span>,<span class="fl">.9</span><span class="op">)</span>, digits<span class="op">=</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>## Inference for Stan model: slope.
@@ -204,12 +222,12 @@
 ## alpha 0.494   0.001 0.093 0.396 0.599  7130 1.000
 ## sigma 0.301   0.006 0.296 0.059 0.633  2625 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Sun Jan 10 10:09:24 2021.
+## Samples were drawn using NUTS(diag_e) at Wed Jan 13 10:20:36 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
 <p>MRLocus provides a plot that summarizes the estimation of the gene-to-trait effect. The estimated slope and an 80% credible interval are indicated with a solid blue line and dashed blue lines, respectively. The black points and error bars represent the posterior mean for top SNPs from colocalization and the original SE. An 80% band in light blue indicates a region that is expected to contain 80% of the eQTL-GWAS pairs across signal clusters, so reflecting the allelic heterogeneity. If the estimate of <span class="math inline">\(\sigma\)</span> is of comparable size to <span class="math inline">\(\alpha\)</span> times typical eQTL effect sizes (slope <span class="math inline">\(\times\)</span> location of black points on the x-axis), this indicates a high degree of heterogeneity.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotMrlocus.html">plotMrlocus</a></span><span class="op">(</span><span class="va">res</span>, main<span class="op">=</span><span class="st">"MRLocus gene-to-trait effect estimate"</span><span class="op">)</span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/mrlocus-1.png" width="700"></p>
 </div>
@@ -218,7 +236,7 @@
 <a href="#prior-predictive-check" class="anchor"></a>Prior predictive check</h1>
 <p>Finally, we have a function which helps to assess the strength of the prior for the slope (alpha) and the dispersion around the fitted line (sigma). We generate a table showing the prior SD for these two parameters and the posterior SD from the fitted model. We note that the prior for both of these parameters is informative by design (so ratios &gt; 0.1 are not a problem per se), but it is not desired that the ratio of posterior to prior SD approach 1.</p>
 <p>We additionally generate two plots, the first plot generates parameters from the prior and the model, showing the possible values for <code>alpha</code>, <code>beta_a</code> and <code>beta_b</code> (the true effect sizes from the two studies). In the second plot, <code>alpha</code> is fixed to the prior mean to better visually identify the simulated values for <code>sigma</code>. The blue X’s indicate the fitted estimates of <code>beta_a</code> and <code>beta_b</code> from the colocalization step, and the blue lines indicate the posterior for <code>alpha</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/priorCheck.html">priorCheck</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/priorCheck-1.png" width="700"></p>
 <pre><code>##   parameter  prior_sd    post_sd po_pr_ratio
@@ -229,7 +247,7 @@
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
