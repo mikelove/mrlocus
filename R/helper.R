@@ -65,6 +65,8 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
   if (!is.null(score)) {
     stopifnot(is(score, "character"))
     stopifnot(score %in% colnames(sum_stat[[1]]))
+  } else {
+    message("it is recommended to provide a 'score' for collapsing")
   }
   for (j in seq_along(sum_stat)) {
     if (nrow(sum_stat[[j]]) == 1) {
