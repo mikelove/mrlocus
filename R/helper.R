@@ -311,12 +311,17 @@ flipAllelesAndGather <- function(sum_stat, ld_mat,
 #'
 #' This function identifies the clusters to remove
 #' such that all remaining clusters have pairwise
-#' r2 below a given threshold. It either removes
+#' r2 below a given threshold. It is assumed the r2
+#' matrix is ordered such that the first row/column
+#' corresponds to the most significant signal cluster,
+#' and so on.
+#' trimClusters either removes
 #' clusters correlated with the most significant
-#' cluster and proceeds downwards (in the list),
+#' cluster (first) and proceeds downwards,
 #' or removes clusters with correlation to more
 #' significant clusters and proceeds upwards.
-#' The function  stops once
+#' Moving downward tends to preserve more clusters.
+#' The function stops once
 #' the pairwise r2 are all below the threshold.
 #' It is recommended to run this function after
 #' \code{\link{extractForSlope}}.
