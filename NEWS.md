@@ -1,6 +1,9 @@
-# mrlocus 0.0.20
+# mrlocus 0.0.22
 
-* Added `trimClusters` helper function.
+* Added `trimClusters` helper function, with default
+  to trim down from most significant signal cluster to
+  the least.
+* Warning if < 2 signal clusters provided (not recommended).
 
 # mrlocus 0.0.17
 
