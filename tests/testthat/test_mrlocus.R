@@ -7,8 +7,8 @@ test_that("mrlocus works on simple sim data", {
   data <- makeSimDataForMrlocus(n_mult=10)
   #set.seed(2)
   #data <- makeSimDataForMrlocus(n_mult=10,sigma=.5)
-  #set.seed(2)
-  #data <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=.5)
+  set.seed(2)
+  data <- makeSimDataForMrlocus(alpha=0,n_mult=10,sigma=1)
   plotInitEstimates(data)
   dev.off()
 
