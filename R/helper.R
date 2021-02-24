@@ -167,7 +167,9 @@ collapseHighCorSNPs <- function(sum_stat, ld_mat, ld_mat2=NULL,
 #' and earlier was to reset a2 to the major allele, unless
 #' an optional flag was used. in plink v2.0 and onward, one
 #' should check to see which allele is used as reference for
-#' calculating the LD matrix
+#' calculating the LD matrix.
+#' If plink was not used, this argument should just point
+#' to the reference allele that was used for LD calculation
 #' @param a2_plink_mat2 name of the column representing
 #' the a2 allele for the second LD matrix, \code{ld_mat2}
 #' (needed only if \code{ld_mat2} was specified)

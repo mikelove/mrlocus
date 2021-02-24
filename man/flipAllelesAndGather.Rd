@@ -56,7 +56,9 @@ matrices is just flipped in the same way}
 and earlier was to reset a2 to the major allele, unless
 an optional flag was used. in plink v2.0 and onward, one
 should check to see which allele is used as reference for
-calculating the LD matrix}
+calculating the LD matrix.
+If plink was not used, this argument should just point
+to the reference allele that was used for LD calculation}
 
 \item{a2_plink_mat2}{name of the column representing
 the a2 allele for the second LD matrix, \code{ld_mat2}
