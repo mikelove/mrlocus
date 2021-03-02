@@ -94,6 +94,7 @@
 <h3 class="hasAnchor">
 <a href="#data-input" class="anchor"></a>Data input</h3>
 <p>MRLocus uses multiple, distinct eQTL signals in order to perform Mendelian Randomization investigating the effect of gene expression on a downstream GWAS trait. It takes as input the output of a clumping procedure, such as <a href="https://zzz.bwh.harvard.edu/plink/clump.shtml">PLINK clump</a>, or ideally, <a href="https://pubmed.ncbi.nlm.nih.gov/28165122/">conditional analysis</a> of the eQTL dataset. In the MRLocus paper, we use the PLINK clump settings, <code>--clump-p1 0.001 --clump-p2 1 --clump-r2 0.1 --clump-kb 500</code>, where <code>p1</code> refers to the eQTL summary associations. MRLocus can then be run on loci that contain more than one clump.</p>
+<p><img src="reference/figures/inputdata.png" alt="Diagram of input data, also described below"></p>
 <p>MRLocus then requires:</p>
 <ol>
 <li>Summary statistics for each clump</li>

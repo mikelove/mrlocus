@@ -38,6 +38,8 @@ where `p1` refers to the eQTL summary associations.
 MRLocus can then be run on loci that contain more than one
 clump.
 
+![Diagram of input data, also described below](man/figures/inputdata.png)
+
 MRLocus then requires:
 
 1. Summary statistics for each clump
