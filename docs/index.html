@@ -90,6 +90,22 @@
 <p>Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love. “MRLocus: identifying causal genes mediating a trait through Bayesian estimation of allelic heterogeneity” <em>bioRxiv</em>, August 2020. <a href="https://doi.org/10.1101/2020.08.14.250720">doi: 10.1101/2020.08.14.250720</a></p>
 <p>* Both authors contributed equally to this work.</p>
 </div>
+<div id="data-input" class="section level3">
+<h3 class="hasAnchor">
+<a href="#data-input" class="anchor"></a>Data input</h3>
+<p>MRLocus uses multiple, distinct eQTL signals in order to perform Mendelian Randomization investigating the effect of gene expression on a downstream GWAS trait. It takes as input the output of a clumping procedure, such as <a href="https://zzz.bwh.harvard.edu/plink/clump.shtml">PLINK clump</a>, or ideally, <a href="https://pubmed.ncbi.nlm.nih.gov/28165122/">conditional analysis</a> of the eQTL dataset. In the MRLocus paper, we use the PLINK clump settings, <code>--clump-p1 0.001 --clump-p2 1 --clump-r2 0.1 --clump-kb 500</code>, where <code>p1</code> refers to the eQTL summary associations. MRLocus can then be run on loci that contain more than one clump.</p>
+<p>MRLocus then requires:</p>
+<ol>
+<li>Summary statistics for each clump</li>
+<li>Intra-clump LD matrices</li>
+</ol>
+<p>Summary statistics for both eQTL and GWAS (effect size, standard error, reference allele, effect allele) of the SNPs in each clump or conditionally distinct cluster should be gathered into tables, making sure the index eSNP is also included. The eQTL and GWAS studies can have different coding of reference and effect alleles, MRLocus has a function that will deal with this internally, to avoid users having to flip alleles and effect sizes themselves.</p>
+<p>After having prepared these multiple tables for each clump, they should be read into R as a list of <code>data.frame</code>. The LD matrices for each clump likewise should be read in as a list of matrices (in the same order as the summary statistics list). These lists can be read in with code such as:</p>
+<pre><code>sum_stat &lt;- lapply(sum_stat_files, read.delim)
+ld_mat &lt;- lapply(ld_mat_files, function(f) as.matrix(read.table(f)))</code></pre>
+<p>The steps following reading in the summary statistics and LD matrices into R are described in the vignette under the <code>Get started</code> tab above.</p>
+<p>Finally, we note that MRLocus offers its own colocalization model, or alternatively, MRLocus slope fitting can be run after performing <a href="https://pubmed.ncbi.nlm.nih.gov/27866706/">eCAVIAR</a> colocalization on the SNPs within each clump. The alternative steps used in the case of eCAVIAR colocalization are discussed in the vignette under <code>Get started</code> tab.</p>
+</div>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>

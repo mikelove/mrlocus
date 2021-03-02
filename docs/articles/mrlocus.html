@@ -76,7 +76,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 class="date">02/24/2021</h4>
+            <h4 class="date">03/01/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/master/vignettes/mrlocus.Rmd"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -102,7 +102,7 @@
 <div id="data-input-and-preprocessing" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data-input-and-preprocessing" class="anchor"></a>Data input and preprocessing</h1>
-<p>In this vignette we demonstrate use of MRLocus on simulated summary statistics. The simulated data in this vignette does not include the steps of importing summary statistics and LD matrices from external files. For that, we recommend looking at the R code we used for analysis of the <a href="https://github.com/mikelove/mrlocusPaper/blob/master/public/mrlocus.R">public datasets</a> in the manuscript.</p>
+<p>In this vignette we demonstrate use of MRLocus on simulated summary statistics. The simulated data in this vignette does not include the steps of importing summary statistics and LD matrices from external files. For that, we recommend looking at the R code we used for analysis of the <a href="https://github.com/mikelove/mrlocusPaper/blob/master/public/mrlocus.R">public datasets</a> in the manuscript, and see also the basic data input information in the README (also shown on the MRLocus <a href="https://mikelove.github.io/mrlocus">homepage</a>).</p>
 <p>Briefly, three important helper functions for import and preprocessing that are provided in this package are <code>collapseHighCorSNPs</code>, <code>flipAllelesAndGather</code>, and <code>trimClusters</code>, for importing summary statistics across nearly-LD-independent signal clusters (sets of SNPs that are non-overlapping and have low correlation in a reference population). We use the phrase “LD-independent signal cluster” as in the PTWAS software and paper <span class="citation">(Zhang et al. 2019)</span>.</p>
 <p>It is strongly recommended to use these three functions for data import, in particular as the first function will reduce the number of SNPs per cluster and help deal with identifiability issues during the Bayesian colocalization step. As described in the manuscript, MRLocus does not attempt to resolve putative causal SNPs among sets of SNPs with correlation <span class="math inline">\(&gt; 0.95\)</span>, but instead it collapses this redundancy using <code>collapseHighCorSNPs</code>. The second function ensures that the alleles are flipped properly across eQTL and GWAS datasets (the function will handle this to avoid manual processing by the user), such that the alleles are coded in such a way that the downstream statistical modeling functions will expect. The second function ensures that both studies refer to the same allele, which is the expression-increasing allele for an index SNP within each nearly-LD-independent signal cluster. Finally, the last function is used to ensure that the candidate instruments have <span class="math inline">\(r^2\)</span> values below a specified threshold (so that they are satisfying the “nearly-LD-independent” description).</p>
 <p>We recommend using PLINK <span class="citation">(Purcell et al. 2007)</span> for generation of signal clusters (see Methods section of MRLocus manuscript). We have used raw p-value thresholds from eQTL in order to cull lists of signal clusters (instruments) which have an effect on the putative mediator (gene expression). Note that we do not recommend running MRLocus on loci with only one signal cluster, i.e. loci lacking allelic heterogeneity. The <code>fitSlope</code> function will provide a warning if such input data is provided. The estimation of the slope is impaired with a single signal cluster, and estimation of the dispersion across signal clusters is not possible.</p>
@@ -222,7 +222,7 @@
 ## alpha 0.494   0.001 0.093 0.396 0.599  7130 1.000
 ## sigma 0.301   0.006 0.296 0.059 0.633  2625 1.001
 ## 
-## Samples were drawn using NUTS(diag_e) at Wed Feb 24 08:37:15 2021.
+## Samples were drawn using NUTS(diag_e) at Mon Mar  1 19:49:45 2021.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>

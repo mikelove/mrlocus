@@ -46,7 +46,9 @@ the steps of importing summary statistics and LD matrices from
 external files. For that, we recommend looking at the R code we used
 for analysis of the 
 [public datasets](https://github.com/mikelove/mrlocusPaper/blob/master/public/mrlocus.R)
-in the manuscript. 
+in the manuscript, and see also the basic data input information in
+the README (also shown on the
+MRLocus [homepage](https://mikelove.github.io/mrlocus)). 
 
 Briefly, three important helper functions for import and preprocessing
 that are provided in this package are `collapseHighCorSNPs`,
