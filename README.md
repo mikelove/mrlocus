@@ -11,14 +11,14 @@ estimation of gene-to-trait effect size and dispersion.
 See `Get started` tab for software vignette, and `Reference` tab for
 manual pages of the individual functions.
 
-### Preprint
+### Publication
 
-Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+Anqi Zhu\*, Nana Matoba\*, Emma P. Wilson, Amanda L. Tapia, Yun Li,
 Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
 "MRLocus: identifying causal genes mediating a trait through Bayesian
 estimation of allelic heterogeneity"
-*bioRxiv*, August 2020.
-[doi: 10.1101/2020.08.14.250720](https://doi.org/10.1101/2020.08.14.250720)
+*PLOS Genetics*, 17(4): e1009455 (2021).
+[doi: 10.1371/journal.pgen.1009455](https://doi.org/10.1371/journal.pgen.1009455)
 
 \* Both authors contributed equally to this work.
 

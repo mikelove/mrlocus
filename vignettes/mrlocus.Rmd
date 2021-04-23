@@ -30,10 +30,10 @@ MRLocus provides Bayesian analysis of gene-to-trait mediation effects,
 making use of the Stan and RStan software packages for inference
 [@stan;@rstan].
 
-The authors of the associated [MRLocus manuscript](https://doi.org/10.1101/2020.08.14.250720)
+The authors of the associated [MRLocus manuscript](https://doi.org/10.1371/journal.pgen.1009455)
 [@mrlocus] are:
 
-> Anqi Zhu\*, Nana Matoba\*, Emmaleigh Wilson, Amanda L.Tapia,
+> Anqi Zhu\*, Nana Matoba\*, Emma P. Wilson, Amanda L. Tapia,
 > Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love
 
 \* Both authors contributed equally to this work.

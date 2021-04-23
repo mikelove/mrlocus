@@ -1,9 +1,9 @@
-pandoc: 2.3.1
+pandoc: '2.13'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   mrlocus: mrlocus.html
-last_built: 2021-03-03T01:20Z
+last_built: 2021-04-23T15:46Z
 urls:
   reference: https://mikelove.github.io/mrlocus/reference
   article: https://mikelove.github.io/mrlocus/articles

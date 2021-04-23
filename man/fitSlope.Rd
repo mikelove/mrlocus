@@ -58,9 +58,9 @@ of MRLocus) and a parametric simulation is used to estimate the
 slope, instead of the Bayesian model.
 }
 \references{
-Anqi Zhu*, Nana Matoba*, Emmaleigh Wilson, Amanda L. Tapia, Yun Li,
+Anqi Zhu*, Nana Matoba*, Emma P. Wilson, Amanda L. Tapia, Yun Li,
 Joseph G. Ibrahim, Jason L. Stein, Michael I. Love.
 MRLocus: identifying causal genes mediating a trait through
-Bayesian estimation of allelic heterogeneity. (2020) bioRxiv
-\url{https://doi.org/10.1101/2020.08.14.250720}
+Bayesian estimation of allelic heterogeneity. (2021) PLOS Genetics
+\url{https://doi.org/10.1371/journal.pgen.1009455}
 }
