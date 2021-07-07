@@ -103,9 +103,11 @@ data1 <- collapseHighCorSNPs(sum_stat, ld_mat)
 ```
 The second function takes the output of the first function, and
 additionally a number of column names. E.g. this function call 
-implies that we have column names `eqtl_ref`, `eqtl_effect`,
-`eqtl_beta`, `eqtl_se`, etc. See the function man page for more
-details. 
+implies that we have column names `ref_eqtl`, `effect_eqtl`,
+`beta_eqtl`, `se_eqtl`, etc. See the function man page for more
+details. If the column names are of the form `eqtl_beta`, `eqtl_se`,
+etc. such that the A/B study specification is first in the column
+names, the user should then set `ab_last=FALSE`.
 
 ```{r eval=FALSE}
 # (un-evaluated chunk)
