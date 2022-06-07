@@ -346,6 +346,9 @@ trimClusters <- function(r2, r2_threshold, direction="down") {
   if (is(r2, "data.frame")) {
     r2 <- as.matrix(r2)
   }
+  if (is(r2, "numeric")) {
+    return(trim_clusters)
+  }
   nclusters <- ncol(r2)
   if (nclusters == 1) {
     return(trim_clusters)
