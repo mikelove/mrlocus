@@ -343,8 +343,8 @@ trimClusters <- function(r2, r2_threshold, direction="down") {
   stopifnot(ncol(r2) == nrow(r2))
   stopifnot(direction %in% c("down","up"))
   trim_clusters <- numeric()
-  if (!is.matrix(r2)) {
-    return(trim_clusters)
+  if (is(r2, "data.frame")) {
+    r2 <- as.matrix(r2)
   }
   nclusters <- ncol(r2)
   if (nclusters == 1) {

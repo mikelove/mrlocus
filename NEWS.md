@@ -1,3 +1,7 @@
+# mrlocus 0.0.23
+
+* Fixing small bug: trimClusters didn't trim `r2` as data.frame.
+
 # mrlocus 0.0.22
 
 * Added `trimClusters` helper function, with default
