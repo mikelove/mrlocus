@@ -205,6 +205,6 @@ fitSlope <- function(res,
   if ("alleles" %in% names(res)) {
     out$alleles <- res$alleles
   }
-  out$mrlocus_version <- as.character(packageVersion("mrlocus"))
+  out$mrlocus_version <- packageVersion("mrlocus")
   return(out)
 }
