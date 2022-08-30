@@ -15,6 +15,9 @@ plotMrlocus(
   ylim = NULL,
   legend = TRUE,
   digits = 3,
+  col_slope = "blue",
+  col_band = rgb(0, 0, 1, 0.1),
+  col_dashed = rgb(0, 0, 1, 0.5),
   ...
 )
 }
@@ -44,6 +47,12 @@ the x- and y-axis labels}
 \item{legend}{logical, whether to show a legend}
 
 \item{digits}{number of digits to show in legend}
+
+\item{col_slope}{the color of the slope (alpha)}
+
+\item{col_band}{the color of the band}
+
+\item{col_dashed}{the color of the dashed lines}
 
 \item{...}{arguments passed to \code{plot}}
 }

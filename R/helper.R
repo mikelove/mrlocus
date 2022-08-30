@@ -584,6 +584,9 @@ makeSimDataForMrlocus <- function(nsnp=c(7:10), idx=5,
 #' @param ylim ylim (if NULL will be set automatically)
 #' @param legend logical, whether to show a legend
 #' @param digits number of digits to show in legend
+#' @param col_slope the color of the slope (alpha)
+#' @param col_band the color of the band
+#' @param col_dashed the color of the dashed lines
 #' @param ... arguments passed to \code{plot}
 #'
 #' @export
@@ -596,6 +599,9 @@ plotMrlocus <- function(res,
                         ylim=NULL,
                         legend=TRUE,
                         digits=3,
+                        col_slope="blue",
+                        col_band=rgb(0,0,1,.1),
+                        col_dashed=rgb(0,0,1,.5),
                         ...) {
   stopifnot(length(q) == 2)
   stansum <- rstan::summary(res$stanfit, pars=c("alpha","sigma"), probs=q)$summary
@@ -622,12 +628,12 @@ plotMrlocus <- function(res,
   polygon(c(0,2*xx,2*xx,0),
           c(-sigma_mult*sigma.hat, alpha.hat*2*xx -sigma_mult*sigma.hat,
             alpha.hat*2*xx + sigma_mult*sigma.hat, sigma_mult*sigma.hat),
-          col=rgb(0,0,1,.1), border=NA)
-  segments(0, 0, 2*xx, alpha.hat*2*xx, col="blue", lwd=2)
+          col=col_band, border=NA)
+  segments(0, 0, 2*xx, alpha.hat*2*xx, col=col_slope, lwd=2)
   segments(0, 0, 2*xx, (alpha.qs[1])*2*xx,
-           col=rgb(0,0,1,.5), lwd=2, lty=2)
+           col=col_dashed, lwd=2, lty=2)
   segments(0, 0, 2*xx, (alpha.qs[2])*2*xx,
-           col=rgb(0,0,1,.5), lwd=2, lty=2)
+           col=col_dashed, lwd=2, lty=2)
   abline(h=0, col=rgb(0,0,0,.25))
 
   # the pairs and their SEs
