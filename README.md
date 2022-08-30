@@ -1,7 +1,5 @@
 # MRLocus
 
-[![Build Status](https://travis-ci.com/mikelove/mrlocus.svg?branch=master)](https://travis-ci.com/mikelove/mrlocus)
-
 ### About
 
 MRLocus is a statistical method providing Mendelian Randomization

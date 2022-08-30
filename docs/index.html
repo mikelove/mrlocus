@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,18 +35,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.22</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.24</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/mrlocus.html">Get started</a>
 </li>
@@ -57,7 +53,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/mikelove/mrlocus/">
+  <a href="https://github.com/mikelove/mrlocus/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -74,76 +70,80 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="mrlocus" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#mrlocus" class="anchor"></a>MRLocus</h1></div>
-
-<div id="about" class="section level3">
-<h3 class="hasAnchor">
-<a href="#about" class="anchor"></a>About</h3>
+<div class="section level1">
+<div class="page-header"><h1 id="mrlocus">MRLocus<a class="anchor" aria-label="anchor" href="#mrlocus"></a>
+</h1></div>
+<div class="section level3">
+<h3 id="about">About<a class="anchor" aria-label="anchor" href="#about"></a>
+</h3>
 <p>MRLocus is a statistical method providing Mendelian Randomization analysis per locus, leveraging eQTL and GWAS summary statistics, for estimation of gene-to-trait effect size and dispersion.</p>
 <p>See <code>Get started</code> tab for software vignette, and <code>Reference</code> tab for manual pages of the individual functions.</p>
 </div>
-<div id="publication" class="section level3">
-<h3 class="hasAnchor">
-<a href="#publication" class="anchor"></a>Publication</h3>
-<p>Anqi Zhu*, Nana Matoba*, Emma P. Wilson, Amanda L. Tapia, Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love. “MRLocus: identifying causal genes mediating a trait through Bayesian estimation of allelic heterogeneity” <em>PLOS Genetics</em>, 17(4): e1009455 (2021). <a href="https://doi.org/10.1371/journal.pgen.1009455">doi: 10.1371/journal.pgen.1009455</a></p>
+<div class="section level3">
+<h3 id="publication">Publication<a class="anchor" aria-label="anchor" href="#publication"></a>
+</h3>
+<p>Anqi Zhu*, Nana Matoba*, Emma P. Wilson, Amanda L. Tapia, Yun Li, Joseph G. Ibrahim, Jason L. Stein, Michael I. Love. “MRLocus: identifying causal genes mediating a trait through Bayesian estimation of allelic heterogeneity” <em>PLOS Genetics</em>, 17(4): e1009455 (2021). <a href="https://doi.org/10.1371/journal.pgen.1009455" class="external-link">doi: 10.1371/journal.pgen.1009455</a></p>
 <p>* Both authors contributed equally to this work.</p>
 </div>
-<div id="data-input" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-input" class="anchor"></a>Data input</h3>
-<p>MRLocus uses multiple, distinct eQTL signals in order to perform Mendelian Randomization investigating the effect of gene expression on a downstream GWAS trait. It takes as input the output of a clumping procedure, such as <a href="https://zzz.bwh.harvard.edu/plink/clump.shtml">PLINK clump</a>, or ideally, <a href="https://pubmed.ncbi.nlm.nih.gov/28165122/">conditional analysis</a> of the eQTL dataset. In the MRLocus paper, we use the PLINK clump settings, <code>--clump-p1 0.001 --clump-p2 1 --clump-r2 0.1 --clump-kb 500</code>, where <code>p1</code> refers to the eQTL summary associations. MRLocus can then be run on loci that contain more than one clump.</p>
-<p><img src="reference/figures/inputdata.png" alt="Diagram of input data, also described below"></p>
+<div class="section level3">
+<h3 id="data-input">Data input<a class="anchor" aria-label="anchor" href="#data-input"></a>
+</h3>
+<p>MRLocus uses multiple, distinct eQTL signals in order to perform Mendelian Randomization investigating the effect of gene expression on a downstream GWAS trait. It takes as input the output of a clumping procedure, such as <a href="https://zzz.bwh.harvard.edu/plink/clump.shtml" class="external-link">PLINK clump</a>, or ideally, <a href="https://pubmed.ncbi.nlm.nih.gov/28165122/" class="external-link">conditional analysis</a> of the eQTL dataset. In the MRLocus paper, we use the PLINK clump settings, <code>--clump-p1 0.001 --clump-p2 1 --clump-r2 0.1 --clump-kb 500</code>, where <code>p1</code> refers to the eQTL summary associations. MRLocus can then be run on loci that contain more than one clump.</p>
+<div class="figure">
+<img src="reference/figures/inputdata.png" alt=""><p class="caption">Diagram of input data, also described below</p>
+</div>
 <p>MRLocus then requires:</p>
-<ol>
+<ol style="list-style-type: decimal">
 <li>Summary statistics for each clump</li>
 <li>Intra-clump LD matrices</li>
 </ol>
 <p>Summary statistics for both eQTL and GWAS (effect size, standard error, reference allele, effect allele) of the SNPs in each clump or conditionally distinct cluster should be gathered into tables, making sure the index eSNP is also included. The eQTL and GWAS studies can have different coding of reference and effect alleles, MRLocus has a function that will deal with this internally, to avoid users having to flip alleles and effect sizes themselves.</p>
 <p>After having prepared these multiple tables for each clump, they should be read into R as a list of <code>data.frame</code>. The LD matrices for each clump likewise should be read in as a list of matrices (in the same order as the summary statistics list). These lists can be read in with code such as:</p>
-<pre><code>sum_stat &lt;- lapply(sum_stat_files, read.delim)
-ld_mat &lt;- lapply(ld_mat_files, function(f) as.matrix(read.table(f)))</code></pre>
+<pre><code><span><span class="va">sum_stat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">sum_stat_files</span>, <span class="va">read.delim</span><span class="op">)</span></span>
+<span><span class="va">ld_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ld_mat_files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 <p>The steps following reading in the summary statistics and LD matrices into R are described in the vignette under the <code>Get started</code> tab above.</p>
-<p>Finally, we note that MRLocus offers its own colocalization model, or alternatively, MRLocus slope fitting can be run after performing <a href="https://pubmed.ncbi.nlm.nih.gov/27866706/">eCAVIAR</a> colocalization on the SNPs within each clump. The alternative steps used in the case of eCAVIAR colocalization are discussed in the vignette under <code>Get started</code> tab.</p>
+<p>Finally, we note that MRLocus offers its own colocalization model, or alternatively, MRLocus slope fitting can be run after performing <a href="https://pubmed.ncbi.nlm.nih.gov/27866706/" class="external-link">eCAVIAR</a> colocalization on the SNPs within each clump. The alternative steps used in the case of eCAVIAR colocalization are discussed in the vignette under <code>Get started</code> tab.</p>
 </div>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
 <p>The <em>mrlocus</em> R package can be installed using <em>devtools</em>. Note that <em>mrlocus</em> uses RStan, and so involves compilation of C++ code. Installation will take longer than with R packages not containing code to be compiled.</p>
-<pre><code><a href="https://devtools.r-lib.org/">library(devtools)
-install_github("mikelove/mrlocus")</a></code></pre>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mikelove/mrlocus"</span><span class="op">)</span></span></code></pre>
 </div>
-<div id="issues" class="section level3">
-<h3 class="hasAnchor">
-<a href="#issues" class="anchor"></a>Issues</h3>
-<p>For bug reports, feature requests, or questions, please post <a href="https://github.com/mikelove/mrlocus/issues/new/choose">here</a>.</p>
+<div class="section level3">
+<h3 id="issues">Issues<a class="anchor" aria-label="anchor" href="#issues"></a>
+</h3>
+<p>For bug reports, feature requests, or questions, please post <a href="https://github.com/mikelove/mrlocus/issues/new/choose" class="external-link">here</a>.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/mikelove/mrlocus/">https://​github.com/​mikelove/​mrlocus/​</a>
-</li>
+<li><a href="https://github.com/mikelove/mrlocus/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;=2)</li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing mrlocus</a></li>
+<li><a href="authors.html#citation">Citing mrlocus</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Anqi Zhu <br><small class="roles"> Author </small>  </li>
 <li>Nana Matoba <br><small class="roles"> Author </small>  </li>
@@ -152,22 +152,20 @@ install_github("mikelove/mrlocus")</a></code></pre>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://travis-ci.com/mikelove/mrlocus"><img src="https://travis-ci.com/mikelove/mrlocus.svg?branch=master" alt="Build Status"></a></li>
-</ul>
-</div>
-</div>
+
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Anqi Zhu, Nana Matoba, Jason Stein, Michael Love.</p>
+  <p></p>
+<p>Developed by Anqi Zhu, Nana Matoba, Jason Stein, Michael Love.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
@@ -175,6 +173,8 @@ install_github("mikelove/mrlocus")</a></code></pre>
 
   
 
+
+  
 
   </body>
 </html>
