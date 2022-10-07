@@ -785,6 +785,40 @@ priorCheck <- function(res, n=200, plot=TRUE, type=1) {
   
 }
 
+#' Estimate the normalized allelic spread
+#'
+#' A useful statistic is to normalize the estimate of
+#' sigma from \code{estimateSlope}, the dispersion,
+#' with respect to typical mediated effect sizes.
+#' This helps in particular to compare sigma across
+#' different GWAS traits, which may have different
+#' scale.
+#' 
+#' We define the normalized allelic spread as an estimate of sigma
+#' divided by something called the "mean mediated effect".
+#' The mean mediated effect is defined as the mean
+#' QTL effect size multiplied by the estimate of the slope.
+#' So in the \code{plotMrlocus} plot, the mean mediated
+#' effect is found by taking the mean among the
+#' spread of points on the x-axis, then going up to the
+#' linear trend. This function outputs the normalized
+#' allelic spread which is again: sigma / mean mediated
+#' effect.
+#'
+#' @param fit a list output by \code{estimateSlope}
+#'
+#' @return the normalized allelic spread, a numeric
+#'
+#' @export
+normalizedAllelicSpread <- function(fit) {
+  alpha <- summary(fit$stanfit, par="alpha")$summary["alpha","mean"]
+  sigma <- summary(fit$stanfit, par="sigma")$summary["sigma","mean"]
+  mean_instrument <- mean(fit$beta_hat_a)
+  mean_mediated <- abs(mean_instrument * alpha)
+  norm_allelic_spread <- sigma / mean_mediated
+  norm_allelic_spread
+}
+
 ## addPointers <- function(res, ylim) {
 ##   stansum <- rstan::summary(res$stanfit, pars=c("alpha"), probs=c(.1,.9))$summary
 ##   alpha.hat <- stansum["alpha","mean"]

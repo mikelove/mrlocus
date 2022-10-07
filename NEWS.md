@@ -1,3 +1,8 @@
+# mrlocus 0.0.25
+
+* Add convenience function `normalizedAllelicSpread`, a useful
+  statistic for comparing sigma across different GWAS datasets.
+
 # mrlocus 0.0.23
 
 * Fixing small bug: trimClusters didn't trim `r2` as data.frame.

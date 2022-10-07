@@ -17,6 +17,7 @@ reference:
 - title: "Visualization of model fit"
 - contents:
   - plotMrlocus
+  - normalizedAllelicSpread
   - priorCheck
 - title: "Simulation"
 - contents:
