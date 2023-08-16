@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mrlocus</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.25</span>
       </span>
     </div>
 
@@ -72,7 +72,7 @@
       <h1 data-toc-skip>MRLocus - estimation of gene-to-trait effects</h1>
                         <h4 data-toc-skip class="author">Anqi Zhu, Nana Matoba, Jason Stein, Michael Love</h4>
             
-            <h4 data-toc-skip class="date">08/30/2022</h4>
+            <h4 data-toc-skip class="date">08/16/2023</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mikelove/mrlocus/blob/HEAD/vignettes/mrlocus.Rmd" class="external-link"><code>vignettes/mrlocus.Rmd</code></a></small>
       <div class="hidden name"><code>mrlocus.Rmd</code></div>
@@ -82,7 +82,7 @@
     
         <div class="abstract">
       <p class="abstract">Abstract</p>
-      <p>MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple nearly-LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.24</p>
+      <p>MRLocus provides estimation of gene-to-trait effects from eQTL and GWAS summary statistics, for loci with allelic heterogeneity: multiple nearly-LD-independent signal clusters representing distinct eQTLs. Evidence is aggregated across signal clusters for mediation of the downstream GWAS trait through the gene. MRLocus package version: 0.0.25</p>
     </div>
     
 <div class="section level2">
@@ -189,8 +189,8 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># input to fitSlope()</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 5</span></span>
-<span><span class="co">##  $ beta_hat_a: num [1:4] 0.666 1.867 2.992 3.658</span></span>
-<span><span class="co">##  $ beta_hat_b: num [1:4] 0.0614 0.9814 1.634 1.7517</span></span>
+<span><span class="co">##  $ beta_hat_a: num [1:4] 0.746 1.685 3.046 3.76</span></span>
+<span><span class="co">##  $ beta_hat_b: num [1:4] 0.149 1.017 1.73 1.668</span></span>
 <span><span class="co">##  $ sd_a      : num [1:4] 0.25 0.25 0.25 0.25</span></span>
 <span><span class="co">##  $ sd_b      : num [1:4] 0.25 0.25 0.25 0.25</span></span>
 <span><span class="co">##  $ alleles   :'data.frame':  4 obs. of  3 variables:</span></span>
@@ -215,10 +215,10 @@
 <span><span class="co">## post-warmup draws per chain=5000, total post-warmup draws=20000.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##        mean se_mean    sd   10%   90% n_eff  Rhat</span></span>
-<span><span class="co">## alpha 0.503   0.002 0.097 0.404 0.613  2934 1.002</span></span>
-<span><span class="co">## sigma 0.301   0.006 0.301 0.062 0.634  2588 1.002</span></span>
+<span><span class="co">## alpha 0.498   0.002 0.101 0.394 0.603  3134 1.004</span></span>
+<span><span class="co">## sigma 0.323   0.019 0.327 0.050 0.699   299 1.014</span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## Samples were drawn using NUTS(diag_e) at Tue Aug 30 15:34:45 2022.</span></span>
+<span><span class="co">## Samples were drawn using NUTS(diag_e) at Wed Aug 16 17:03:15 2023.</span></span>
 <span><span class="co">## For each parameter, n_eff is a crude measure of effective sample size,</span></span>
 <span><span class="co">## and Rhat is the potential scale reduction factor on split chains (at </span></span>
 <span><span class="co">## convergence, Rhat=1).</span></span></code></pre>
@@ -235,9 +235,9 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/priorCheck.html">priorCheck</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mrlocus_files/figure-html/priorCheck-1.png" width="700"></p>
-<pre><code><span><span class="co">##   parameter prior_sd    post_sd po_pr_ratio</span></span>
-<span><span class="co">## 1     alpha 1.002854 0.09732662   0.0970496</span></span>
-<span><span class="co">## 2     sigma 1.751663 0.30121522   0.1719596</span></span></code></pre>
+<pre><code><span><span class="co">##   parameter  prior_sd   post_sd po_pr_ratio</span></span>
+<span><span class="co">## 1     alpha 0.9969478 0.1008183   0.1011270</span></span>
+<span><span class="co">## 2     sigma 1.7297427 0.3266314   0.1888324</span></span></code></pre>
 <p>The default is for the function to return the small summary table, but by setting <code>type=2</code>, it will alternatively return the prior predictive draws themselves, with the number of draws specified by <code>n</code> (default is 200).</p>
 </div>
 <div class="section level2">
@@ -245,42 +245,44 @@
 </h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.2.1 (2022-06-23)</span></span>
-<span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Big Sur ... 10.16</span></span>
+<pre><code><span><span class="co">## R version 4.3.0 (2023-04-21)</span></span>
+<span><span class="co">## Platform: aarch64-apple-darwin20 (64-bit)</span></span>
+<span><span class="co">## Running under: macOS Ventura 13.0.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib</span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib </span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: America/New_York</span></span>
+<span><span class="co">## tzcode source: internal</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] rstan_2.21.5         ggplot2_3.3.6        StanHeaders_2.21.0-7</span></span>
-<span><span class="co">## [4] mrlocus_0.0.24      </span></span>
+<span><span class="co">## [1] rstan_2.21.8         ggplot2_3.4.2        StanHeaders_2.21.0-7</span></span>
+<span><span class="co">## [4] mrlocus_0.0.25      </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] Rcpp_1.0.8.3       prettyunits_1.1.1  ps_1.7.1           assertthat_0.2.1  </span></span>
-<span><span class="co">##  [5] rprojroot_2.0.3    digest_0.6.29      utf8_1.2.2         R6_2.5.1          </span></span>
-<span><span class="co">##  [9] stats4_4.2.1       evaluate_0.15      highr_0.9          pillar_1.7.0      </span></span>
-<span><span class="co">## [13] rlang_1.0.3        callr_3.7.0        jquerylib_0.1.4    rmarkdown_2.14    </span></span>
-<span><span class="co">## [17] pkgdown_2.0.5      textshaping_0.3.6  desc_1.4.1         stringr_1.4.0     </span></span>
-<span><span class="co">## [21] loo_2.5.1          munsell_0.5.0      compiler_4.2.1     xfun_0.31         </span></span>
-<span><span class="co">## [25] pkgconfig_2.0.3    systemfonts_1.0.4  pkgbuild_1.3.1     htmltools_0.5.2   </span></span>
-<span><span class="co">## [29] tidyselect_1.1.2   tibble_3.1.7       gridExtra_2.3      codetools_0.2-18  </span></span>
-<span><span class="co">## [33] matrixStats_0.62.0 fansi_1.0.3        crayon_1.5.1       dplyr_1.0.9       </span></span>
-<span><span class="co">## [37] withr_2.5.0        MASS_7.3-57        grid_4.2.1         jsonlite_1.8.0    </span></span>
-<span><span class="co">## [41] gtable_0.3.0       lifecycle_1.0.1    DBI_1.1.3          magrittr_2.0.3    </span></span>
-<span><span class="co">## [45] scales_1.2.0       RcppParallel_5.1.5 cli_3.3.0          stringi_1.7.6     </span></span>
-<span><span class="co">## [49] cachem_1.0.6       fs_1.5.2           bslib_0.3.1        ellipsis_0.3.2    </span></span>
-<span><span class="co">## [53] ragg_1.2.2         vctrs_0.4.1        generics_0.1.3     tools_4.2.1       </span></span>
-<span><span class="co">## [57] glue_1.6.2         purrr_0.3.4        processx_3.6.1     parallel_4.2.1    </span></span>
-<span><span class="co">## [61] fastmap_1.1.0      yaml_2.3.5         inline_0.3.19      colorspace_2.0-3  </span></span>
-<span><span class="co">## [65] memoise_2.0.1      knitr_1.39         sass_0.4.1</span></span></code></pre>
+<span><span class="co">##  [1] generics_0.1.3     utf8_1.2.3         sass_0.4.6         stringi_1.7.12    </span></span>
+<span><span class="co">##  [5] digest_0.6.31      magrittr_2.0.3     evaluate_0.21      grid_4.3.0        </span></span>
+<span><span class="co">##  [9] fastmap_1.1.1      rprojroot_2.0.3    jsonlite_1.8.4     processx_3.8.1    </span></span>
+<span><span class="co">## [13] pkgbuild_1.4.0     ps_1.7.5           gridExtra_2.3      purrr_1.0.1       </span></span>
+<span><span class="co">## [17] fansi_1.0.4        scales_1.2.1       codetools_0.2-19   textshaping_0.3.6 </span></span>
+<span><span class="co">## [21] jquerylib_0.1.4    cli_3.6.1          rlang_1.1.1        crayon_1.5.2      </span></span>
+<span><span class="co">## [25] munsell_0.5.0      withr_2.5.0        cachem_1.0.8       yaml_2.3.7        </span></span>
+<span><span class="co">## [29] parallel_4.3.0     tools_4.3.0        inline_0.3.19      memoise_2.0.1     </span></span>
+<span><span class="co">## [33] dplyr_1.1.2        colorspace_2.1-0   vctrs_0.6.2        R6_2.5.1          </span></span>
+<span><span class="co">## [37] matrixStats_0.63.0 stats4_4.3.0       lifecycle_1.0.3    stringr_1.5.0     </span></span>
+<span><span class="co">## [41] fs_1.6.2           MASS_7.3-60        ragg_1.2.5         pkgconfig_2.0.3   </span></span>
+<span><span class="co">## [45] desc_1.4.2         callr_3.7.3        pkgdown_2.0.7      RcppParallel_5.1.7</span></span>
+<span><span class="co">## [49] bslib_0.4.2        pillar_1.9.0       gtable_0.3.3       loo_2.6.0         </span></span>
+<span><span class="co">## [53] glue_1.6.2         Rcpp_1.0.10        systemfonts_1.0.4  highr_0.10        </span></span>
+<span><span class="co">## [57] tidyselect_1.2.0   xfun_0.39          tibble_3.2.1       knitr_1.42        </span></span>
+<span><span class="co">## [61] htmltools_0.5.5    rmarkdown_2.21     compiler_4.3.0     prettyunits_1.1.1</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -331,7 +333,7 @@ Zhu, Anqi, Nana Matoba, Emma P. Wilson, Amanda L. Tapia, Yun Li, Joseph G. Ibrah
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

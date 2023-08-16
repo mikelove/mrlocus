@@ -1,3 +1,8 @@
+# mrlocus 0.0.26
+
+* Note that the homepage for v0.0.26 and onward has moved to:
+  https://thelovelab.github.io/mrlocus
+
 # mrlocus 0.0.25
 
 * Add convenience function `normalizedAllelicSpread`, a useful
